@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "target": "es5",
+        "outFile": "dist/dotnet.js",
+        "removeComments": true,
+        "declaration": true,
+        "noImplicitAny": false,
+        "noEmitOnError": false
+    },
+    "include": [
+        "collections/*.ts",
+        "utils/*.ts",
+        "dotnet.ts"
+    ],
+    "exclude": [
+        "collections/test/*.ts"
+    ]
+}
