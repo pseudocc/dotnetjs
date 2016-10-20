@@ -20,12 +20,24 @@
             return Linq.Count(this.enumerable, predicate);
         }
 
+        public ElementAt(enumerable: IEnumerable<T>, index: number): T {
+            return Linq.ElementAt(this.enumerable, index);
+        }
+
         public First(predicate?: (item: T) => boolean): T {
             return Linq.First(this.enumerable, predicate);
         }
 
         public ForEach(action: (item: T) => void): void {
             Linq.ForEach(this.enumerable, action);
+        }
+
+        public IndexOf(element: T): number {
+            return Linq.IndexOf(this.enumerable, element);
+        }
+
+        public LastIndexOf(element: T): number {
+            return Linq.LastIndexOf(this.enumerable, element);
         }
 
         public Select<U>(func: (item: T) => U): LinqChain<T, U> {
@@ -104,23 +116,38 @@
         }
 
         public Any(predicate?: (item: TDes) => boolean): boolean {
-            var np  = this.GetPredicate(predicate);
+            var np = this.GetPredicate(predicate);
             return Linq.Any(this.enumerable, np);
         }
 
         public Count(predicate?: (item: TDes) => boolean): number {
-            var np  = this.GetPredicate(predicate);
+            var np = this.GetPredicate(predicate);
             return Linq.Count(this.enumerable, np);
         }
 
+        public ElementAt(index: number): TDes {
+            var elements = this.Execute();
+            return Linq.ElementAt(elements, index);
+        }
+
         public First(predicate?: (item: TDes) => boolean): TSrc {
-            var np  = this.GetPredicate(predicate);
+            var np = this.GetPredicate(predicate);
             return Linq.First(this.enumerable, np);
         }
 
         public ForEach(action: (item: TDes) => void): void {
             var na = this.GetAction(action);
             Linq.ForEach(this.enumerable, na);
+        }
+
+        public IndexOf(element: TDes): number {
+            var elements = this.Execute();
+            return Linq.IndexOf(elements, element);
+        }
+        
+        public LastIndexOf(element: TDes): number {
+            var elements = this.Execute();
+            return Linq.LastIndexOf(elements, element);
         }
 
         public Select<UDes>(func: (item: TDes) => UDes): LinqChain<TSrc, UDes> {
@@ -189,6 +216,19 @@
         return count;
     }
 
+    export function ElementAt<T>(enumerable: IEnumerable<T>, index: number): T {
+        if (enumerable == null)
+            throw new ArgumentNullException('enumerable');
+        if (index < 0)
+            throw new ArgumentOutOfRangeException('index: ' + index);
+        var enumerator = enumerable.GetEnumerator();
+        for (var i = 0; i <= index; i++) {
+            if (!enumerator.MoveNext())
+                throw new ArgumentOutOfRangeException('index: ' + index);
+        }
+        return enumerator.Current;
+    }
+
     export function First<T>(enumerable: IEnumerable<T>, predicate?: (item: T) => boolean): T {
         if (enumerable == null)
             throw new ArgumentNullException('enumerable');
@@ -212,6 +252,33 @@
         while (enumerator.MoveNext()) {
             action(enumerator.Current);
         }
+    }
+
+    export function IndexOf<T>(enumerable: IEnumerable<T>, element: T): number {
+        if (enumerable == null)
+            throw new ArgumentNullException('enumerable');
+        var enumerator = enumerable.GetEnumerator();
+        var index = 0;
+        while (enumerator.MoveNext()) {
+            if (element === enumerator.Current)
+                return index;
+            index++;
+        }
+        return -1;
+    }
+
+    export function LastIndexOf<T>(enumerable: IEnumerable<T>, element: T): number {
+        if (enumerable == null)
+            throw new ArgumentNullException('enumerable');
+        var enumerator = enumerable.GetEnumerator();
+        var index = 0;
+        var rtn = -1;
+        while (enumerator.MoveNext()) {
+            if (element === enumerator.Current)
+                rtn = index;
+            index++;
+        }
+        return rtn;
     }
 
     export function Select<T, U>(enumerable: IEnumerable<T>, func: (item: T) => U): U[] {

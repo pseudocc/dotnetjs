@@ -1214,11 +1214,20 @@ var DotnetJs;
                 LinqStart.prototype.Count = function (predicate) {
                     return Linq.Count(this.enumerable, predicate);
                 };
+                LinqStart.prototype.ElementAt = function (enumerable, index) {
+                    return Linq.ElementAt(this.enumerable, index);
+                };
                 LinqStart.prototype.First = function (predicate) {
                     return Linq.First(this.enumerable, predicate);
                 };
                 LinqStart.prototype.ForEach = function (action) {
                     Linq.ForEach(this.enumerable, action);
+                };
+                LinqStart.prototype.IndexOf = function (element) {
+                    return Linq.IndexOf(this.enumerable, element);
+                };
+                LinqStart.prototype.LastIndexOf = function (element) {
+                    return Linq.LastIndexOf(this.enumerable, element);
                 };
                 LinqStart.prototype.Select = function (func) {
                     if (this.enumerable == null)
@@ -1297,6 +1306,10 @@ var DotnetJs;
                     var np = this.GetPredicate(predicate);
                     return Linq.Count(this.enumerable, np);
                 };
+                LinqChain.prototype.ElementAt = function (index) {
+                    var elements = this.Execute();
+                    return Linq.ElementAt(elements, index);
+                };
                 LinqChain.prototype.First = function (predicate) {
                     var np = this.GetPredicate(predicate);
                     return Linq.First(this.enumerable, np);
@@ -1304,6 +1317,14 @@ var DotnetJs;
                 LinqChain.prototype.ForEach = function (action) {
                     var na = this.GetAction(action);
                     Linq.ForEach(this.enumerable, na);
+                };
+                LinqChain.prototype.IndexOf = function (element) {
+                    var elements = this.Execute();
+                    return Linq.IndexOf(elements, element);
+                };
+                LinqChain.prototype.LastIndexOf = function (element) {
+                    var elements = this.Execute();
+                    return Linq.LastIndexOf(elements, element);
                 };
                 LinqChain.prototype.Select = function (func) {
                     var nf = this.GetFunction(func);
@@ -1371,6 +1392,19 @@ var DotnetJs;
                 return count;
             }
             Linq.Count = Count;
+            function ElementAt(enumerable, index) {
+                if (enumerable == null)
+                    throw new DotnetJs.ArgumentNullException('enumerable');
+                if (index < 0)
+                    throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
+                var enumerator = enumerable.GetEnumerator();
+                for (var i = 0; i <= index; i++) {
+                    if (!enumerator.MoveNext())
+                        throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
+                }
+                return enumerator.Current;
+            }
+            Linq.ElementAt = ElementAt;
             function First(enumerable, predicate) {
                 if (enumerable == null)
                     throw new DotnetJs.ArgumentNullException('enumerable');
@@ -1396,6 +1430,33 @@ var DotnetJs;
                 }
             }
             Linq.ForEach = ForEach;
+            function IndexOf(enumerable, element) {
+                if (enumerable == null)
+                    throw new DotnetJs.ArgumentNullException('enumerable');
+                var enumerator = enumerable.GetEnumerator();
+                var index = 0;
+                while (enumerator.MoveNext()) {
+                    if (element === enumerator.Current)
+                        return index;
+                    index++;
+                }
+                return -1;
+            }
+            Linq.IndexOf = IndexOf;
+            function LastIndexOf(enumerable, element) {
+                if (enumerable == null)
+                    throw new DotnetJs.ArgumentNullException('enumerable');
+                var enumerator = enumerable.GetEnumerator();
+                var index = 0;
+                var rtn = -1;
+                while (enumerator.MoveNext()) {
+                    if (element === enumerator.Current)
+                        rtn = index;
+                    index++;
+                }
+                return rtn;
+            }
+            Linq.LastIndexOf = LastIndexOf;
             function Select(enumerable, func) {
                 if (enumerable == null)
                     throw new DotnetJs.ArgumentNullException('enumerable');

@@ -245,8 +245,11 @@ declare module DotnetJs.Collections.Linq {
         All(predicate: (item: T) => boolean): boolean;
         Any(predicate?: (item: T) => boolean): boolean;
         Count(predicate?: (item: T) => boolean): number;
+        ElementAt(enumerable: IEnumerable<T>, index: number): T;
         First(predicate?: (item: T) => boolean): T;
         ForEach(action: (item: T) => void): void;
+        IndexOf(element: T): number;
+        LastIndexOf(element: T): number;
         Select<U>(func: (item: T) => U): LinqChain<T, U>;
         Where(predicate: (item: T) => boolean): LinqChain<T, T>;
     }
@@ -260,8 +263,11 @@ declare module DotnetJs.Collections.Linq {
         All(predicate: (item: TDes) => boolean): boolean;
         Any(predicate?: (item: TDes) => boolean): boolean;
         Count(predicate?: (item: TDes) => boolean): number;
+        ElementAt(index: number): TDes;
         First(predicate?: (item: TDes) => boolean): TSrc;
         ForEach(action: (item: TDes) => void): void;
+        IndexOf(element: TDes): number;
+        LastIndexOf(element: TDes): number;
         Select<UDes>(func: (item: TDes) => UDes): LinqChain<TSrc, UDes>;
         Where(predicate: (item: TDes) => boolean): LinqChain<TSrc, TDes>;
         Execute(): TDes[];
@@ -269,8 +275,11 @@ declare module DotnetJs.Collections.Linq {
     function All<T>(enumerable: IEnumerable<T>, predicate: (item: T) => boolean): boolean;
     function Any<T>(enumerable: IEnumerable<T>, predicate?: (item: T) => boolean): boolean;
     function Count<T>(enumerable: IEnumerable<T>, predicate?: (item: T) => boolean): number;
+    function ElementAt<T>(enumerable: IEnumerable<T>, index: number): T;
     function First<T>(enumerable: IEnumerable<T>, predicate?: (item: T) => boolean): T;
     function ForEach<T>(enumerable: IEnumerable<T>, action: (item: T) => void): void;
+    function IndexOf<T>(enumerable: IEnumerable<T>, element: T): number;
+    function LastIndexOf<T>(enumerable: IEnumerable<T>, element: T): number;
     function Select<T, U>(enumerable: IEnumerable<T>, func: (item: T) => U): U[];
     function Where<T>(enumerable: IEnumerable<T>, predicate: (item: T) => boolean): T[];
 }
