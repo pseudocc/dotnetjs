@@ -29,7 +29,7 @@
     
     ```/// <reference path="dotnet.d.ts" />```
     
-## Work with DotneJs
+## Work with DotnetJs
 
 DotnetJs uses similiar interface as it is in .Net Framework.
 
