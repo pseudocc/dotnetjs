@@ -4,7 +4,7 @@
         "target": "es5",
         "outFile": "dist/dotnet.js",
         "removeComments": true,
-        "declaration": true,
+        "declaration": false,
         "noImplicitAny": false,
         "noEmitOnError": false
     },

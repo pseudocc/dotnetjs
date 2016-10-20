@@ -1,4 +1,3 @@
-/// <reference path="../typings/node.d.ts" />
 interface Object {
     getHashCode: Function;
     isValueType: boolean;
@@ -292,4 +291,8 @@ declare module DotnetJs.Collections {
         Sort(index: number, count: number, comparison: (a: T, b: T) => number): void;
         ToArray(): T[];
     }
+}
+declare module 'dotnetjs' {
+    import dotnetjs = DotnetJs;
+    export = dotnetjs;
 }
