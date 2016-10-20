@@ -1,28 +1,46 @@
 # DotnetJs
 .Net Framework support in javascript
 
-## Working with DotnetJs
+## Get DotnetJs
 
-0. Nodejs
+1. Nodejs
 
-run ```npm install dotnetjs --save``` first
+    firstly, run ```npm install dotnetjs --save``` 
 
-If you are using typescript: 
+    If you are using typescript: 
 
-```import * as DotnetJs from 'dotnetjs';```
+        import * as DotnetJs from 'dotnetjs';
 
-else just like the others: 
+    else just like the others: 
 
-```var DotnetJs = require('dotnetjs');```
+        var DotnetJs = require('dotnetjs');
 
-0. Amd
+2. Amd
 
-run ```npm install dotnetjs --save``` or download the files in the dist directory.
+    run ```npm install dotnetjs --save``` 
+    
+    or download the files in the dist directory.
 
-    <script src="dotnet.js"></script>
+    ```<script src="dotnet.js"></script>```
 
-    <script src="your.js"></script>
+    ```<script src="your.js"></script>```
 
     in your .ts file: 
     
-    /// <reference path="dotnet.d.ts" />
+    ```/// <reference path="dotnet.d.ts" />```
+    
+## Work with DotneJs
+
+DotnetJs uses similiar interface as it is in .Net Framework.
+
+### Linq
+
+If you are about to use complicated Linq Expressions, first make a instance of LinqStart:
+
+    var expression = new Linq.LinqStart(enumerable);
+    
+the enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
+
+    expression.Where(...).Select(...).Execute();
+    
+remember to use ```Execute``` to end the expression(if the result is IEnumerable).
