@@ -1,5 +1,9 @@
 ﻿module DotnetJs.Collections.Linq {
 
+    export function LinqStart<TSource>(source:IEnumerable< TSource>): LinqIntermediate<TSource, TSource> {
+        return new LinqIntermediate<TSource, TSource>(source, (item) => item);
+    }
+
     export class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
 
         protected toTDes: (item: TSource) => TResult;
@@ -42,6 +46,8 @@
         }
 
         private GetAction(action: (item: TResult) => void): (item: TSource) => void {
+            if (this.toTDes == null)
+                throw new ArgumentNullException('toTDes');
             var na: (item: TSource) => void = (item) => {
                 let des = this.toTDes(item);
                 if (des != DefaultDelegate.EmptyReturn)

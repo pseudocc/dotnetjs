@@ -241,6 +241,7 @@ declare module DotnetJs.Collections {
     }
 }
 declare module DotnetJs.Collections.Linq {
+    function LinqStart<TSource>(source: IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
     class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
         protected toTDes: (item: TSource) => TResult;
         protected source: IEnumerable<TSource>;

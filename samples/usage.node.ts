@@ -15,4 +15,5 @@ ht.Add({ value: 'tree' }, 'plant');
 ht.Add({ value: 'bushes' }, 'plant');
 ht.Add({ value: 'car' }, 'machine');
 
-var expression = new Linq.LinqStart(ht);
+var expression = Linq.LinqStart(ht);
+expression.Where((item) => item.Value == 'animal').Select((item) => item.Key.value).ForEach((item) => console.log(item));

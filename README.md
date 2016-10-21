@@ -37,10 +37,14 @@ DotnetJs uses similiar interface as it is in .Net Framework.
 
 If you are about to use complicated Linq Expressions, first make a instance of LinqStart:
 
-    var expression = new Linq.LinqStart(enumerable);
+    var expression = Linq.LinqStart(enumerable);
     
 the enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
 
-    expression.Where(...).Select(...).Execute();
+    expression.Where(...).Select(...).ToArray();
+
+Or use:
+
+    Linq.Where(enumerable, ...).Select(...).ToArray();
     
-remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is IEnumerable).
+remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable).

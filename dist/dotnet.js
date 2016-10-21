@@ -1201,6 +1201,10 @@ var DotnetJs;
     (function (Collections) {
         var Linq;
         (function (Linq) {
+            function LinqStart(source) {
+                return new LinqIntermediate(source, function (item) { return item; });
+            }
+            Linq.LinqStart = LinqStart;
             var LinqIntermediate = (function () {
                 function LinqIntermediate(source, func) {
                     this.source = source;
@@ -1238,6 +1242,8 @@ var DotnetJs;
                 };
                 LinqIntermediate.prototype.GetAction = function (action) {
                     var _this = this;
+                    if (this.toTDes == null)
+                        throw new DotnetJs.ArgumentNullException('toTDes');
                     var na = function (item) {
                         var des = _this.toTDes(item);
                         if (des != DefaultDelegate.EmptyReturn)
