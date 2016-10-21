@@ -43,4 +43,4 @@ the enumerable can be any type that implements IEnumerable, in addition, I imple
 
     expression.Where(...).Select(...).Execute();
     
-remember to use ```Execute``` to end the expression(if the result is IEnumerable).
+remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is IEnumerable).
