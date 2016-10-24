@@ -20,6 +20,9 @@
     "typings",
     "tests",
     "utils",
-    "collections"
+    "collections",
+    "tsconfig.json",
+    "dotnet.ts",
+    "package.json"
   ]
 }
