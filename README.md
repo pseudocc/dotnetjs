@@ -48,3 +48,13 @@ Or use:
     Linq.Where(enumerable, ...).Select(...).ToArray();
     
 remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable).
+
+### GetHashCode
+
+Both object, string, boolean or number are supported for the GetHashCode Method, actually for the object, it is more likely to be called as a 'unique id'.
+
+To get a new hashcode for an object, call the method with parameter 'ture'.
+
+### HashTable or Dictionary?
+
+HashTable is actually the class rewrited from System.Collections.Dictionary, using hashcode to reduce the time complexity.
