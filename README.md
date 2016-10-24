@@ -51,7 +51,7 @@ remember to use ```ToArray``` or ```ToList``` to end the expression(if the resul
 
 ### Indexer for the collections
 
-As there isn't have a way to implement indexer in typescript. You have to call the element of List or IDicionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.
+As there isn't have a way to implement indexer in typescript. You have to call the element of List or IDictionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.
 
 ### GetHashCode
 
