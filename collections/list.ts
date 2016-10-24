@@ -321,7 +321,7 @@ module DotnetJs.Collections {
         public MoveNext(): boolean {
             var localList: List<T> = this.list;
             if (this.version == localList.Version && (this.index < localList.Count)) {
-                this.current = localList.GetValue[this.index];
+                this.current = localList.GetValue(this.index);
                 this.index++;
                 return true;
             }
