@@ -49,6 +49,10 @@ Or use:
     
 remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable).
 
+### Indexer for the collections
+
+As there isn't have a way to implement indexer in typescript. You have to call the element of List or IDicionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.
+
 ### GetHashCode
 
 Both object, string, boolean or number are supported for the GetHashCode Method, actually for the object, it is more likely to be called as a 'unique id'.
