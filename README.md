@@ -15,11 +15,13 @@
 
         var DotnetJs = require('dotnetjs');
 
-2. Amd
+2. Browser
 
     run ```npm install dotnetjs --save``` 
     
     or download the files in the dist directory.
+    
+    or run ```bower install dotnetjs```
 
     ```<script src="dotnet.js"></script>```
 
