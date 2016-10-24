@@ -1,0 +1,25 @@
+{
+  "name": "dotnetjs",
+  "description": ".Net framework support in javascript",
+  "main": "dist/dotnet.js",
+  "authors": [
+    "Master Yu"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "dotnet",
+    "collections",
+    "linq"
+  ],
+  "homepage": "https://github.com/Master76/dotnetjs",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "typings",
+    "tests",
+    "utils",
+    "collections"
+  ]
+}
