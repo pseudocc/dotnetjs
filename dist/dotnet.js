@@ -608,7 +608,7 @@ var DotnetJs;
 (function (DotnetJs) {
     function GetVersion() {
         var Major = 1;
-        var Build = 2;
+        var Build = 3;
         var Revision = 1;
         return Major + '.' + Build + '.' + Revision;
     }
