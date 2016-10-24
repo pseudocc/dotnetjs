@@ -606,6 +606,20 @@ var DotnetJs;
 })(DotnetJs || (DotnetJs = {}));
 var DotnetJs;
 (function (DotnetJs) {
+    function GetVersion() {
+        var Major = 1;
+        var Build = 2;
+        var Revision = 1;
+        return Major + '.' + Build + '.' + Revision;
+    }
+    function Greetings() {
+        var version = GetVersion();
+        console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
+    }
+    DotnetJs.Greetings = Greetings;
+})(DotnetJs || (DotnetJs = {}));
+var DotnetJs;
+(function (DotnetJs) {
     var Collections;
     (function (Collections) {
         var KeyNotFoundException = (function (_super) {
@@ -1208,53 +1222,15 @@ var DotnetJs;
             var LinqIntermediate = (function () {
                 function LinqIntermediate(source, func) {
                     this.source = source;
-                    this.toTDes = func;
+                    this.toResult = func;
                 }
                 LinqIntermediate.prototype.GetEnumerator = function () {
-                    return new LinqEnumerator(this.source, this.toTDes);
-                };
-                LinqIntermediate.prototype.GetPredicate = function (predicate) {
-                    var _this = this;
-                    if (this.toTDes == null)
-                        throw new DotnetJs.ArgumentNullException('toTDes');
-                    predicate = predicate || DefaultDelegate.Predicate;
-                    var np = function (item) {
-                        var des = _this.toTDes(item);
-                        if (des === DefaultDelegate.EmptyReturn)
-                            return false;
-                        return predicate(des);
-                    };
-                    return np;
-                };
-                LinqIntermediate.prototype.GetFunction = function (func) {
-                    var _this = this;
-                    if (this.toTDes == null)
-                        throw new DotnetJs.ArgumentNullException('toTDes');
-                    if (func == null)
-                        throw new DotnetJs.ArgumentNullException('func');
-                    var nf = function (item) {
-                        var des = _this.toTDes(item);
-                        if (des != DefaultDelegate.EmptyReturn)
-                            return func(des);
-                        return DefaultDelegate.EmptyReturn;
-                    };
-                    return nf;
-                };
-                LinqIntermediate.prototype.GetAction = function (action) {
-                    var _this = this;
-                    if (this.toTDes == null)
-                        throw new DotnetJs.ArgumentNullException('toTDes');
-                    var na = function (item) {
-                        var des = _this.toTDes(item);
-                        if (des != DefaultDelegate.EmptyReturn)
-                            action(des);
-                    };
-                    return na;
+                    return new LinqEnumerator(this.source, this.toResult);
                 };
                 LinqIntermediate.prototype.Aggregate = function (seed, func) {
                     return Linq.Aggregate(this, seed, func);
                 };
-                LinqIntermediate.prototype.Average = function (source) {
+                LinqIntermediate.prototype.Average = function () {
                     return Linq.Average(this);
                 };
                 LinqIntermediate.prototype.All = function (predicate) {
@@ -1282,8 +1258,7 @@ var DotnetJs;
                     return Linq.First(this, predicate);
                 };
                 LinqIntermediate.prototype.ForEach = function (action) {
-                    var na = this.GetAction(action);
-                    Linq.ForEach(this.source, na);
+                    Linq.ForEach(this, action);
                 };
                 LinqIntermediate.prototype.IndexOf = function (element) {
                     return Linq.IndexOf(this, element);
@@ -1301,19 +1276,10 @@ var DotnetJs;
                     return Linq.Min(this, comparer);
                 };
                 LinqIntermediate.prototype.Select = function (func) {
-                    var nf = this.GetFunction(func);
-                    var linq = new LinqIntermediate(this.source, nf);
-                    return linq;
+                    return Linq.Select(this, func);
                 };
                 LinqIntermediate.prototype.Where = function (predicate) {
-                    var np = this.GetPredicate(predicate);
-                    var func = function (item) {
-                        if (np(item))
-                            return item;
-                        return DefaultDelegate.EmptyReturn;
-                    };
-                    var linq = new LinqIntermediate(this.source, func);
-                    return linq;
+                    return Linq.Where(this, predicate);
                 };
                 LinqIntermediate.prototype.ToArray = function () {
                     return Linq.ToArray(this);
@@ -1325,19 +1291,20 @@ var DotnetJs;
             }());
             Linq.LinqIntermediate = LinqIntermediate;
             var LinqEnumerator = (function () {
-                function LinqEnumerator(source, toTDes) {
+                function LinqEnumerator(source, toResult) {
                     this.enumerator = source.GetEnumerator();
-                    this.toTDes = toTDes;
+                    this.toResult = toResult;
                 }
                 LinqEnumerator.prototype.MoveNext = function () {
                     var next = this.enumerator.MoveNext();
-                    if (this.Current === DefaultDelegate.EmptyReturn)
-                        this.MoveNext();
+                    while (next && this.Current === DefaultDelegate.EmptyReturn) {
+                        next = this.enumerator.MoveNext();
+                    }
                     return next;
                 };
                 Object.defineProperty(LinqEnumerator.prototype, "Current", {
                     get: function () {
-                        return this.toTDes(this.enumerator.Current);
+                        return this.toResult(this.enumerator.Current);
                     },
                     enumerable: true,
                     configurable: true
@@ -1595,11 +1562,11 @@ var DotnetJs;
             }
             Linq.Repeat = Repeat;
             function Select(source, func) {
-                if (this.source == null)
+                if (source == null)
                     throw new DotnetJs.ArgumentNullException('source');
                 if (func == null)
                     throw new DotnetJs.ArgumentNullException('func');
-                var linq = new LinqIntermediate(this.source, func);
+                var linq = new LinqIntermediate(source, func);
                 return linq;
             }
             Linq.Select = Select;
@@ -1619,7 +1586,7 @@ var DotnetJs;
             }
             Linq.ToList = ToList;
             function Where(source, predicate) {
-                if (this.source == null)
+                if (source == null)
                     throw new DotnetJs.ArgumentNullException('source');
                 if (predicate == null)
                     throw new DotnetJs.ArgumentNullException('predicate');
@@ -1628,7 +1595,7 @@ var DotnetJs;
                         return item;
                     return DefaultDelegate.EmptyReturn;
                 };
-                var linq = new LinqIntermediate(this.source, func);
+                var linq = new LinqIntermediate(source, func);
                 return linq;
             }
             Linq.Where = Where;
@@ -1935,7 +1902,7 @@ var DotnetJs;
             Enumerator.prototype.MoveNext = function () {
                 var localList = this.list;
                 if (this.version == localList.Version && (this.index < localList.Count)) {
-                    this.current = localList.GetValue[this.index];
+                    this.current = localList.GetValue(this.index);
                     this.index++;
                     return true;
                 }
@@ -1969,5 +1936,11 @@ var DotnetJs;
         }());
     })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
 })(DotnetJs || (DotnetJs = {}));
-if (module)
+try {
     module.exports = DotnetJs;
+}
+catch (e) {
+}
+finally {
+    DotnetJs.Greetings();
+}

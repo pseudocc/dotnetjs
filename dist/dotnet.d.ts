@@ -120,6 +120,7 @@ declare module DotnetJs {
     interface IDisposable {
         Dispose(): void;
     }
+    function Greetings(): void;
 }
 declare module DotnetJs.Collections {
     interface IDictionary<TKey, TValue> extends IEnumerable<KeyValuePair<TKey, TValue>> {
@@ -243,15 +244,12 @@ declare module DotnetJs.Collections {
 declare module DotnetJs.Collections.Linq {
     function LinqStart<TSource>(source: IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
     class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
-        protected toTDes: (item: TSource) => TResult;
+        protected toResult: (item: TSource) => TResult;
         protected source: IEnumerable<TSource>;
         constructor(source: IEnumerable<TSource>, func: (item: TSource) => TResult);
         GetEnumerator(): IEnumerator<TResult>;
-        private GetPredicate(predicate?);
-        private GetFunction<UResult>(func);
-        private GetAction(action);
         Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate;
-        Average(source: IEnumerable<number>): number;
+        Average(): number;
         All(predicate: (item: TResult) => boolean): boolean;
         Any(predicate?: (item: TResult) => boolean): boolean;
         Concat(enumerable: IEnumerable<TResult>): LinqIntermediate<TResult, TResult>;
@@ -266,8 +264,8 @@ declare module DotnetJs.Collections.Linq {
         LastIndexOf(element: TResult): number;
         Max(comparer?: IValueComparer<TResult>): TResult;
         Min(comparer?: IValueComparer<TResult>): TResult;
-        Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TSource, UDes>;
-        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TSource, TResult>;
+        Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
+        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
         ToArray(): TResult[];
         ToList(): List<TResult>;
     }
