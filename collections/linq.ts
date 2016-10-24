@@ -1,66 +1,28 @@
 ﻿module DotnetJs.Collections.Linq {
 
     export function LinqStart<TSource>(source:IEnumerable< TSource>): LinqIntermediate<TSource, TSource> {
-        return new LinqIntermediate<TSource, TSource>(source, (item) => item);
+        return new LinqIntermediate<TSource, TSource>(source, item => item);
     }
 
     export class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
 
-        protected toTDes: (item: TSource) => TResult;
+        protected toResult: (item: TSource) => TResult;
         protected source: IEnumerable<TSource>;
 
         constructor(source: IEnumerable<TSource>, func: (item: TSource) => TResult) {
             this.source = source;
-            this.toTDes = func;
+            this.toResult = func;
         }
 
         public GetEnumerator(): IEnumerator<TResult> {
-            return new LinqEnumerator(this.source, this.toTDes);
-        }
-
-        private GetPredicate(predicate?: (item: TResult) => boolean): (item: TSource) => boolean {
-            if (this.toTDes == null)
-                throw new ArgumentNullException('toTDes');
-            predicate = predicate || DefaultDelegate.Predicate;
-            var np: (item: TSource) => boolean = (item) => {
-                let des = this.toTDes(item);
-                if (des === DefaultDelegate.EmptyReturn)
-                    return false;
-                return predicate(des);
-            }
-            return np;
-        }
-
-        private GetFunction<UResult>(func: (item: TResult) => UResult): (item: TSource) => UResult {
-            if (this.toTDes == null)
-                throw new ArgumentNullException('toTDes');
-            if (func == null)
-                throw new ArgumentNullException('func');
-            var nf: (item: TSource) => UResult = (item) => {
-                let des = this.toTDes(item);
-                if (des != DefaultDelegate.EmptyReturn)
-                    return func(des);
-                return DefaultDelegate.EmptyReturn;
-            }
-            return nf;
-        }
-
-        private GetAction(action: (item: TResult) => void): (item: TSource) => void {
-            if (this.toTDes == null)
-                throw new ArgumentNullException('toTDes');
-            var na: (item: TSource) => void = (item) => {
-                let des = this.toTDes(item);
-                if (des != DefaultDelegate.EmptyReturn)
-                    action(des);
-            }
-            return na;
+            return new LinqEnumerator(this.source, this.toResult);
         }
 
         public Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate {
             return Linq.Aggregate(this, seed, func);
         }
 
-        public Average(source: IEnumerable<number>): number {
+        public Average(): number {
             return Linq.Average(<any>this);
         }
 
@@ -97,8 +59,7 @@
         }
 
         public ForEach(action: (item: TResult) => void): void {
-            var na = this.GetAction(action);
-            Linq.ForEach(this.source, na);
+            Linq.ForEach(this, action);
         }
 
         public IndexOf(element: TResult): number {
@@ -121,21 +82,12 @@
             return Linq.Min(this, comparer);
         }
 
-        public Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TSource, UDes> {
-            var nf = this.GetFunction<UDes>(func);
-            var linq = new LinqIntermediate<TSource, UDes>(this.source, nf);
-            return linq;
+        public Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes> {
+            return Linq.Select(this, func);
         }
 
-        public Where(predicate: (item: TResult) => boolean): LinqIntermediate<TSource, TResult> {
-            var np = this.GetPredicate(predicate);
-            var func: (item: TSource) => TResult = (item) => {
-                if (np(item))
-                    return item;
-                return DefaultDelegate.EmptyReturn;
-            };
-            var linq = new LinqIntermediate<TSource, TResult>(this.source, func);
-            return linq;
+        public Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult> {
+            return Linq.Where(this, predicate);
         }
 
         public ToArray(): TResult[] {
@@ -149,23 +101,24 @@
 
     class LinqEnumerator<TSource, TResult> implements IEnumerator<TResult> {
 
-        private toTDes: (item: TSource) => TResult;
+        private toResult: (item: TSource) => TResult;
         private enumerator: IEnumerator<TSource>;
 
-        constructor(source: IEnumerable<TSource>, toTDes: (item: TSource) => TResult) {
+        constructor(source: IEnumerable<TSource>, toResult: (item: TSource) => TResult) {
             this.enumerator = source.GetEnumerator();
-            this.toTDes = toTDes;
+            this.toResult = toResult;
         }
 
         public MoveNext(): boolean {
             var next = this.enumerator.MoveNext();
-            if (this.Current === DefaultDelegate.EmptyReturn)
-                this.MoveNext();
+            while (next && this.Current === DefaultDelegate.EmptyReturn) {
+                next = this.enumerator.MoveNext();
+            }
             return next;
         }
 
         public get Current(): TResult {
-            return this.toTDes(this.enumerator.Current);
+            return this.toResult(this.enumerator.Current);
         }
 
         public Reset(): void {
@@ -416,11 +369,11 @@
     }
 
     export function Select<TSource, TResult>(source: IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult> {
-        if (this.source == null)
+        if (source == null)
             throw new ArgumentNullException('source');
         if (func == null)
             throw new ArgumentNullException('func');
-        var linq = new LinqIntermediate<TSource, TResult>(this.source, func);
+        var linq = new LinqIntermediate<TSource, TResult>(source, func);
         return linq;
     }
 
@@ -440,7 +393,7 @@
     }
 
     export function Where<TSource>(source: IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource> {
-        if (this.source == null)
+        if (source == null)
             throw new ArgumentNullException('source');
         if (predicate == null)
             throw new ArgumentNullException('predicate');
@@ -449,7 +402,7 @@
                 return item;
             return DefaultDelegate.EmptyReturn;
         };
-        var linq = new LinqIntermediate<TSource, TSource>(this.source, func);
+        var linq = new LinqIntermediate<TSource, TSource>(source, func);
         return linq;
     }
 
