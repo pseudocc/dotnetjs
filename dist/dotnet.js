@@ -609,7 +609,7 @@ var DotnetJs;
     function GetVersion() {
         var Major = 1;
         var Build = 3;
-        var Revision = 1;
+        var Revision = 3;
         return Major + '.' + Build + '.' + Revision;
     }
     function Greetings() {
