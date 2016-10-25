@@ -140,7 +140,7 @@ module DotnetJs.Collections {
                 throw new ArgumentNullException(key.toString());
             }
             if (this.buckets != null) {
-                var hashCode: number = key.getHashCode() & 0x7FFFFFFF;
+                var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
                 for (var i: number = this.buckets[hashCode % this.buckets.length]; i >= 0; i = this.entries[i].next) {
                     if (this.entries[i].hashCode == hashCode && this.entries[i].key === key)
                         return i;
@@ -188,7 +188,7 @@ module DotnetJs.Collections {
             }
             if (this.buckets == null)
                 this.Initialize(0);
-            var hashCode: number = key.getHashCode() & 0x7FFFFFFF;
+            var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
             var targetBucket: number = hashCode % this.buckets.length;
             for (var i: number = this.buckets[targetBucket]; i >= 0; i = this.entries[i].next) {
                 if (this.entries[i].hashCode == hashCode && this.entries[i].key === key) {
@@ -247,7 +247,7 @@ module DotnetJs.Collections {
                 throw new ArgumentNullException('key');
             }
             if (this.buckets != null) {
-                var hashCode: number = key.getHashCode() & 0x7FFFFFFF;
+                var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
                 var bucket: number = hashCode % this.buckets.length;
                 var last: number = -1;
                 for (var i: number = this.buckets[bucket]; i >= 0; last = i, i = this.entries[i].next) {
@@ -287,7 +287,7 @@ module DotnetJs.Collections {
 
     }
 
-    export class Enumerator<TKey, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
+    export class Enumerator<TKey extends Object, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
         private hashTable: HashTable<TKey, TValue>;
         private version: number;
         private index: number;

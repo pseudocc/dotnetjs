@@ -1,6 +1,6 @@
 ﻿interface Object {
-    getHashCode: Function;
-    isValueType: boolean;
+    GetHashCode: Function;
+    readonly IsValueType: boolean;
     hashCode: number;
 }
 
@@ -58,43 +58,51 @@ abstract class Crc32Bit {
     Crc32Bit.Init();
     var id = 0;
 
-    function stringHash(obj: Object): number {
-        if (obj.isValueType) {
-            var result = 0;
-            for (var property in obj) {
-                if (obj.hasOwnProperty(property)) {
-                    result += stringHash(property);
-                    result += obj[property].getHashCode();
-                }
-            }
-            return result;
+    function StringHash(obj: Object): number {
+        if (obj.IsValueType) {
+            // var result = 0;
+            // for (var property in obj) {
+            //     if (obj.hasOwnProperty(property)) {
+            //         result += StringHash(property);
+            //         result += obj[property].GetHashCode();
+            //     }
+            // }
+            // return result;
+            throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
         }
         var string = obj.toString();
         return Crc32Bit.ValueString(string);
     }
 
-    Object.prototype.isValueType = false;
+    Object.defineProperty(Object.prototype, 'IsValueType', { 
+        get: function () { 
+            var type = typeof this;
+            return type == 'number'
+                || type == 'boolean'
+                || type == 'string'
+                || this instanceof DotnetJs.ValueType; 
+        } 
+    });
 
-    Object.prototype.getHashCode = function (refresh?: boolean): number {
+    Object.prototype.GetHashCode = function (refresh?: boolean): number {
 
         if (this.hashCode && !refresh)
             return this.hashCode;
 
-        var type = typeof this.valueOf();
+        var value = this.valueOf();
+        var type = typeof value;
         switch (type) {
             case 'number':
-                return this.valueOf();
+                return value;
             case 'object':
-                if (this.isValueType) {
-                    if (this.hashCode == null)
-                        this.hashCode = stringHash(this);
-                    return this.hashCode;
+                if (this.IsValueType) {
+                    throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
                 }
                 break;
             default:
-                return stringHash(this);
+                return StringHash(value);
         }
-        
+
         var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
         this.hashCode = newId;
         return newId;
