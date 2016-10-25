@@ -67,37 +67,37 @@ var Crc32Bit = (function () {
 (function () {
     Crc32Bit.Init();
     var id = 0;
-    function stringHash(obj) {
-        if (obj.isValueType) {
-            var result = 0;
-            for (var property in obj) {
-                if (obj.hasOwnProperty(property)) {
-                    result += stringHash(property);
-                    result += obj[property].getHashCode();
-                }
-            }
-            return result;
+    function StringHash(obj) {
+        if (obj.IsValueType) {
+            throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
         }
         var string = obj.toString();
         return Crc32Bit.ValueString(string);
     }
-    Object.prototype.isValueType = false;
-    Object.prototype.getHashCode = function (refresh) {
+    Object.defineProperty(Object.prototype, 'IsValueType', {
+        get: function () {
+            var type = typeof this;
+            return type == 'number'
+                || type == 'boolean'
+                || type == 'string'
+                || this instanceof DotnetJs.ValueType;
+        }
+    });
+    Object.prototype.GetHashCode = function (refresh) {
         if (this.hashCode && !refresh)
             return this.hashCode;
-        var type = typeof this.valueOf();
+        var value = this.valueOf();
+        var type = typeof value;
         switch (type) {
             case 'number':
-                return this.valueOf();
+                return value;
             case 'object':
-                if (this.isValueType) {
-                    if (this.hashCode == null)
-                        this.hashCode = stringHash(this);
-                    return this.hashCode;
+                if (this.IsValueType) {
+                    throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
                 }
                 break;
             default:
-                return stringHash(this);
+                return StringHash(value);
         }
         var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
         this.hashCode = newId;
@@ -990,7 +990,7 @@ var DotnetJs;
                     throw new DotnetJs.ArgumentNullException(key.toString());
                 }
                 if (this.buckets != null) {
-                    var hashCode = key.getHashCode() & 0x7FFFFFFF;
+                    var hashCode = key.GetHashCode() & 0x7FFFFFFF;
                     for (var i = this.buckets[hashCode % this.buckets.length]; i >= 0; i = this.entries[i].next) {
                         if (this.entries[i].hashCode == hashCode && this.entries[i].key === key)
                             return i;
@@ -1034,7 +1034,7 @@ var DotnetJs;
                 }
                 if (this.buckets == null)
                     this.Initialize(0);
-                var hashCode = key.getHashCode() & 0x7FFFFFFF;
+                var hashCode = key.GetHashCode() & 0x7FFFFFFF;
                 var targetBucket = hashCode % this.buckets.length;
                 for (var i = this.buckets[targetBucket]; i >= 0; i = this.entries[i].next) {
                     if (this.entries[i].hashCode == hashCode && this.entries[i].key === key) {
@@ -1091,7 +1091,7 @@ var DotnetJs;
                     throw new DotnetJs.ArgumentNullException('key');
                 }
                 if (this.buckets != null) {
-                    var hashCode = key.getHashCode() & 0x7FFFFFFF;
+                    var hashCode = key.GetHashCode() & 0x7FFFFFFF;
                     var bucket = hashCode % this.buckets.length;
                     var last = -1;
                     for (var i = this.buckets[bucket]; i >= 0; last = i, i = this.entries[i].next) {
@@ -1944,3 +1944,15 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
+var DotnetJs;
+(function (DotnetJs) {
+    var ValueType = (function () {
+        function ValueType() {
+        }
+        ValueType.prototype.GetHashCode = function (refresh) {
+            throw new DotnetJs.NotImplementedExeption('ValueType.GetHashCode(boolean)');
+        };
+        return ValueType;
+    }());
+    DotnetJs.ValueType = ValueType;
+})(DotnetJs || (DotnetJs = {}));

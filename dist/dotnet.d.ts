@@ -16,8 +16,8 @@
  *
 **/
 interface Object {
-    getHashCode: Function;
-    isValueType: boolean;
+    GetHashCode: Function;
+    readonly IsValueType: boolean;
     hashCode: number;
 }
 interface OutParam<T> {
@@ -229,7 +229,7 @@ declare module DotnetJs.Collections {
         Remove(key: TKey): TValue;
         TryGetValue(key: TKey, out: OutParam<TValue>): boolean;
     }
-    class Enumerator<TKey, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
+    class Enumerator<TKey extends Object, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
         private hashTable;
         private version;
         private index;
@@ -330,4 +330,9 @@ declare module DotnetJs.Collections {
 declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
+}
+declare module DotnetJs {
+    abstract class ValueType {
+        GetHashCode(refresh?: boolean): number;
+    }
 }

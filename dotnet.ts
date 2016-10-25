@@ -8,3 +8,8 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
+
+declare module 'dotnetjs' {
+    import dotnetjs = DotnetJs;
+    export = dotnetjs;
+}
