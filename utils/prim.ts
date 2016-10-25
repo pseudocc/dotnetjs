@@ -7,7 +7,7 @@
     function GetVersion(): string {
         var Major = 1;
         var Build = 3;
-        var Revision = 1;
+        var Revision = 2;
         
         return Major + '.' + Build + '.' + Revision;
     }

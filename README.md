@@ -37,7 +37,7 @@ DotnetJs uses similiar interface as it is in .Net Framework.
 
 ### Linq
 
-If you are about to use complicated Linq Expressions, first make a instance of LinqStart:
+If you are about to use complicated Linq Expressions, first make a instance of LinqIntermediate by using LinqStart:
 
     var expression = Linq.LinqStart(enumerable);
     
@@ -49,7 +49,9 @@ Or use:
 
     Linq.Where(enumerable, ...).Select(...).ToArray();
     
-remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable).
+remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
+
+To do: more Linq method.
 
 ### Indexer for the collections
 
