@@ -1,6 +1,6 @@
 /// <reference path="../../dist/dotnet.d.ts" />
 var List = DotnetJs.Collections.List;
-var Linq = DotnetJs.Collections.Linq;
+var Linq = DotnetJs.Linq;
 
 type InternalType = {
     foo: number;
