@@ -1,5 +1,6 @@
 ﻿interface Object {
     GetHashCode: Function;
+    Equals: Function;
     readonly IsValueType: boolean;
     hashCode: number;
 }
@@ -74,14 +75,14 @@ abstract class Crc32Bit {
         return Crc32Bit.ValueString(string);
     }
 
-    Object.defineProperty(Object.prototype, 'IsValueType', { 
-        get: function () { 
+    Object.defineProperty(Object.prototype, 'IsValueType', {
+        get: function () {
             var type = typeof this;
             return type == 'number'
                 || type == 'boolean'
                 || type == 'string'
-                || this instanceof DotnetJs.ValueType; 
-        } 
+                || this instanceof DotnetJs.ValueType;
+        }
     });
 
     Object.prototype.GetHashCode = function (refresh?: boolean): number {
@@ -107,6 +108,15 @@ abstract class Crc32Bit {
         this.hashCode = newId;
         return newId;
     };
+
+    Object.prototype.Equals = function (obj: Object): boolean {
+        if (!obj.IsValueType)
+            return obj === this;
+
+        var vt = <DotnetJs.ValueType>obj;
+        return vt.GetHashCode() === this.GetHashCode();
+    }
+
 
     Array.prototype.GetEnumerator = function () {
         return new ArrayEnumerator(this);

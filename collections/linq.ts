@@ -1,20 +1,20 @@
-﻿module DotnetJs.Collections.Linq {
+﻿module DotnetJs.Linq {
 
-    export function LinqStart<TSource>(source:IEnumerable< TSource>): LinqIntermediate<TSource, TSource> {
+    export function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
         return new LinqIntermediate<TSource, TSource>(source, item => item);
     }
 
-    export class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
+    export class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
 
         protected toResult: (item: TSource) => TResult;
-        protected source: IEnumerable<TSource>;
+        protected source: Collections.IEnumerable<TSource>;
 
-        constructor(source: IEnumerable<TSource>, func: (item: TSource) => TResult) {
+        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult) {
             this.source = source;
             this.toResult = func;
         }
 
-        public GetEnumerator(): IEnumerator<TResult> {
+        public GetEnumerator(): Collections.IEnumerator<TResult> {
             return new LinqEnumerator(this.source, this.toResult);
         }
 
@@ -34,7 +34,7 @@
             return Linq.Any(this, predicate);
         }
 
-        public Concat(enumerable: IEnumerable<TResult>): LinqIntermediate<TResult, TResult> {
+        public Concat(enumerable: Collections.IEnumerable<TResult>): LinqIntermediate<TResult, TResult> {
             return Linq.Concat(this, enumerable);
         }
 
@@ -50,7 +50,7 @@
             return Linq.ElementAt(this, index);
         }
 
-        public Except(enumerable: IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult> {
+        public Except(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult> {
             return Linq.Except(this, enumerable, comparer);
         }
 
@@ -66,7 +66,7 @@
             return Linq.IndexOf(this, element);
         }
 
-        public Intersect(enumerable: IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult> {
+        public Intersect(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult> {
             return Linq.Intersect(this, enumerable, comparer);
         }
 
@@ -74,11 +74,11 @@
             return Linq.LastIndexOf(this, element);
         }
 
-        public Max(comparer?: IValueComparer<TResult>): TResult {
+        public Max(comparer?: IComparer<TResult>): TResult {
             return Linq.Max(this, comparer);
         }
 
-        public Min(comparer?: IValueComparer<TResult>): TResult {
+        public Min(comparer?: IComparer<TResult>): TResult {
             return Linq.Min(this, comparer);
         }
 
@@ -94,17 +94,17 @@
             return Linq.ToArray(this);
         }
 
-        public ToList(): List<TResult> {
+        public ToList(): Collections.List<TResult> {
             return Linq.ToList(this);
         }
     }
 
-    class LinqEnumerator<TSource, TResult> implements IEnumerator<TResult> {
+    class LinqEnumerator<TSource, TResult> implements Collections.IEnumerator<TResult> {
 
         private toResult: (item: TSource) => TResult;
-        private enumerator: IEnumerator<TSource>;
+        private enumerator: Collections.IEnumerator<TSource>;
 
-        constructor(source: IEnumerable<TSource>, toResult: (item: TSource) => TResult) {
+        constructor(source: Collections.IEnumerable<TSource>, toResult: (item: TSource) => TResult) {
             this.enumerator = source.GetEnumerator();
             this.toResult = toResult;
         }
@@ -131,15 +131,7 @@
 
     }
 
-    abstract class DefaultDelegate {
-        public static Predicate = () => true;
-        public static Action = () => { };
-        public static Func = () => null;
-
-        public static EmptyReturn: any = { value: 'Empty' };
-    }
-
-    export function Aggregate<TSource, TAccumulate>(source: IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate {
+    export function Aggregate<TSource, TAccumulate>(source: Collections.IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate {
         if (seed == null)
             throw new ArgumentNullException('seed');
         if (func == null)
@@ -150,7 +142,7 @@
         return seed;
     }
 
-    export function Average(source: IEnumerable<number>): number {
+    export function Average(source: Collections.IEnumerable<number>): number {
         if (source == null)
             throw new ArgumentNullException('source');
         var result = 0;
@@ -165,7 +157,7 @@
         return result / length;
     }
 
-    export function All<TSource>(source: IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean {
+    export function All<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean {
         if (source == null)
             throw new ArgumentNullException('source');
         if (predicate == null)
@@ -180,11 +172,11 @@
         return true;
     }
 
-    export function Any<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean {
+    export function Any<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean {
         return Linq.Count(source, predicate) === 0;
     }
 
-    export function Concat<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
+    export function Concat<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
         if (first == null)
             throw new ArgumentNullException('first');
         if (second == null)
@@ -199,14 +191,14 @@
         return linq;
     }
 
-    export function Contains<TSource>(source: IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean {
+    export function Contains<TSource>(source: Collections.IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean {
         if (element == null)
             throw new ArgumentNullException('element');
-        comparer = comparer || ((a, b) => a === b);
+        comparer = comparer || DefaultDelegate.EqualityComparer;
         return Linq.Any(source, (item) => comparer(item, element));
     }
 
-    export function Count<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number {
+    export function Count<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number {
         if (source == null)
             throw new ArgumentNullException('source');
         predicate = predicate || DefaultDelegate.Predicate;
@@ -220,7 +212,7 @@
         return count;
     }
 
-    export function ElementAt<TSource>(source: IEnumerable<TSource>, index: number): TSource {
+    export function ElementAt<TSource>(source: Collections.IEnumerable<TSource>, index: number): TSource {
         if (source == null)
             throw new ArgumentNullException('source');
         if (index < 0)
@@ -233,7 +225,7 @@
         return enumerator.Current;
     }
 
-    export function Except<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource> {
+    export function Except<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource> {
         if (first == null)
             throw new ArgumentNullException('first');
         if (second == null)
@@ -248,7 +240,7 @@
         return linq;
     }
 
-    export function First<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource {
+    export function First<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource {
         if (source == null)
             throw new ArgumentNullException('source');
         predicate = predicate || DefaultDelegate.Predicate;
@@ -262,7 +254,7 @@
         return null;
     }
 
-    export function ForEach<TSource>(source: IEnumerable<TSource>, action: (item: TSource) => void): void {
+    export function ForEach<TSource>(source: Collections.IEnumerable<TSource>, action: (item: TSource) => void): void {
         if (source == null)
             throw new ArgumentNullException('source');
         if (action == null)
@@ -273,7 +265,7 @@
         }
     }
 
-    export function IndexOf<TSource>(source: IEnumerable<TSource>, element: TSource): number {
+    export function IndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number {
         if (source == null)
             throw new ArgumentNullException('source');
         var enumerator = source.GetEnumerator();
@@ -286,7 +278,7 @@
         return -1;
     }
 
-    export function Intersect<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource> {
+    export function Intersect<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource> {
         if (first == null)
             throw new ArgumentNullException('first');
         if (second == null)
@@ -301,7 +293,7 @@
         return linq;
     }
 
-    export function LastIndexOf<TSource>(source: IEnumerable<TSource>, element: TSource): number {
+    export function LastIndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number {
         if (source == null)
             throw new ArgumentNullException('source');
         var enumerator = source.GetEnumerator();
@@ -315,7 +307,7 @@
         return rtn;
     }
 
-    export function Max<TSource>(source: IEnumerable<TSource>, comparer?: IValueComparer<TSource>): TSource {
+    export function Max<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource {
         if (source == null)
             throw new ArgumentNullException('source');
         comparer = comparer || ((a, b) => {
@@ -334,7 +326,7 @@
         return max;
     }
 
-    export function Min<TSource>(source: IEnumerable<TSource>, comparer?: IValueComparer<TSource>): TSource {
+    export function Min<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource {
         var reverseComparer = comparer || ((a, b) => {
             if (a === b) return 0;
             if (a > b) return -1;
@@ -368,7 +360,7 @@
         return linq;
     }
 
-    export function Select<TSource, TResult>(source: IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult> {
+    export function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult> {
         if (source == null)
             throw new ArgumentNullException('source');
         if (func == null)
@@ -377,7 +369,7 @@
         return linq;
     }
 
-    export function ToArray<TSource>(source: IEnumerable<TSource>): TSource[] {
+    export function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[] {
         if (source == null)
             throw new ArgumentNullException('source');
         var enumerator = source.GetEnumerator();
@@ -388,11 +380,11 @@
         return result;
     }
 
-    export function ToList<TSource>(source: IEnumerable<TSource>): List<TSource> {
-        return new List(ToArray(source));
+    export function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource> {
+        return new Collections.List(ToArray(source));
     }
 
-    export function Where<TSource>(source: IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource> {
+    export function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource> {
         if (source == null)
             throw new ArgumentNullException('source');
         if (predicate == null)

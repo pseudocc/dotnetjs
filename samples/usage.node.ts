@@ -1,7 +1,7 @@
 import * as DotnetJs from 'dotnetjs';
 
-var HashTable = DotnetJs.Collections.HashTable;
-var Linq = DotnetJs.Collections.Linq;
+var HashTable = DotnetJs.Collections.Dictionary;
+var Linq = DotnetJs.Linq;
 
 type LocalKey = {
     value: string;

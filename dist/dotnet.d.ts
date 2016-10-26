@@ -17,6 +17,7 @@
 **/
 interface Object {
     GetHashCode: Function;
+    Equals: Function;
     readonly IsValueType: boolean;
     hashCode: number;
 }
@@ -47,9 +48,9 @@ declare module DotnetJs.Arrays {
     function Copy(sourceArray: any[], sourceIndex: number, destinationArray: any[], destinationIndex: number, length: number): void;
     function AddRange(array: any[], collection: any[], length?: number): void;
     function Clear(array: any[], freeIndex?: number, length?: number): void;
-    function Sort(array: any[], index?: number, count?: number, comparison?: (a: any, b: any) => number): void;
-    function IndexOf(array: any[], item: any, startIndex?: number, length?: number): number;
-    function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number): number;
+    function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void;
+    function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
+    function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
 }
 declare module DotnetJs {
     class NotImplementedExeption extends Error {
@@ -120,6 +121,15 @@ declare module DotnetJs {
     interface IDisposable {
         Dispose(): void;
     }
+    abstract class DefaultDelegate {
+        static Predicate: () => boolean;
+        static Action: () => void;
+        static Func: () => any;
+        static EmptyReturn: any;
+        static EqualityComparer: IEqualityComparer<any>;
+    }
+    type IEqualityComparer<T> = (a: T, b: T) => boolean;
+    type IComparer<T> = (a: T, b: T) => number;
     function Greetings(): void;
 }
 declare module DotnetJs.Collections {
@@ -156,8 +166,6 @@ declare module DotnetJs.Collections {
         CopyTo(array: T[], arrayIndex: number): void;
         Remove(item: T): boolean;
     }
-    type IEqualityComparer<T> = (a: T, b: T) => boolean;
-    type IValueComparer<T> = (a: T, b: T) => number;
     type KeyValuePair<TKey, TValue> = {
         Key: TKey;
         Value: TValue;
@@ -168,32 +176,6 @@ declare module DotnetJs.Collections {
 }
 declare module DotnetJs.Collections {
     class Dictionary<TKey extends Object, TValue> implements IDictionary<TKey, TValue> {
-        private items;
-        private keys;
-        private version;
-        private freeList;
-        constructor();
-        readonly Count: number;
-        readonly Keys: TKey[];
-        readonly KeyValuePairs: KeyValuePair<TKey, TValue>[];
-        readonly Values: TValue[];
-        readonly Version: number;
-        GetValue(key: TKey): TValue;
-        SetValue(key: TKey, value: TValue): void;
-        Add(key: TKey, value: TValue): void;
-        Clear(): void;
-        Contains(keyValuePair: KeyValuePair<TKey, TValue>): boolean;
-        ContainsKey(key: TKey): boolean;
-        ContainsValue(value: TValue): boolean;
-        private FindEntry(key);
-        ForEach(action: (item: KeyValuePair<TKey, TValue>) => void): void;
-        GetEnumerator(): IEnumerator<KeyValuePair<TKey, TValue>>;
-        Remove(key: TKey): TValue;
-        TryGetValue(key: TKey, out: OutParam<TValue>): boolean;
-    }
-}
-declare module DotnetJs.Collections {
-    class HashTable<TKey extends Object, TValue> implements IDictionary<TKey, TValue> {
         private buckets;
         private entries;
         private count;
@@ -234,63 +216,63 @@ declare module DotnetJs.Collections {
         private version;
         private index;
         private current;
-        constructor(hashTable: HashTable<TKey, TValue>);
+        constructor(hashTable: Dictionary<TKey, TValue>);
         MoveNext(): boolean;
         readonly Current: KeyValuePair<TKey, TValue>;
         Reset(): void;
         Dispose(): void;
     }
 }
-declare module DotnetJs.Collections.Linq {
-    function LinqStart<TSource>(source: IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
-    class LinqIntermediate<TSource, TResult> implements IEnumerable<TResult> {
+declare module DotnetJs.Linq {
+    function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
+    class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
         protected toResult: (item: TSource) => TResult;
-        protected source: IEnumerable<TSource>;
-        constructor(source: IEnumerable<TSource>, func: (item: TSource) => TResult);
-        GetEnumerator(): IEnumerator<TResult>;
+        protected source: Collections.IEnumerable<TSource>;
+        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult);
+        GetEnumerator(): Collections.IEnumerator<TResult>;
         Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate;
         Average(): number;
         All(predicate: (item: TResult) => boolean): boolean;
         Any(predicate?: (item: TResult) => boolean): boolean;
-        Concat(enumerable: IEnumerable<TResult>): LinqIntermediate<TResult, TResult>;
+        Concat(enumerable: Collections.IEnumerable<TResult>): LinqIntermediate<TResult, TResult>;
         Contains(element: TResult, comparer?: IEqualityComparer<TResult>): boolean;
         Count(predicate?: (item: TResult) => boolean): number;
         ElementAt(index: number): TResult;
-        Except(enumerable: IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
+        Except(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
         First(predicate?: (item: TResult) => boolean): TResult;
         ForEach(action: (item: TResult) => void): void;
         IndexOf(element: TResult): number;
-        Intersect(enumerable: IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
+        Intersect(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
         LastIndexOf(element: TResult): number;
-        Max(comparer?: IValueComparer<TResult>): TResult;
-        Min(comparer?: IValueComparer<TResult>): TResult;
+        Max(comparer?: IComparer<TResult>): TResult;
+        Min(comparer?: IComparer<TResult>): TResult;
         Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
         Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
         ToArray(): TResult[];
-        ToList(): List<TResult>;
+        ToList(): Collections.List<TResult>;
     }
-    function Aggregate<TSource, TAccumulate>(source: IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate;
-    function Average(source: IEnumerable<number>): number;
-    function All<TSource>(source: IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean;
-    function Any<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean;
-    function Concat<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
-    function Contains<TSource>(source: IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean;
-    function Count<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number;
-    function ElementAt<TSource>(source: IEnumerable<TSource>, index: number): TSource;
-    function Except<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
-    function First<TSource>(source: IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource;
-    function ForEach<TSource>(source: IEnumerable<TSource>, action: (item: TSource) => void): void;
-    function IndexOf<TSource>(source: IEnumerable<TSource>, element: TSource): number;
-    function Intersect<TSource>(first: IEnumerable<TSource>, second: IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
-    function LastIndexOf<TSource>(source: IEnumerable<TSource>, element: TSource): number;
-    function Max<TSource>(source: IEnumerable<TSource>, comparer?: IValueComparer<TSource>): TSource;
-    function Min<TSource>(source: IEnumerable<TSource>, comparer?: IValueComparer<TSource>): TSource;
+    function Aggregate<TSource, TAccumulate>(source: Collections.IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate;
+    function Average(source: Collections.IEnumerable<number>): number;
+    function All<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean;
+    function Any<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean;
+    function Concat<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
+    function Contains<TSource>(source: Collections.IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean;
+    function Count<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number;
+    function ElementAt<TSource>(source: Collections.IEnumerable<TSource>, index: number): TSource;
+    function Except<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
+    function First<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource;
+    function ForEach<TSource>(source: Collections.IEnumerable<TSource>, action: (item: TSource) => void): void;
+    function IndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
+    function Intersect<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
+    function LastIndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
+    function Max<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
+    function Min<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
     function Range(start: number, count: number): LinqIntermediate<number, number>;
     function Repeat<TResult>(element: TResult, count: number): LinqIntermediate<TResult, TResult>;
-    function Select<TSource, TResult>(source: IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
-    function ToArray<TSource>(source: IEnumerable<TSource>): TSource[];
-    function ToList<TSource>(source: IEnumerable<TSource>): List<TSource>;
-    function Where<TSource>(source: IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;
+    function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
+    function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[];
+    function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource>;
+    function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;
 }
 declare module DotnetJs.Collections {
     class List<T extends Object> implements ICollection<T> {

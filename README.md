@@ -61,8 +61,8 @@ As there isn't have a way to implement indexer in typescript. You have to call t
 
 Both object, string, boolean or number are supported for the GetHashCode Method, actually for the object, it is more likely to be called as a 'unique id'.
 
-To get a new hashcode for an object, call the method with parameter 'ture'.
+To get a new hashcode for an object, call the method with parameter 'ture'. But please becareful, this may due to unexpected errors (e.g.: when you are using Dictionary).
 
-### HashTable or Dictionary?
+### Equals
 
-HashTable is actually the class rewrited from System.Collections.Dictionary, using hashcode to reduce the time complexity.
+If you inherit from abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide wether it equals to the other. 

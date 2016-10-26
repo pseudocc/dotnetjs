@@ -4,11 +4,24 @@
         Dispose(): void;
     }
 
+    export abstract class DefaultDelegate {
+        public static Predicate = () => true;
+        public static Action = () => { };
+        public static Func = () => null;
+
+        public static EmptyReturn: any = { value: 'Empty' };
+        public static EqualityComparer: IEqualityComparer<any> = (a, b) => a.Equals(b);
+    }
+
+    export type IEqualityComparer<T> = (a: T, b: T) => boolean;
+
+    export type IComparer<T> = (a: T, b: T) => number;
+
     function GetVersion(): string {
         var Major = 1;
-        var Build = 3;
-        var Revision = 3;
-        
+        var Build = 4;
+        var Revision = 0;
+
         return Major + '.' + Build + '.' + Revision;
     }
 

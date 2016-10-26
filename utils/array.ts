@@ -9,7 +9,7 @@ class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
     constructor(array: T[]) {
         this.array = array;
         this.index = 0;
-        this.current = null;    
+        this.current = null;
     }
 
     public MoveNext(): boolean {
@@ -21,7 +21,7 @@ class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
     }
 
     public get Current(): T {
-        return this.current; 
+        return this.current;
     }
 
     public Reset(): void {
@@ -72,7 +72,7 @@ module DotnetJs.Arrays {
         array.length = freeIndex;
     }
 
-    export function Sort(array: any[], index?: number, count?: number, comparison?: (a: any, b: any) => number): void {
+    export function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void {
         if (!array)
             throw new ArgumentNullException('array');
         index = index || 0;
@@ -84,25 +84,27 @@ module DotnetJs.Arrays {
         }
     }
 
-    export function IndexOf(array: any[], item: any, startIndex?: number, length?: number): number {
+    export function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number {
         if (!array)
             throw new ArgumentNullException('array');
         startIndex = startIndex || 0;
         length = length || (array.length - startIndex);
+        comparer = comparer || DefaultDelegate.EqualityComparer;
         for (var i = startIndex; i < length; i++) {
-            if (array[i] === item)
+            if (comparer(array[i], item))
                 return i;
         }
         return -1;
     }
 
-    export function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number): number {
+    export function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number {
         if (!array)
             throw new ArgumentNullException('array');
         startIndex = startIndex || 0;
         length = length || (array.length - startIndex);
+        comparer = comparer || DefaultDelegate.EqualityComparer;
         for (var i = startIndex + length - 1; i > startIndex; i--) {
-            if (array[i] === item)
+            if (comparer(array[i], item))
                 return i;
         }
         return -1;

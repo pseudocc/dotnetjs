@@ -42,7 +42,7 @@ module DotnetJs.Collections {
         public get Version(): number {
             return this.version;
         }
-        
+
         public Add(item: T): void {
             this.items.push(item);
             this.version++;
@@ -132,7 +132,7 @@ module DotnetJs.Collections {
             }
             if (this.Count == 0) {
                 if (startIndex != -1) {
-                    throw new ArgumentOutOfRangeException('startIndex '+ startIndex);
+                    throw new ArgumentOutOfRangeException('startIndex ' + startIndex);
                 }
             }
             else if (startIndex >= this.Count) {
@@ -301,7 +301,7 @@ module DotnetJs.Collections {
             Arrays.Copy(this.items, 0, array, 0, this.Count);
             return array;
         }
-    
+
     }
 
     class Enumerator<T> implements IEnumerator<T>

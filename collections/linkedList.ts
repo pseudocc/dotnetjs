@@ -11,7 +11,7 @@
             this.version = 0;
             if (collection == null) {
                 return;
-            } 
+            }
             Linq.ForEach(collection, function (item) {
                 this.AddLast(item);
             });
@@ -69,7 +69,7 @@
             }
             return result;
         }
-        
+
         public AddLast(value: T): LinkedListNode<T> {
             var result = new LinkedListNode<T>(this, value);
             if (this.head == null) {
@@ -122,10 +122,11 @@
 
         public Find(value: T): LinkedListNode<T> {
             var node = this.head;
+            var comparer = DefaultDelegate.EqualityComparer;
             if (node != null) {
                 if (value != null) {
                     do {
-                        if (node.item === value) {
+                        if (comparer(node.item, value)) {
                             return node;
                         }
                         node = node.next;
@@ -150,10 +151,11 @@
                 return null;
             var last = this.head.prev;
             var node = last;
+            var comparer = DefaultDelegate.EqualityComparer;
             if (node != null) {
                 if (value != null) {
                     do {
-                        if (node.item === value) {
+                        if (comparer(node.item, value)) {
                             return node;
                         }
                         node = node.prev;
@@ -185,7 +187,7 @@
             }
             return false;
         }
-        
+
         public RemoveFirst(): void {
             if (this.head == null) {
                 throw new InvalidOperationException('linked list is empty');

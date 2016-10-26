@@ -40,10 +40,6 @@ module DotnetJs.Collections {
         CopyTo(array: T[], arrayIndex: number): void;
         Remove(item: T): boolean;
     }
-    
-    export type IEqualityComparer<T> = (a:T, b:T) => boolean;
-
-    export type IValueComparer<T> = (a:T, b:T) => number;
 
     export type KeyValuePair<TKey, TValue> = {
         Key: TKey;
