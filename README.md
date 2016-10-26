@@ -65,4 +65,4 @@ To get a new hashcode for an object, call the method with parameter 'ture'. But 
 
 ### Equals
 
-If you inherit from abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide wether it equals to the other. 
+If you inherit from abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other. 
