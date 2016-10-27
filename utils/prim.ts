@@ -19,10 +19,11 @@
 
     function GetVersion(): string {
         var Major = 1;
-        var Build = 4;
+        var Sub = 4;
+        var Build = 1;
         var Revision = 0;
 
-        return Major + '.' + Build + '.' + Revision;
+        return Major + '.' + Sub + '.' + Build + '.' + Revision;
     }
 
     export function Greetings() {
