@@ -631,8 +631,7 @@ var DotnetJs;
         var Major = 1;
         var Sub = 4;
         var Build = 1;
-        var Revision = 0;
-        return Major + '.' + Sub + '.' + Build + '.' + Revision;
+        return Major + '.' + Sub + '.' + Build;
     }
     function Greetings() {
         var version = GetVersion();
