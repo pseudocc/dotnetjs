@@ -226,9 +226,9 @@ declare module DotnetJs.Collections {
 declare module DotnetJs.Linq {
     function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
     class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
-        protected toResult: (item: TSource) => TResult;
+        protected toResult: (item: TSource, index: number) => TResult;
         protected source: Collections.IEnumerable<TSource>;
-        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult);
+        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource, index: number) => TResult);
         GetEnumerator(): Collections.IEnumerator<TResult>;
         Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate;
         Average(): number;
@@ -246,7 +246,10 @@ declare module DotnetJs.Linq {
         LastIndexOf(element: TResult): number;
         Max(comparer?: IComparer<TResult>): TResult;
         Min(comparer?: IComparer<TResult>): TResult;
+        Reverse(): LinqIntermediate<TResult, TResult>;
         Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
+        SequenceEqual(second: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TSource>): boolean;
+        SkipWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
         Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
         ToArray(): TResult[];
         ToList(): Collections.List<TResult>;
@@ -269,7 +272,10 @@ declare module DotnetJs.Linq {
     function Min<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
     function Range(start: number, count: number): LinqIntermediate<number, number>;
     function Repeat<TResult>(element: TResult, count: number): LinqIntermediate<TResult, TResult>;
+    function Reverse<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
     function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
+    function SequenceEqual<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): boolean;
+    function SkipWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
     function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[];
     function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource>;
     function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;

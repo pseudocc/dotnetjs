@@ -6,10 +6,10 @@
 
     export class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
 
-        protected toResult: (item: TSource) => TResult;
+        protected toResult: (item: TSource, index: number) => TResult;
         protected source: Collections.IEnumerable<TSource>;
 
-        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult) {
+        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource, index: number) => TResult) {
             this.source = source;
             this.toResult = func;
         }
@@ -82,8 +82,20 @@
             return Linq.Min(this, comparer);
         }
 
+        public Reverse(): LinqIntermediate<TResult, TResult> {
+            return Linq.Reverse(this);
+        }
+
         public Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes> {
             return Linq.Select(this, func);
+        }
+
+        public SequenceEqual(second: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TSource>): boolean {
+            return Linq.SequenceEqual(this, second);
+        }
+
+        public SkipWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult> {
+            return Linq.SkipWhile(this, predicate);
         }
 
         public Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult> {
@@ -101,24 +113,31 @@
 
     class LinqEnumerator<TSource, TResult> implements Collections.IEnumerator<TResult> {
 
-        private toResult: (item: TSource) => TResult;
+        private toResult: (item: TSource, index: number) => TResult;
+        private sourceIndex: number = -1;
         private enumerator: Collections.IEnumerator<TSource>;
 
-        constructor(source: Collections.IEnumerable<TSource>, toResult: (item: TSource) => TResult) {
+        constructor(source: Collections.IEnumerable<TSource>, toResult: (item: TSource, index: number) => TResult) {
             this.enumerator = source.GetEnumerator();
             this.toResult = toResult;
         }
 
-        public MoveNext(): boolean {
+        private SourceMoveNext(): boolean {
             var next = this.enumerator.MoveNext();
+            this.sourceIndex++;
+            return next;
+        }
+
+        public MoveNext(): boolean {
+            var next = this.SourceMoveNext();
             while (next && this.Current === DefaultDelegate.EmptyReturn) {
-                next = this.enumerator.MoveNext();
+                next = this.SourceMoveNext();
             }
             return next;
         }
 
         public get Current(): TResult {
-            return this.toResult(this.enumerator.Current);
+            return this.toResult(this.enumerator.Current, this.sourceIndex);
         }
 
         public Reset(): void {
@@ -360,12 +379,54 @@
         return linq;
     }
 
+    export function Reverse<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
+        if (source == null)
+            throw new ArgumentNullException('source');
+        var enumerator = source.GetEnumerator();
+        var result: TSource[] = [];
+        while (enumerator.MoveNext()) {
+            result.unshift(enumerator.Current);
+        }
+        return Linq.LinqStart(result);
+    }
+
     export function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult> {
         if (source == null)
             throw new ArgumentNullException('source');
         if (func == null)
             throw new ArgumentNullException('func');
         var linq = new LinqIntermediate<TSource, TResult>(source, func);
+        return linq;
+    }
+
+    export function SequenceEqual<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): boolean {
+        if (first == null)
+            throw new ArgumentNullException('first');
+        if (second == null)
+            throw new ArgumentNullException('second');
+        comparer = comparer || DefaultDelegate.EqualityComparer;
+        var fe = first.GetEnumerator();
+        var se = second.GetEnumerator();
+        while (fe.MoveNext()) {
+            if (!se.MoveNext())
+                return false;
+            if (!comparer(fe.Current, se.Current))
+                return false;
+        }
+        return !se.MoveNext();
+    }
+
+    export function SkipWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource> {
+        if (source == null)
+            throw new ArgumentNullException('source');
+        if (predicate == null)
+            throw new ArgumentNullException('predicate');
+        var func: (item: TSource, index: number) => TSource = (item, index) => {
+            if (predicate(item, index))
+                return DefaultDelegate.EmptyReturn;
+            return item;
+        };
+        var linq = new LinqIntermediate<TSource, TSource>(source, func);
         return linq;
     }
 
