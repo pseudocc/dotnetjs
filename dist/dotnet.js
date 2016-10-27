@@ -629,9 +629,10 @@ var DotnetJs;
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
         var Major = 1;
-        var Build = 4;
+        var Sub = 4;
+        var Build = 1;
         var Revision = 0;
-        return Major + '.' + Build + '.' + Revision;
+        return Major + '.' + Sub + '.' + Build + '.' + Revision;
     }
     function Greetings() {
         var version = GetVersion();
@@ -1078,8 +1079,17 @@ var DotnetJs;
             LinqIntermediate.prototype.Min = function (comparer) {
                 return Linq.Min(this, comparer);
             };
+            LinqIntermediate.prototype.Reverse = function () {
+                return Linq.Reverse(this);
+            };
             LinqIntermediate.prototype.Select = function (func) {
                 return Linq.Select(this, func);
+            };
+            LinqIntermediate.prototype.SequenceEqual = function (second, comparer) {
+                return Linq.SequenceEqual(this, second);
+            };
+            LinqIntermediate.prototype.SkipWhile = function (predicate) {
+                return Linq.SkipWhile(this, predicate);
             };
             LinqIntermediate.prototype.Where = function (predicate) {
                 return Linq.Where(this, predicate);
@@ -1095,19 +1105,25 @@ var DotnetJs;
         Linq.LinqIntermediate = LinqIntermediate;
         var LinqEnumerator = (function () {
             function LinqEnumerator(source, toResult) {
+                this.sourceIndex = -1;
                 this.enumerator = source.GetEnumerator();
                 this.toResult = toResult;
             }
-            LinqEnumerator.prototype.MoveNext = function () {
+            LinqEnumerator.prototype.SourceMoveNext = function () {
                 var next = this.enumerator.MoveNext();
+                this.sourceIndex++;
+                return next;
+            };
+            LinqEnumerator.prototype.MoveNext = function () {
+                var next = this.SourceMoveNext();
                 while (next && this.Current === DotnetJs.DefaultDelegate.EmptyReturn) {
-                    next = this.enumerator.MoveNext();
+                    next = this.SourceMoveNext();
                 }
                 return next;
             };
             Object.defineProperty(LinqEnumerator.prototype, "Current", {
                 get: function () {
-                    return this.toResult(this.enumerator.Current);
+                    return this.toResult(this.enumerator.Current, this.sourceIndex);
                 },
                 enumerable: true,
                 configurable: true
@@ -1355,6 +1371,17 @@ var DotnetJs;
             return linq;
         }
         Linq.Repeat = Repeat;
+        function Reverse(source) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var enumerator = source.GetEnumerator();
+            var result = [];
+            while (enumerator.MoveNext()) {
+                result.unshift(enumerator.Current);
+            }
+            return Linq.LinqStart(result);
+        }
+        Linq.Reverse = Reverse;
         function Select(source, func) {
             if (source == null)
                 throw new DotnetJs.ArgumentNullException('source');
@@ -1364,6 +1391,37 @@ var DotnetJs;
             return linq;
         }
         Linq.Select = Select;
+        function SequenceEqual(first, second, comparer) {
+            if (first == null)
+                throw new DotnetJs.ArgumentNullException('first');
+            if (second == null)
+                throw new DotnetJs.ArgumentNullException('second');
+            comparer = comparer || DotnetJs.DefaultDelegate.EqualityComparer;
+            var fe = first.GetEnumerator();
+            var se = second.GetEnumerator();
+            while (fe.MoveNext()) {
+                if (!se.MoveNext())
+                    return false;
+                if (!comparer(fe.Current, se.Current))
+                    return false;
+            }
+            return !se.MoveNext();
+        }
+        Linq.SequenceEqual = SequenceEqual;
+        function SkipWhile(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (predicate == null)
+                throw new DotnetJs.ArgumentNullException('predicate');
+            var func = function (item, index) {
+                if (predicate(item, index))
+                    return DotnetJs.DefaultDelegate.EmptyReturn;
+                return item;
+            };
+            var linq = new LinqIntermediate(source, func);
+            return linq;
+        }
+        Linq.SkipWhile = SkipWhile;
         function ToArray(source) {
             if (source == null)
                 throw new DotnetJs.ArgumentNullException('source');
