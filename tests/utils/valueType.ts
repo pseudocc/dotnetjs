@@ -1,4 +1,5 @@
 /// <reference path="../../dist/dotnet.d.ts" />
+console.log('--- valueType test ---');
 class Foo extends DotnetJs.ValueType {
     public PropertyA: number;
     public PropertyB: number;
