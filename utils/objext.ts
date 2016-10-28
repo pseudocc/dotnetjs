@@ -1,4 +1,6 @@
-﻿interface Object {
+﻿/// <reference path="errors.ts" />
+/// <reference path="valueType.ts" />
+interface Object {
     GetHashCode: Function;
     Equals: Function;
     readonly IsValueType: boolean;
