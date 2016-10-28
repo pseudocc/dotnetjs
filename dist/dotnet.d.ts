@@ -1,20 +1,29 @@
-/**
- *
- *  The MIT License (MIT)
- *  Copyright (c) 2016 Master Yu
- *  
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
- *  to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- *  and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
- *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
- *  IN THE SOFTWARE.
- *
-**/
+/// <reference path="../typings/node.d.ts" />
+declare module DotnetJs {
+    class NotImplementedExeption extends Error {
+        constructor(msg: string);
+    }
+    class UnknownExeption extends Error {
+        constructor();
+    }
+    class ArgumentException extends Error {
+        constructor(msg: string);
+    }
+    class ArgumentNullException extends Error {
+        constructor(msg: string);
+    }
+    class ArgumentOutOfRangeException extends Error {
+        constructor(msg: string);
+    }
+    class InvalidOperationException extends Error {
+        constructor(msg: string);
+    }
+}
+declare module DotnetJs {
+    abstract class ValueType {
+        GetHashCode(refresh?: boolean): number;
+    }
+}
 interface Object {
     GetHashCode: Function;
     Equals: Function;
@@ -51,26 +60,6 @@ declare module DotnetJs.Arrays {
     function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void;
     function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
     function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
-}
-declare module DotnetJs {
-    class NotImplementedExeption extends Error {
-        constructor(msg: string);
-    }
-    class UnknownExeption extends Error {
-        constructor();
-    }
-    class ArgumentException extends Error {
-        constructor(msg: string);
-    }
-    class ArgumentNullException extends Error {
-        constructor(msg: string);
-    }
-    class ArgumentOutOfRangeException extends Error {
-        constructor(msg: string);
-    }
-    class InvalidOperationException extends Error {
-        constructor(msg: string);
-    }
 }
 declare module DotnetJs.Collections {
     class LinkedList<T> implements ICollection<T> {
@@ -118,8 +107,34 @@ declare module DotnetJs.Collections {
     }
 }
 declare module DotnetJs {
+    class Version implements ICloneable, IComparable<Version>, IEquatable<Version> {
+        private major;
+        private minor;
+        private build;
+        private revision;
+        constructor(major?: number, minor?: number, build?: number, revision?: number);
+        Major: number;
+        Minor: number;
+        Build: number;
+        Revision: number;
+        Clone(): Version;
+        CompareTo(obj: Version): number;
+        Equals(obj: Version): boolean;
+        toString(): string;
+    }
+}
+declare module DotnetJs {
     interface IDisposable {
         Dispose(): void;
+    }
+    interface ICloneable {
+        Clone(): Object;
+    }
+    interface IComparable<T> {
+        CompareTo(first: T, second: T): number;
+    }
+    interface IEquatable<T> {
+        Equals(obj: T): boolean;
     }
     abstract class DefaultDelegate {
         static Predicate: () => boolean;
@@ -178,11 +193,12 @@ declare module DotnetJs.Collections {
     class Dictionary<TKey extends Object, TValue> implements IDictionary<TKey, TValue> {
         private buckets;
         private entries;
+        private keyComparer;
         private count;
         private version;
         private freeList;
         private freeCount;
-        constructor(capacity?: number);
+        constructor(capacity?: number, keyComparer?: IEqualityComparer<TKey>);
         readonly Count: number;
         readonly Entries: {
             hashCode?: number;
@@ -250,9 +266,11 @@ declare module DotnetJs.Linq {
         Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
         SequenceEqual(second: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TSource>): boolean;
         SkipWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
-        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
+        TakeWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
         ToArray(): TResult[];
+        ToDictionary<TKey, TElement>(keyValueSelector: (item: TResult) => Collections.KeyValuePair<TKey, TElement>): Collections.Dictionary<TKey, TElement>;
         ToList(): Collections.List<TResult>;
+        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
     }
     function Aggregate<TSource, TAccumulate>(source: Collections.IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate;
     function Average(source: Collections.IEnumerable<number>): number;
@@ -276,7 +294,9 @@ declare module DotnetJs.Linq {
     function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
     function SequenceEqual<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): boolean;
     function SkipWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
+    function TakeWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
     function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[];
+    function ToDictionary<TSource, TKey, TElement>(source: Collections.IEnumerable<TSource>, keyValueSelector: (item: TSource) => Collections.KeyValuePair<TKey, TElement>, keyComparer?: IEqualityComparer<TKey>): Collections.Dictionary<TKey, TElement>;
     function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource>;
     function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;
 }
@@ -318,9 +338,4 @@ declare module DotnetJs.Collections {
 declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
-}
-declare module DotnetJs {
-    abstract class ValueType {
-        GetHashCode(refresh?: boolean): number;
-    }
 }
