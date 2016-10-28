@@ -14,12 +14,15 @@ module DotnetJs.Collections {
             key?: TKey;
             value?: TValue;
         }[];
+        private keyComparer: IEqualityComparer<TKey>;
         private count: number;
         private version: number;
         private freeList: number;
         private freeCount: number;
 
-        constructor(capacity: number = 0) {
+        constructor(capacity?: number, keyComparer?: IEqualityComparer<TKey>) {
+            this.keyComparer = keyComparer;
+            capacity = capacity || 0; 
             if (capacity < 0)
                 throw new ArgumentOutOfRangeException('capacity < 0');
             if (capacity > 0)
@@ -140,7 +143,7 @@ module DotnetJs.Collections {
             if (key == null) {
                 throw new ArgumentNullException(key.toString());
             }
-            var comparer: IEqualityComparer<TKey> = DefaultDelegate.EqualityComparer;
+            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
             if (this.buckets != null) {
                 var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
                 for (var i: number = this.buckets[hashCode % this.buckets.length]; i >= 0; i = this.entries[i].next) {
@@ -192,7 +195,7 @@ module DotnetJs.Collections {
                 this.Initialize(0);
             var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
             var targetBucket: number = hashCode % this.buckets.length;
-            var comparer: IEqualityComparer<TKey> = DefaultDelegate.EqualityComparer;
+            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
             for (var i: number = this.buckets[targetBucket]; i >= 0; i = this.entries[i].next) {
                 if (this.entries[i].hashCode == hashCode && comparer(this.entries[i].key, key)) {
                     if (add) {
@@ -249,7 +252,7 @@ module DotnetJs.Collections {
             if (key == null) {
                 throw new ArgumentNullException('key');
             }
-            var comparer: IEqualityComparer<TKey> = DefaultDelegate.EqualityComparer;
+            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
             if (this.buckets != null) {
                 var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
                 var bucket: number = hashCode % this.buckets.length;
