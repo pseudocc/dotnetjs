@@ -49,7 +49,7 @@ Or use:
 
     Linq.Where(enumerable, ...).Select(...).ToArray();
     
-remember to use ```ToArray``` or ```ToList``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
+remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
 
 To do: more Linq method.
 
