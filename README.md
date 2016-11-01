@@ -47,7 +47,7 @@ DotnetJs uses similiar interface as it is in .Net Framework.
 If you are about to use complicated Linq Expressions, first make a instance of LinqIntermediate by using LinqStart:
 
 ```typescript
-var expression = Linq.LinqStart(enumerable);
+var expression = DotnetJs.Linq.LinqStart(enumerable);
 ```
     
 the enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
@@ -59,12 +59,10 @@ expression.Where(...).Select(...).ToArray();
 Or use:
 
 ```typescript
-Linq.Where(enumerable, ...).Select(...).ToArray();
+DotnetJs.Linq.Where(enumerable, ...).Select(...).ToArray();
 ```
-    
-remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
 
-To do: more Linq method.
+remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
 
 ### String Format
 
@@ -113,7 +111,11 @@ To get a new hashcode for an object, call the method with parameter 'ture'. But 
 
 ### Equals
 
-If you inherit from typescript abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other. 
+If you inherit from typescript abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other.
+
+### TODO
+
+More String extensions. 
 
 ## Contributors
 
