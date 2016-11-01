@@ -11,7 +11,8 @@
     "typescript",
     "dotnet",
     "collections",
-    "linq"
+    "linq",
+    "string-format"
   ],
   "homepage": "https://github.com/Master76/dotnetjs",
   "ignore": [
