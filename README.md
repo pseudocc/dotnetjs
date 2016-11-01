@@ -47,19 +47,19 @@ DotnetJs uses similiar interface as it is in .Net Framework.
 If you are about to use complicated Linq Expressions, first make a instance of LinqIntermediate by using LinqStart:
 
 ```typescript
-    var expression = Linq.LinqStart(enumerable);
+var expression = Linq.LinqStart(enumerable);
 ```
     
 the enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
 
 ```typescript
-    expression.Where(...).Select(...).ToArray();
+expression.Where(...).Select(...).ToArray();
 ```
 
 Or use:
 
 ```typescript
-    Linq.Where(enumerable, ...).Select(...).ToArray();
+Linq.Where(enumerable, ...).Select(...).ToArray();
 ```
     
 remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
@@ -72,17 +72,17 @@ The match case: ```{index[,alignment][:format]}```, with 2 optional parameters (
 
 1. index
 
-Index indicate the index of the object in the following parameter args[].
+    Index indicate the index of the object in the following parameter args[].
 
 2. alignment
 
-Alignment will do PadLeft or PadRight with spaces, if it is positive then do PadLeft, else do PadRight.
+    Alignment will do PadLeft or PadRight with spaces, if it is positive then do PadLeft, else do PadRight.
 
 3. format
 
-With the magic char ':', you can control the format of your toString method. Let's see the following example:
+    With the magic char ':', you can control the format of your toString method. Let's see the following example:
 
-```typescript
+    ```typescript
     class Foo {
         public bar: number;
         public toString(format: string) {
@@ -99,7 +99,7 @@ With the magic char ':', you can control the format of your toString method. Let
 
     console.log(String.Format('test Foo toString: {0:!}, {0:?}, {0,10}', foo));
     // output: test Foo toString: !65521, ?65521,      65521
-```
+    ```
 
 ### Indexer for the collections
 
