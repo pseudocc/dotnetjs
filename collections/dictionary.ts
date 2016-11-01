@@ -294,7 +294,7 @@ module DotnetJs.Collections {
 
     }
 
-    export class Enumerator<TKey extends Object, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
+    class Enumerator<TKey extends Object, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
         private hashTable: Dictionary<TKey, TValue>;
         private version: number;
         private index: number;

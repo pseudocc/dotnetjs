@@ -36,9 +36,9 @@ class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
 module DotnetJs.Arrays {
 
     export function Copy(sourceArray: any[], sourceIndex: number, destinationArray: any[], destinationIndex: number, length: number): void {
-        if (!sourceArray)
+        if (sourceArray == null)
             throw new ArgumentNullException('sourceArray');
-        if (!destinationArray)
+        if (destinationArray == null)
             throw new ArgumentNullException('destinationArray');
         for (var i = 0; i < length; i++) {
             destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
@@ -46,19 +46,18 @@ module DotnetJs.Arrays {
     }
 
     export function AddRange(array: any[], collection: any[], length?: number): void {
-        if (!array)
+        if (array == null)
             throw new ArgumentNullException('array');
-        if (!collection)
+        if (collection == null)
             throw new ArgumentNullException('collection');
-        if (!length)
-            length = collection.length;
+       length = length || collection.length;
         for (var i = 0; i < length; i++) {
             array.push(collection[i]);
         }
     }
 
     export function Clear(array: any[], freeIndex: number = 0, length?: number): void {
-        if (!array)
+        if (array == null)
             throw new ArgumentNullException('array');
         var restIndex: number = length ? freeIndex + length : array.length;
         var rest = array.length - restIndex;
@@ -73,7 +72,7 @@ module DotnetJs.Arrays {
     }
 
     export function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void {
-        if (!array)
+        if (array == null)
             throw new ArgumentNullException('array');
         index = index || 0;
         var end = count ? index + count : null;
@@ -85,7 +84,7 @@ module DotnetJs.Arrays {
     }
 
     export function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number {
-        if (!array)
+        if (array == null)
             throw new ArgumentNullException('array');
         startIndex = startIndex || 0;
         length = length || (array.length - startIndex);

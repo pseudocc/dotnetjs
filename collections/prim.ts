@@ -1,6 +1,4 @@
-﻿/// <reference path="linkedList.ts" />
-/// <reference path="../utils/prim.ts" />
-/// <reference path="linkedList.ts" />
+﻿/// <reference path="../utils/prim.ts" />
 
 module DotnetJs.Collections {
 
