@@ -114,3 +114,10 @@ To get a new hashcode for an object, call the method with parameter 'ture'. But 
 ### Equals
 
 If you inherit from typescript abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other. 
+
+## Contributors
+
+[Master76](https://github.com/Master76) Author
+
+[AsherWang](https://github.com/AsherWang) RegExp suport
+
