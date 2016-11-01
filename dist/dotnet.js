@@ -1,3 +1,20 @@
+/**
+ *
+ *  The MIT License (MIT)
+ *  Copyright (c) 2016 Master Yu
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+ *  to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *  and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *  
+ *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *  
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *  IN THE SOFTWARE.
+ *
+**/
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -190,9 +207,9 @@ var DotnetJs;
     var Arrays;
     (function (Arrays) {
         function Copy(sourceArray, sourceIndex, destinationArray, destinationIndex, length) {
-            if (!sourceArray)
+            if (sourceArray == null)
                 throw new DotnetJs.ArgumentNullException('sourceArray');
-            if (!destinationArray)
+            if (destinationArray == null)
                 throw new DotnetJs.ArgumentNullException('destinationArray');
             for (var i = 0; i < length; i++) {
                 destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
@@ -200,12 +217,11 @@ var DotnetJs;
         }
         Arrays.Copy = Copy;
         function AddRange(array, collection, length) {
-            if (!array)
+            if (array == null)
                 throw new DotnetJs.ArgumentNullException('array');
-            if (!collection)
+            if (collection == null)
                 throw new DotnetJs.ArgumentNullException('collection');
-            if (!length)
-                length = collection.length;
+            length = length || collection.length;
             for (var i = 0; i < length; i++) {
                 array.push(collection[i]);
             }
@@ -213,7 +229,7 @@ var DotnetJs;
         Arrays.AddRange = AddRange;
         function Clear(array, freeIndex, length) {
             if (freeIndex === void 0) { freeIndex = 0; }
-            if (!array)
+            if (array == null)
                 throw new DotnetJs.ArgumentNullException('array');
             var restIndex = length ? freeIndex + length : array.length;
             var rest = array.length - restIndex;
@@ -228,7 +244,7 @@ var DotnetJs;
         }
         Arrays.Clear = Clear;
         function Sort(array, index, count, comparison) {
-            if (!array)
+            if (array == null)
                 throw new DotnetJs.ArgumentNullException('array');
             index = index || 0;
             var end = count ? index + count : null;
@@ -240,7 +256,7 @@ var DotnetJs;
         }
         Arrays.Sort = Sort;
         function IndexOf(array, item, startIndex, length, comparer) {
-            if (!array)
+            if (array == null)
                 throw new DotnetJs.ArgumentNullException('array');
             startIndex = startIndex || 0;
             length = length || (array.length - startIndex);
@@ -266,348 +282,6 @@ var DotnetJs;
         }
         Arrays.LastIndexOf = LastIndexOf;
     })(Arrays = DotnetJs.Arrays || (DotnetJs.Arrays = {}));
-})(DotnetJs || (DotnetJs = {}));
-var DotnetJs;
-(function (DotnetJs) {
-    var Collections;
-    (function (Collections) {
-        var LinkedList = (function () {
-            function LinkedList(collection) {
-                this.count = 0;
-                this.version = 0;
-                if (collection == null) {
-                    return;
-                }
-                DotnetJs.Linq.ForEach(collection, function (item) {
-                    this.AddLast(item);
-                });
-            }
-            Object.defineProperty(LinkedList.prototype, "Count", {
-                get: function () {
-                    return this.count;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedList.prototype, "First", {
-                get: function () {
-                    return this.head;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedList.prototype, "Last", {
-                get: function () {
-                    return this.head == null ? null : this.head.prev;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedList.prototype, "Version", {
-                get: function () {
-                    return this.version;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedList.prototype, "IsReadOnly", {
-                get: function () {
-                    return false;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            LinkedList.prototype.Add = function (value) {
-                this.AddLast(value);
-            };
-            LinkedList.prototype.AddAfter = function (node, value) {
-                this.ValidateNode(node);
-                var result = new LinkedListNode(node.list, value);
-                this.InternalInsertNodeBefore(node.next, result);
-                return result;
-            };
-            LinkedList.prototype.AddBefore = function (node, value) {
-                this.ValidateNode(node);
-                var result = new LinkedListNode(node.list, value);
-                this.InternalInsertNodeBefore(node, result);
-                if (node == this.head) {
-                    this.head = result;
-                }
-                return result;
-            };
-            LinkedList.prototype.AddFirst = function (value) {
-                var result = new LinkedListNode(this, value);
-                if (this.head == null) {
-                    this.InternalInsertNodeToEmptyList(result);
-                }
-                else {
-                    this.InternalInsertNodeBefore(this.head, result);
-                    this.head = result;
-                }
-                return result;
-            };
-            LinkedList.prototype.AddLast = function (value) {
-                var result = new LinkedListNode(this, value);
-                if (this.head == null) {
-                    this.InternalInsertNodeToEmptyList(result);
-                }
-                else {
-                    this.InternalInsertNodeBefore(this.head, result);
-                }
-                return result;
-            };
-            LinkedList.prototype.Clear = function () {
-                var current = this.head;
-                while (current != null) {
-                    var temp = current;
-                    current = current.Next;
-                    temp.Invalidate();
-                }
-                this.head = null;
-                this.count = 0;
-                this.version++;
-            };
-            LinkedList.prototype.Contains = function (value) {
-                return this.Find(value) != null;
-            };
-            LinkedList.prototype.CopyTo = function (array, index) {
-                if (array == null) {
-                    throw new DotnetJs.ArgumentNullException('array');
-                }
-                if (index < 0) {
-                    throw new DotnetJs.ArgumentOutOfRangeException('index < 0');
-                }
-                if (index > array.length) {
-                    throw new DotnetJs.ArgumentOutOfRangeException('index > array.length');
-                }
-                if (array.length - index < this.Count) {
-                    throw new DotnetJs.ArgumentException('insufficient space');
-                }
-                var node = this.head;
-                if (node != null) {
-                    do {
-                        array[index++] = node.item;
-                        node = node.next;
-                    } while (node != this.head);
-                }
-            };
-            LinkedList.prototype.Find = function (value) {
-                var node = this.head;
-                var comparer = DotnetJs.DefaultDelegate.EqualityComparer;
-                if (node != null) {
-                    if (value != null) {
-                        do {
-                            if (comparer(node.item, value)) {
-                                return node;
-                            }
-                            node = node.next;
-                        } while (node != this.head);
-                    }
-                    else {
-                        do {
-                            if (node.item == null) {
-                                return node;
-                            }
-                            node = node.next;
-                        } while (node != this.head);
-                    }
-                }
-                return null;
-            };
-            LinkedList.prototype.FindLast = function (value) {
-                if (this.head == null)
-                    return null;
-                var last = this.head.prev;
-                var node = last;
-                var comparer = DotnetJs.DefaultDelegate.EqualityComparer;
-                if (node != null) {
-                    if (value != null) {
-                        do {
-                            if (comparer(node.item, value)) {
-                                return node;
-                            }
-                            node = node.prev;
-                        } while (node != last);
-                    }
-                    else {
-                        do {
-                            if (node.item == null) {
-                                return node;
-                            }
-                            node = node.prev;
-                        } while (node != last);
-                    }
-                }
-                return null;
-            };
-            LinkedList.prototype.GetEnumerator = function () {
-                return new Enumerator(this);
-            };
-            LinkedList.prototype.Remove = function (value) {
-                var node = this.Find(value);
-                if (node != null) {
-                    this.InternalRemoveNode(node);
-                    return true;
-                }
-                return false;
-            };
-            LinkedList.prototype.RemoveFirst = function () {
-                if (this.head == null) {
-                    throw new DotnetJs.InvalidOperationException('linked list is empty');
-                }
-                this.InternalRemoveNode(this.head);
-            };
-            LinkedList.prototype.RemoveLast = function () {
-                if (this.head == null) {
-                    throw new DotnetJs.InvalidOperationException('linked list is empty');
-                }
-                this.InternalRemoveNode(this.head.prev);
-            };
-            LinkedList.prototype.InternalInsertNodeBefore = function (node, newNode) {
-                newNode.next = node;
-                newNode.prev = node.prev;
-                node.prev.next = newNode;
-                node.prev = newNode;
-                this.version++;
-                this.count++;
-            };
-            LinkedList.prototype.InternalInsertNodeToEmptyList = function (newNode) {
-                newNode.next = newNode;
-                newNode.prev = newNode;
-                this.head = newNode;
-                this.version++;
-                this.count++;
-            };
-            LinkedList.prototype.InternalRemoveNode = function (node) {
-                if (node.next == node) {
-                    this.head = null;
-                }
-                else {
-                    node.next.prev = node.prev;
-                    node.prev.next = node.next;
-                    if (this.head == node) {
-                        this.head = node.next;
-                    }
-                }
-                node.Invalidate();
-                this.count--;
-                this.version++;
-            };
-            LinkedList.prototype.ValidateNewNode = function (node) {
-                if (node == null) {
-                    throw new DotnetJs.ArgumentNullException('node');
-                }
-                if (node.list != null) {
-                    throw new DotnetJs.InvalidOperationException('node has attached to another list');
-                }
-            };
-            LinkedList.prototype.ValidateNode = function (node) {
-                if (node == null) {
-                    throw new DotnetJs.ArgumentNullException('node');
-                }
-                if (node.list != this) {
-                    throw new DotnetJs.InvalidOperationException('node linked to another list');
-                }
-            };
-            Object.defineProperty(LinkedList.prototype, "IsSynchronized", {
-                get: function () {
-                    return false;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return LinkedList;
-        }());
-        Collections.LinkedList = LinkedList;
-        var LinkedListNode = (function () {
-            function LinkedListNode(list, value) {
-                if (list === void 0) { list = null; }
-                this.list = list;
-                this.item = value;
-            }
-            Object.defineProperty(LinkedListNode.prototype, "List", {
-                get: function () {
-                    return this.list;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedListNode.prototype, "Next", {
-                get: function () {
-                    return this.next == null || this.next == this.list.head ? null : this.next;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedListNode.prototype, "Previous", {
-                get: function () {
-                    return this.prev == null || this == this.list.head ? null : this.prev;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(LinkedListNode.prototype, "Value", {
-                get: function () {
-                    return this.item;
-                },
-                set: function (value) {
-                    this.item = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            LinkedListNode.prototype.Invalidate = function () {
-                this.list = null;
-                this.next = null;
-                this.prev = null;
-            };
-            return LinkedListNode;
-        }());
-        Collections.LinkedListNode = LinkedListNode;
-        var Enumerator = (function () {
-            function Enumerator(list) {
-                this._list = list;
-                this._version = list.Version;
-                this._node = list.head;
-                this._current = null;
-                this._index = 0;
-            }
-            Object.defineProperty(Enumerator.prototype, "Current", {
-                get: function () {
-                    return this._current;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Enumerator.prototype.MoveNext = function () {
-                if (this._version != this._list.Version) {
-                    throw new DotnetJs.InvalidOperationException('version failed');
-                }
-                if (this._node == null) {
-                    this._index = this._list.Count + 1;
-                    return false;
-                }
-                ++this._index;
-                this._current = this._node.item;
-                this._node = this._node.next;
-                if (this._node == this._list.head) {
-                    this._node = null;
-                }
-                return true;
-            };
-            Enumerator.prototype.Reset = function () {
-                if (this._version != this._list.Version) {
-                    throw new DotnetJs.InvalidOperationException('version failed');
-                }
-                this._current = null;
-                this._node = this._list.head;
-                this._index = 0;
-            };
-            Enumerator.prototype.Dispose = function () {
-            };
-            return Enumerator;
-        }());
-    })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
 })(DotnetJs || (DotnetJs = {}));
 var DotnetJs;
 (function (DotnetJs) {
@@ -726,7 +400,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 4, 2, 14);
+        return new DotnetJs.Version(1, 5, 0, 20);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1075,7 +749,6 @@ var DotnetJs;
             };
             return Enumerator;
         }());
-        Collections.Enumerator = Enumerator;
         var HashHelpers = (function () {
             function HashHelpers() {
             }
@@ -1107,6 +780,348 @@ var DotnetJs;
                 2050765853, HashHelpers.MaxPrimeArrayLength];
             HashHelpers.MaxPrimeArrayLength = 0x7FEFFFFD;
             return HashHelpers;
+        }());
+    })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
+})(DotnetJs || (DotnetJs = {}));
+var DotnetJs;
+(function (DotnetJs) {
+    var Collections;
+    (function (Collections) {
+        var LinkedList = (function () {
+            function LinkedList(collection) {
+                this.count = 0;
+                this.version = 0;
+                if (collection == null) {
+                    return;
+                }
+                DotnetJs.Linq.ForEach(collection, function (item) {
+                    this.AddLast(item);
+                });
+            }
+            Object.defineProperty(LinkedList.prototype, "Count", {
+                get: function () {
+                    return this.count;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedList.prototype, "First", {
+                get: function () {
+                    return this.head;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedList.prototype, "Last", {
+                get: function () {
+                    return this.head == null ? null : this.head.prev;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedList.prototype, "Version", {
+                get: function () {
+                    return this.version;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedList.prototype, "IsReadOnly", {
+                get: function () {
+                    return false;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            LinkedList.prototype.Add = function (value) {
+                this.AddLast(value);
+            };
+            LinkedList.prototype.AddAfter = function (node, value) {
+                this.ValidateNode(node);
+                var result = new LinkedListNode(node.list, value);
+                this.InternalInsertNodeBefore(node.next, result);
+                return result;
+            };
+            LinkedList.prototype.AddBefore = function (node, value) {
+                this.ValidateNode(node);
+                var result = new LinkedListNode(node.list, value);
+                this.InternalInsertNodeBefore(node, result);
+                if (node == this.head) {
+                    this.head = result;
+                }
+                return result;
+            };
+            LinkedList.prototype.AddFirst = function (value) {
+                var result = new LinkedListNode(this, value);
+                if (this.head == null) {
+                    this.InternalInsertNodeToEmptyList(result);
+                }
+                else {
+                    this.InternalInsertNodeBefore(this.head, result);
+                    this.head = result;
+                }
+                return result;
+            };
+            LinkedList.prototype.AddLast = function (value) {
+                var result = new LinkedListNode(this, value);
+                if (this.head == null) {
+                    this.InternalInsertNodeToEmptyList(result);
+                }
+                else {
+                    this.InternalInsertNodeBefore(this.head, result);
+                }
+                return result;
+            };
+            LinkedList.prototype.Clear = function () {
+                var current = this.head;
+                while (current != null) {
+                    var temp = current;
+                    current = current.Next;
+                    temp.Invalidate();
+                }
+                this.head = null;
+                this.count = 0;
+                this.version++;
+            };
+            LinkedList.prototype.Contains = function (value) {
+                return this.Find(value) != null;
+            };
+            LinkedList.prototype.CopyTo = function (array, index) {
+                if (array == null) {
+                    throw new DotnetJs.ArgumentNullException('array');
+                }
+                if (index < 0) {
+                    throw new DotnetJs.ArgumentOutOfRangeException('index < 0');
+                }
+                if (index > array.length) {
+                    throw new DotnetJs.ArgumentOutOfRangeException('index > array.length');
+                }
+                if (array.length - index < this.Count) {
+                    throw new DotnetJs.ArgumentException('insufficient space');
+                }
+                var node = this.head;
+                if (node != null) {
+                    do {
+                        array[index++] = node.item;
+                        node = node.next;
+                    } while (node != this.head);
+                }
+            };
+            LinkedList.prototype.Find = function (value) {
+                var node = this.head;
+                var comparer = DotnetJs.DefaultDelegate.EqualityComparer;
+                if (node != null) {
+                    if (value != null) {
+                        do {
+                            if (comparer(node.item, value)) {
+                                return node;
+                            }
+                            node = node.next;
+                        } while (node != this.head);
+                    }
+                    else {
+                        do {
+                            if (node.item == null) {
+                                return node;
+                            }
+                            node = node.next;
+                        } while (node != this.head);
+                    }
+                }
+                return null;
+            };
+            LinkedList.prototype.FindLast = function (value) {
+                if (this.head == null)
+                    return null;
+                var last = this.head.prev;
+                var node = last;
+                var comparer = DotnetJs.DefaultDelegate.EqualityComparer;
+                if (node != null) {
+                    if (value != null) {
+                        do {
+                            if (comparer(node.item, value)) {
+                                return node;
+                            }
+                            node = node.prev;
+                        } while (node != last);
+                    }
+                    else {
+                        do {
+                            if (node.item == null) {
+                                return node;
+                            }
+                            node = node.prev;
+                        } while (node != last);
+                    }
+                }
+                return null;
+            };
+            LinkedList.prototype.GetEnumerator = function () {
+                return new Enumerator(this);
+            };
+            LinkedList.prototype.Remove = function (value) {
+                var node = this.Find(value);
+                if (node != null) {
+                    this.InternalRemoveNode(node);
+                    return true;
+                }
+                return false;
+            };
+            LinkedList.prototype.RemoveFirst = function () {
+                if (this.head == null) {
+                    throw new DotnetJs.InvalidOperationException('linked list is empty');
+                }
+                this.InternalRemoveNode(this.head);
+            };
+            LinkedList.prototype.RemoveLast = function () {
+                if (this.head == null) {
+                    throw new DotnetJs.InvalidOperationException('linked list is empty');
+                }
+                this.InternalRemoveNode(this.head.prev);
+            };
+            LinkedList.prototype.InternalInsertNodeBefore = function (node, newNode) {
+                newNode.next = node;
+                newNode.prev = node.prev;
+                node.prev.next = newNode;
+                node.prev = newNode;
+                this.version++;
+                this.count++;
+            };
+            LinkedList.prototype.InternalInsertNodeToEmptyList = function (newNode) {
+                newNode.next = newNode;
+                newNode.prev = newNode;
+                this.head = newNode;
+                this.version++;
+                this.count++;
+            };
+            LinkedList.prototype.InternalRemoveNode = function (node) {
+                if (node.next == node) {
+                    this.head = null;
+                }
+                else {
+                    node.next.prev = node.prev;
+                    node.prev.next = node.next;
+                    if (this.head == node) {
+                        this.head = node.next;
+                    }
+                }
+                node.Invalidate();
+                this.count--;
+                this.version++;
+            };
+            LinkedList.prototype.ValidateNewNode = function (node) {
+                if (node == null) {
+                    throw new DotnetJs.ArgumentNullException('node');
+                }
+                if (node.list != null) {
+                    throw new DotnetJs.InvalidOperationException('node has attached to another list');
+                }
+            };
+            LinkedList.prototype.ValidateNode = function (node) {
+                if (node == null) {
+                    throw new DotnetJs.ArgumentNullException('node');
+                }
+                if (node.list != this) {
+                    throw new DotnetJs.InvalidOperationException('node linked to another list');
+                }
+            };
+            Object.defineProperty(LinkedList.prototype, "IsSynchronized", {
+                get: function () {
+                    return false;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return LinkedList;
+        }());
+        Collections.LinkedList = LinkedList;
+        var LinkedListNode = (function () {
+            function LinkedListNode(list, value) {
+                if (list === void 0) { list = null; }
+                this.list = list;
+                this.item = value;
+            }
+            Object.defineProperty(LinkedListNode.prototype, "List", {
+                get: function () {
+                    return this.list;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedListNode.prototype, "Next", {
+                get: function () {
+                    return this.next == null || this.next == this.list.head ? null : this.next;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedListNode.prototype, "Previous", {
+                get: function () {
+                    return this.prev == null || this == this.list.head ? null : this.prev;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LinkedListNode.prototype, "Value", {
+                get: function () {
+                    return this.item;
+                },
+                set: function (value) {
+                    this.item = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            LinkedListNode.prototype.Invalidate = function () {
+                this.list = null;
+                this.next = null;
+                this.prev = null;
+            };
+            return LinkedListNode;
+        }());
+        Collections.LinkedListNode = LinkedListNode;
+        var Enumerator = (function () {
+            function Enumerator(list) {
+                this._list = list;
+                this._version = list.Version;
+                this._node = list.head;
+                this._current = null;
+                this._index = 0;
+            }
+            Object.defineProperty(Enumerator.prototype, "Current", {
+                get: function () {
+                    return this._current;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Enumerator.prototype.MoveNext = function () {
+                if (this._version != this._list.Version) {
+                    throw new DotnetJs.InvalidOperationException('version failed');
+                }
+                if (this._node == null) {
+                    this._index = this._list.Count + 1;
+                    return false;
+                }
+                ++this._index;
+                this._current = this._node.item;
+                this._node = this._node.next;
+                if (this._node == this._list.head) {
+                    this._node = null;
+                }
+                return true;
+            };
+            Enumerator.prototype.Reset = function () {
+                if (this._version != this._list.Version) {
+                    throw new DotnetJs.InvalidOperationException('version failed');
+                }
+                this._current = null;
+                this._node = this._list.head;
+                this._index = 0;
+            };
+            Enumerator.prototype.Dispose = function () {
+            };
+            return Enumerator;
         }());
     })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
 })(DotnetJs || (DotnetJs = {}));
@@ -1917,3 +1932,135 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
+var StringEnumerator = (function () {
+    function StringEnumerator(str) {
+        this.source = str;
+        this.index = 0;
+        this.current = null;
+    }
+    StringEnumerator.prototype.MoveNext = function () {
+        if (this.index >= this.source.length)
+            return false;
+        this.current = this.source.charCodeAt(this.index++);
+        return true;
+    };
+    Object.defineProperty(StringEnumerator.prototype, "Current", {
+        get: function () {
+            return this.current;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    StringEnumerator.prototype.Reset = function () {
+        this.index = 0;
+    };
+    StringEnumerator.prototype.Dispose = function () {
+    };
+    return StringEnumerator;
+}());
+(function () {
+    String.Empty = "";
+    Object.freeze(String.Empty);
+    String.Format = function (value) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        return value.replace(/{(\d+(,\d+)?(:[^\t\r\n\{\}]+)?)}/g, function (match, content) {
+            var exp = DotnetJs.Linq.LinqStart(content);
+            var colon = exp.IndexOf(':'.charCodeAt(0));
+            var comma = exp.IndexOf(','.charCodeAt(0));
+            var index;
+            var format;
+            var alignment;
+            var getNumber = function (left, right) {
+                var result = content.substring(left, right);
+                return parseInt(result);
+            };
+            var tryGetString = function (i, f) {
+                if (i >= args.length)
+                    throw new DotnetJs.ArgumentOutOfRangeException('args[' + i + ']');
+                var result = args[index];
+                if (typeof result === 'undefined')
+                    return 'undefined';
+                if (result == null)
+                    return null;
+                if (f == null)
+                    return result.toString();
+                return result.toString.apply(result, [f]);
+            };
+            if (colon > comma && comma != -1)
+                throw new DotnetJs.ArgumentException('malformated');
+            if (colon == -1 && comma == -1) {
+                index = parseInt(content);
+                return tryGetString(index);
+            }
+            if (colon != -1) {
+                format = content.substring(colon + 1);
+                index = (comma == -1) ? getNumber(0, colon) : getNumber(0, comma);
+            }
+            if (comma != -1) {
+                index = index || getNumber(0, comma);
+                alignment = (colon == -1) ? getNumber(comma + 1) : getNumber(comma + 1, colon);
+            }
+            var result = tryGetString(index, format);
+            if (alignment == null)
+                return result;
+            return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
+        });
+    };
+    String.IsNullOrEmpty = function (value) {
+        if (value == null || value == String.Empty)
+            return true;
+        return false;
+    };
+    String.IsNullOrWhiteSpace = function (value) {
+        if (value == null)
+            return true;
+        return value.replace(/\s/g, String.Empty).length < 1;
+    };
+    function internalPad(spaceLength, paddingChar) {
+        paddingChar = paddingChar || ' ';
+        if (typeof paddingChar === 'string') {
+            if (paddingChar.length > 1)
+                throw new DotnetJs.ArgumentException('paddingChar is not a char, but a string.');
+            paddingChar = paddingChar.charCodeAt(0);
+        }
+        var spaces = DotnetJs.Linq.Repeat(paddingChar, spaceLength).ToArray();
+        return String.fromCharCode.apply(null, spaces);
+    }
+    String.prototype.GetEnumerator = function () {
+        return new StringEnumerator(this);
+    };
+    String.prototype.PadLeft = function (totalLength, paddingChar) {
+        if (totalLength == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (totalLength < 0)
+            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
+        var me = this;
+        var spaceLength = totalLength - me.length;
+        return internalPad(spaceLength, paddingChar) + me;
+    };
+    String.prototype.PadRight = function (totalLength, paddingChar) {
+        if (totalLength == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (totalLength < 0)
+            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
+        var me = this;
+        var spaceLength = totalLength - me.length;
+        return me + internalPad(spaceLength, paddingChar);
+    };
+    String.prototype.StartsWith = function (value, ignoreCase) {
+        if (value == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        var me = this;
+        if (me.length < value.length)
+            return false;
+        var sub = me.substring(0, value.length);
+        if (ignoreCase) {
+            sub = sub.toLowerCase();
+            value = value.toLowerCase();
+        }
+        return sub === value;
+    };
+})();

@@ -66,6 +66,41 @@ remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the e
 
 To do: more Linq method.
 
+### String Format
+
+The match case: ```{index[,alignment][:format]}```, with 2 optional parameters (alignment and format).
+
+1. index
+
+Index indicate the index of the object in the following parameter args[].
+
+2. alignment
+
+Alignment will do PadLeft or PadRight with spaces, if it is positive then do PadLeft, else do PadRight.
+
+3. format
+
+With the magic char ':', you can control the format of your toString method. Let's see the following example:
+
+```typescript
+    class Foo {
+        public bar: number;
+        public toString(format: string) {
+            if (format == null)
+                return this.bar.toString();
+            if (format == '!')
+                return '!' + this.bar;
+            return '?' + this.bar;
+        }
+    }
+
+    var foo = new Foo();
+    foo.bar = 65521;
+
+    console.log(String.Format('test Foo toString: {0:!}, {0:?}, {0,10}', foo));
+    // output: test Foo toString: !65521, ?65521,      65521
+```
+
 ### Indexer for the collections
 
 As there isn't have a way to implement indexer in typescript. You have to call the element of List or IDictionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.

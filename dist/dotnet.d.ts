@@ -1,4 +1,20 @@
-/// <reference path="../typings/node.d.ts" />
+/**
+ *
+ *  The MIT License (MIT)
+ *  Copyright (c) 2016 Master Yu
+ *  
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+ *  to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ *  and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *  
+ *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *  
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ *  IN THE SOFTWARE.
+ *
+**/
 declare module DotnetJs {
     class NotImplementedExeption extends Error {
         constructor(msg: string);
@@ -60,51 +76,6 @@ declare module DotnetJs.Arrays {
     function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void;
     function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
     function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
-}
-declare module DotnetJs.Collections {
-    class LinkedList<T> implements ICollection<T> {
-        head: LinkedListNode<T>;
-        private count;
-        private version;
-        constructor(collection?: IEnumerable<T>);
-        readonly Count: number;
-        readonly First: LinkedListNode<T>;
-        readonly Last: LinkedListNode<T>;
-        readonly Version: number;
-        readonly IsReadOnly: boolean;
-        Add(value: T): void;
-        AddAfter(node: LinkedListNode<T>, value: T): LinkedListNode<T>;
-        AddBefore(node: LinkedListNode<T>, value: T): LinkedListNode<T>;
-        AddFirst(value: T): LinkedListNode<T>;
-        AddLast(value: T): LinkedListNode<T>;
-        Clear(): void;
-        Contains(value: T): boolean;
-        CopyTo(array: T[], index: number): void;
-        Find(value: T): LinkedListNode<T>;
-        FindLast(value: T): LinkedListNode<T>;
-        GetEnumerator(): IEnumerator<T>;
-        Remove(value: T): boolean;
-        RemoveFirst(): void;
-        RemoveLast(): void;
-        private InternalInsertNodeBefore(node, newNode);
-        private InternalInsertNodeToEmptyList(newNode);
-        InternalRemoveNode(node: LinkedListNode<T>): void;
-        ValidateNewNode(node: LinkedListNode<T>): void;
-        ValidateNode(node: LinkedListNode<T>): void;
-        readonly IsSynchronized: boolean;
-    }
-    class LinkedListNode<T> {
-        list: LinkedList<T>;
-        next: LinkedListNode<T>;
-        prev: LinkedListNode<T>;
-        item: T;
-        constructor(list: LinkedList<T>, value: T);
-        readonly List: LinkedList<T>;
-        readonly Next: LinkedListNode<T>;
-        readonly Previous: LinkedListNode<T>;
-        Value: T;
-        Invalidate(): void;
-    }
 }
 declare module DotnetJs {
     class Version implements ICloneable, IComparable<Version>, IEquatable<Version> {
@@ -227,16 +198,50 @@ declare module DotnetJs.Collections {
         Remove(key: TKey): TValue;
         TryGetValue(key: TKey, out: OutParam<TValue>): boolean;
     }
-    class Enumerator<TKey extends Object, TValue> implements IEnumerator<KeyValuePair<TKey, TValue>> {
-        private hashTable;
+}
+declare module DotnetJs.Collections {
+    class LinkedList<T> implements ICollection<T> {
+        head: LinkedListNode<T>;
+        private count;
         private version;
-        private index;
-        private current;
-        constructor(hashTable: Dictionary<TKey, TValue>);
-        MoveNext(): boolean;
-        readonly Current: KeyValuePair<TKey, TValue>;
-        Reset(): void;
-        Dispose(): void;
+        constructor(collection?: IEnumerable<T>);
+        readonly Count: number;
+        readonly First: LinkedListNode<T>;
+        readonly Last: LinkedListNode<T>;
+        readonly Version: number;
+        readonly IsReadOnly: boolean;
+        Add(value: T): void;
+        AddAfter(node: LinkedListNode<T>, value: T): LinkedListNode<T>;
+        AddBefore(node: LinkedListNode<T>, value: T): LinkedListNode<T>;
+        AddFirst(value: T): LinkedListNode<T>;
+        AddLast(value: T): LinkedListNode<T>;
+        Clear(): void;
+        Contains(value: T): boolean;
+        CopyTo(array: T[], index: number): void;
+        Find(value: T): LinkedListNode<T>;
+        FindLast(value: T): LinkedListNode<T>;
+        GetEnumerator(): IEnumerator<T>;
+        Remove(value: T): boolean;
+        RemoveFirst(): void;
+        RemoveLast(): void;
+        private InternalInsertNodeBefore(node, newNode);
+        private InternalInsertNodeToEmptyList(newNode);
+        InternalRemoveNode(node: LinkedListNode<T>): void;
+        ValidateNewNode(node: LinkedListNode<T>): void;
+        ValidateNode(node: LinkedListNode<T>): void;
+        readonly IsSynchronized: boolean;
+    }
+    class LinkedListNode<T> {
+        list: LinkedList<T>;
+        next: LinkedListNode<T>;
+        prev: LinkedListNode<T>;
+        item: T;
+        constructor(list: LinkedList<T>, value: T);
+        readonly List: LinkedList<T>;
+        readonly Next: LinkedListNode<T>;
+        readonly Previous: LinkedListNode<T>;
+        Value: T;
+        Invalidate(): void;
     }
 }
 declare module DotnetJs.Linq {
@@ -338,4 +343,25 @@ declare module DotnetJs.Collections {
 declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
+}
+interface String extends DotnetJs.Collections.IEnumerable<number> {
+    PadLeft(totalLength: number, paddingChar?: number | string): string;
+    PadRight(totalLength: number, paddingChar?: number | string): string;
+    StartsWith(value: string, ignoreCase?: boolean): any;
+}
+interface StringConstructor {
+    Empty: string;
+    Format(value: string, ...args: any[]): string;
+    IsNullOrEmpty(value: string): boolean;
+    IsNullOrWhiteSpace(value: string): boolean;
+}
+declare class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
+    private source;
+    private index;
+    private current;
+    constructor(str: String);
+    MoveNext(): boolean;
+    readonly Current: number;
+    Reset(): void;
+    Dispose(): void;
 }

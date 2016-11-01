@@ -1,4 +1,5 @@
 ﻿/// <reference path="version.ts" />
+
 module DotnetJs {
 
     export interface IDisposable {
@@ -31,7 +32,7 @@ module DotnetJs {
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 4, 2, 14);
+        return new Version(1, 5, 0, 20);
     }
 
     export function Greetings() {
