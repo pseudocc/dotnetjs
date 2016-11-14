@@ -74,6 +74,7 @@ interface NumberConstructor {
     }
 
     function FixedPoint(sign: string, value: number, digits?: number): string {
+        digits = digits || 2;
         return sign + value.toFixed(digits);
     }
 

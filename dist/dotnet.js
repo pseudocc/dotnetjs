@@ -2151,6 +2151,7 @@ var StringEnumerator = (function () {
         return sign + exp.substring(0, ei - 1) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
     }
     function FixedPoint(sign, value, digits) {
+        digits = digits || 2;
         return sign + value.toFixed(digits);
     }
     function Numeric(sign, value, digits) {
