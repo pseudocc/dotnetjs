@@ -22,10 +22,18 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var DotnetJs;
 (function (DotnetJs) {
+    var FormatException = (function (_super) {
+        __extends(FormatException, _super);
+        function FormatException(msg) {
+            _super.call(this, 'Format specifier was invalid. ' + msg || '');
+        }
+        return FormatException;
+    }(Error));
+    DotnetJs.FormatException = FormatException;
     var NotImplementedExeption = (function (_super) {
         __extends(NotImplementedExeption, _super);
-        function NotImplementedExeption(msg) {
-            _super.call(this, 'NotImplementedExeption: ' + msg);
+        function NotImplementedExeption(methodName) {
+            _super.call(this, (methodName || 'Method') + ' Not Implemented.');
         }
         return NotImplementedExeption;
     }(Error));
@@ -400,7 +408,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 1, 21);
+        return new DotnetJs.Version(1, 5, 3, 35);
     }
     function Greetings() {
         var version = GetVersion();
@@ -696,10 +704,9 @@ var DotnetJs;
                     throw new DotnetJs.ArgumentNullException('out parameter is null');
                 var i = this.FindEntry(key);
                 if (i >= 0) {
-                    out.Value = this.entries[i].value;
+                    out(this.entries[i].value);
                     return true;
                 }
-                delete out.Value;
                 return false;
             };
             return Dictionary;
@@ -1966,7 +1973,7 @@ var StringEnumerator = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
-        return value.replace(/{(\d+(,\d+)?(:[^\t\r\n\{\}]+)?)}/g, function (match, content) {
+        return value.replace(/{(\d+(,[-\d]+)?(:[^\t\r\n\{\}]+)?)}/g, function (match, content) {
             var exp = DotnetJs.Linq.LinqStart(content);
             var colon = exp.IndexOf(':'.charCodeAt(0));
             var comma = exp.IndexOf(','.charCodeAt(0));
@@ -2008,6 +2015,19 @@ var StringEnumerator = (function () {
                 return result;
             return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
         });
+    };
+    String.Join = function (seperator) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (seperator == null)
+            throw new DotnetJs.ArgumentNullException('seperator');
+        if (args.length == 0)
+            throw new DotnetJs.ArgumentException('args length is zerp');
+        var result = "";
+        args.forEach(function (value) { return result += value; });
+        return result;
     };
     String.IsNullOrEmpty = function (value) {
         if (value == null || value == String.Empty)
@@ -2063,4 +2083,114 @@ var StringEnumerator = (function () {
         }
         return sub === value;
     };
+})();
+(function () {
+    console.writeLine = function (format) {
+        if (format == null) {
+            console.log();
+            return;
+        }
+        var msg = String.Format.apply(null, arguments);
+        console.log(msg);
+    };
+})();
+(function () {
+    var expressions = {};
+    var toString = Number.prototype.toString;
+    Number.TryParseInt = TryParseInt;
+    Number.prototype.toString = function (format) {
+        if (format == null || typeof format == 'number' || TryParseInt(format, function (out) { return format = out; }))
+            return toString.apply(this, [format]);
+        if (format.length == 0)
+            throw new DotnetJs.FormatException('format = ' + format);
+        var sign = this.valueOf() < 0 ? '-' : '';
+        var value = Math.abs(this.valueOf());
+        var fd = tryGetParam(format);
+        if (format.StartsWith('D', true)) {
+            return Decimal(sign, value, fd);
+        }
+        if (format.StartsWith('E', true)) {
+            var e = format[0];
+            return Exponential(sign, value, fd, e);
+        }
+        if (format.StartsWith('F', true)) {
+            return FixedPoint(sign, value, fd);
+        }
+        if (format.StartsWith('G', true)) {
+            var func = void 0;
+            if (value < 1e-6 || value > 1e+14)
+                func = Exponential;
+            if (value == Math.floor(value))
+                func = Decimal;
+            func = FixedPoint;
+            return func(sign, value, fd);
+        }
+        if (format.StartsWith('N', true)) {
+            return Numeric(sign, value, fd);
+        }
+        if (format.StartsWith('P', true)) {
+            return Percentage(sign, value, fd);
+        }
+        if (format.StartsWith('X', true)) {
+            return Hexadecimal(sign, value, fd, format[0] == 'x');
+        }
+        throw new DotnetJs.FormatException('format = ' + format);
+    };
+    function Decimal(sign, value, digits) {
+        digits = digits || 0;
+        var base = toString.apply(value, []);
+        if (base.indexOf('.') != -1)
+            throw new DotnetJs.FormatException(base + 'is not a decimal');
+        return sign + base.PadLeft(digits, '0');
+    }
+    function Exponential(sign, value, digits, expChar) {
+        expChar = expChar || 'E';
+        var exp = digits == null ? value.toExponential() : value.toExponential(digits);
+        var ei = exp.indexOf('e');
+        var pw = exp.substring(ei + 2);
+        return sign + exp.substring(0, ei - 1) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
+    }
+    function FixedPoint(sign, value, digits) {
+        return sign + value.toFixed(digits);
+    }
+    function Numeric(sign, value, digits) {
+        var pre = FixedPoint('', value, digits);
+        var pi = pre.indexOf('.');
+        var rtn = sign;
+        if (pi == -1)
+            pi = pre.length;
+        for (var i = 0; i < pre.length; i++) {
+            if (i != 0 && i <= pi - 3 && (pi - i) % 3 == 0)
+                rtn += ',';
+            rtn += pre[i];
+        }
+        return rtn;
+    }
+    function Percentage(sign, value, digits) {
+        var pre = Numeric(sign, value * 100, digits);
+        return pre + ' %';
+    }
+    function Hexadecimal(sign, value, digits, lowerCase) {
+        digits = digits || 0;
+        var pre = toString.apply(value, [16]);
+        if (!lowerCase)
+            pre = pre.toUpperCase();
+        return sign + pre.PadLeft(digits, '0');
+    }
+    function tryGetParam(format) {
+        if (format.length > 1) {
+            var fd = Number(format.substring(1));
+            if (isNaN(fd))
+                throw new DotnetJs.FormatException('format = ' + format);
+            return fd;
+        }
+        return null;
+    }
+    function TryParseInt(value, out) {
+        var num = Number(value);
+        if (isNaN(num))
+            return false;
+        out(num);
+        return true;
+    }
 })();

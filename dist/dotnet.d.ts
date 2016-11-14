@@ -16,8 +16,11 @@
  *
 **/
 declare module DotnetJs {
+    class FormatException extends Error {
+        constructor(msg?: string);
+    }
     class NotImplementedExeption extends Error {
-        constructor(msg: string);
+        constructor(methodName?: string);
     }
     class UnknownExeption extends Error {
         constructor();
@@ -45,9 +48,6 @@ interface Object {
     Equals: Function;
     readonly IsValueType: boolean;
     hashCode: number;
-}
-interface OutParam<T> {
-    Value: T;
 }
 declare abstract class Crc32Bit {
     private static _crcTbl;
@@ -114,6 +114,7 @@ declare module DotnetJs {
         static EmptyReturn: any;
         static EqualityComparer: IEqualityComparer<any>;
     }
+    type OutParam<T> = (out) => void;
     type IEqualityComparer<T> = (a: T, b: T) => boolean;
     type IComparer<T> = (a: T, b: T) => number;
     function Greetings(): void;
@@ -351,6 +352,7 @@ interface String extends DotnetJs.Collections.IEnumerable<number> {
 }
 interface StringConstructor {
     Empty: string;
+    Join(seperator: string, ...args: string[]): any;
     Format(value: string, ...args: any[]): string;
     IsNullOrEmpty(value: string): boolean;
     IsNullOrWhiteSpace(value: string): boolean;
@@ -364,4 +366,13 @@ declare class StringEnumerator implements DotnetJs.Collections.IEnumerator<numbe
     readonly Current: number;
     Reset(): void;
     Dispose(): void;
+}
+interface Console {
+    writeLine(format?: string, ...args: any[]): any;
+}
+interface Number {
+    toString(format: string | number): string;
+}
+interface NumberConstructor {
+    TryParseInt(value: string, out: DotnetJs.OutParam<number>): any;
 }
