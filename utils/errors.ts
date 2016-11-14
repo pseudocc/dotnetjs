@@ -1,8 +1,14 @@
 ﻿module DotnetJs {
 
+    export class FormatException extends Error {
+        constructor(msg?: string) {
+            super('Format specifier was invalid. ' + msg || '');
+        }
+    }
+
     export class NotImplementedExeption extends Error {
-        constructor(msg: string) {
-            super('NotImplementedExeption: ' + msg);
+        constructor(methodName?: string) {
+            super((methodName || 'Method') + ' Not Implemented.');
         }
     }
 
