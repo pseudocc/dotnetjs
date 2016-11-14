@@ -10,6 +10,7 @@ interface String extends DotnetJs.Collections.IEnumerable<number> {
 
 interface StringConstructor {
     Empty: string;
+    Join(seperator: string, ...args: string[]);
     Format(value: string, ...args): string;
     IsNullOrEmpty(value: string): boolean;
     IsNullOrWhiteSpace(value: string): boolean;
@@ -53,7 +54,7 @@ class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
 
     String.Format = function (value: string, ...args: Object[]): string {
         // match case: {index[,alignment][:formatString]}
-        return value.replace(/{(\d+(,\d+)?(:[^\t\r\n\{\}]+)?)}/g, function (match: string, content: string) {
+        return value.replace(/{(\d+(,[-\d]+)?(:[^\t\r\n\{\}]+)?)}/g, function (match: string, content: string) {
             var exp = DotnetJs.Linq.LinqStart(content);
             var colon = exp.IndexOf(':'.charCodeAt(0));
             var comma = exp.IndexOf(','.charCodeAt(0));
@@ -100,6 +101,16 @@ class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
                 return result;
             return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
         });
+    }
+
+    String.Join = function (seperator: string, ...args: string[]): string {
+        if (seperator == null)
+            throw new DotnetJs.ArgumentNullException('seperator');
+        if (args.length == 0)
+            throw new DotnetJs.ArgumentException('args length is zerp');
+        var result: string = "";
+        args.forEach((value) => result += value);
+        return result;
     }
 
     String.IsNullOrEmpty = function (value: string): boolean {
