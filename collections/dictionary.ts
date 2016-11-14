@@ -285,10 +285,9 @@ module DotnetJs.Collections {
                 throw new ArgumentNullException('out parameter is null');
             var i: number = this.FindEntry(key);
             if (i >= 0) {
-                out.Value = this.entries[i].value;
+                out(this.entries[i].value);
                 return true;
             }
-            delete out.Value;
             return false;
         }
 

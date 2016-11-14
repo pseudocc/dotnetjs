@@ -7,10 +7,6 @@ interface Object {
     hashCode: number;
 }
 
-interface OutParam<T> {
-    Value: T;
-}
-
 abstract class Crc32Bit {
 
     private static _crcTbl: number[] = null;
@@ -118,7 +114,6 @@ abstract class Crc32Bit {
         var vt = <DotnetJs.ValueType>obj;
         return vt.GetHashCode() === this.GetHashCode();
     }
-
 
     Array.prototype.GetEnumerator = function () {
         return new ArrayEnumerator(this);
