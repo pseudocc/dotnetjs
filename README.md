@@ -78,9 +78,14 @@ The match case: ```{index[,alignment][:format]}```, with 2 optional parameters (
 
 3. format
 
-    With the magic char ':', you can control the format of your toString method. Let's see the following example:
+    With the magic char ':', you can control the format of your toString method. For number, there are specifiers ['D', 'E', 'F', 'G', 'N', 'P', 'X'] implemented, [usage portal](https://msdn.microsoft.com/en-us/library/dwhawy9k(v=vs.110).aspx).Now, let's see the following example:
 
     ```typescript
+    var number = 1.0437E21;
+    var specifier = 'G';
+    console.writeLine("   {0,-22} {1}", specifier + ":", number.toString(specifier));
+    // output:   G:                     1.0437e+21
+    
     class Foo {
         public bar: number;
         public toString(format: string) {
