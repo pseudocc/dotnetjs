@@ -1,5 +1,6 @@
 ﻿/// <reference path="errors.ts" />
 /// <reference path="valueType.ts" />
+
 interface Object {
     GetHashCode: (refresh?: boolean) => number;
     Equals: (obj: Object) => boolean;

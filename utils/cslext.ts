@@ -4,8 +4,8 @@ interface Console {
     writeLine(format?: string, ...args: any[]);
 }
 
-(function() {
-    console.writeLine = function(format?: string) {
+(function () {
+    console.writeLine = function (format?: string) {
         if (format == null) {
             console.log();
             return;

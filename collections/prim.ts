@@ -24,7 +24,7 @@ module DotnetJs.Collections {
         MoveNext(): boolean;
         Reset(): void;
     }
-    
+
     export interface IEnumerable<T> {
         GetEnumerator(): IEnumerator<T>;
     }

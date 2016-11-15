@@ -464,15 +464,15 @@
         return result;
     }
 
-    export function ToDictionary<TSource,TKey, TElement>(source: Collections.IEnumerable<TSource>, 
+    export function ToDictionary<TSource, TKey, TElement>(source: Collections.IEnumerable<TSource>,
         keyValueSelector: (item: TSource) => Collections.KeyValuePair<TKey, TElement>,
-        keyComparer?:IEqualityComparer<TKey>): Collections.Dictionary<TKey, TElement> {
+        keyComparer?: IEqualityComparer<TKey>): Collections.Dictionary<TKey, TElement> {
         if (source == null)
             throw new ArgumentNullException('source');
         if (keyValueSelector == null)
             throw new ArgumentNullException('keyValueSelector');
         // To avoid Dictionary.Resize()
-        var array: TSource[] = ToArray(source); 
+        var array: TSource[] = ToArray(source);
         var dict = new Collections.Dictionary<TKey, TElement>(array.length, keyComparer);
         var enumerator = source.GetEnumerator();
         while (enumerator.MoveNext()) {

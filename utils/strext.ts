@@ -1,6 +1,7 @@
 /// <reference path="errors.ts" />
 /// <reference path="../collections/linq.ts" />
 /// <reference path="../collections/prim.ts" />
+
 module DotnetJs.Char {
 
     export function IsControl(value: string, index?: number): boolean {

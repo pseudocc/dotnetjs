@@ -22,7 +22,7 @@ module DotnetJs.Collections {
 
         constructor(capacity?: number, keyComparer?: IEqualityComparer<TKey>) {
             this.keyComparer = keyComparer;
-            capacity = capacity || 0; 
+            capacity = capacity || 0;
             if (capacity < 0)
                 throw new ArgumentOutOfRangeException('capacity < 0');
             if (capacity > 0)
