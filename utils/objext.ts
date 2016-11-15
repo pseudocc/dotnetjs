@@ -1,8 +1,8 @@
 ﻿/// <reference path="errors.ts" />
 /// <reference path="valueType.ts" />
 interface Object {
-    GetHashCode: Function;
-    Equals: Function;
+    GetHashCode: (refresh?: boolean) => number;
+    Equals: (obj: Object) => boolean;
     readonly IsValueType: boolean;
     hashCode: number;
 }
@@ -17,15 +17,15 @@ interface Object {
         var value = obj.toString();
         var m, n = 0x15051505;
         var offset = 0;
-        for (var i = value.length; i > 0; i = 4) {
-            m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset);
+        for (var i = value.length; i > 0; i -= 4) {
+            m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset) & 0xFFFFFFFF;
             if (i <= 2) {
                 break;
             }
-            n = (((n << 5) + n) + (n >> 0x1b)) ^ value.charCodeAt(1 + offset);
+            n = (((n << 5) + n) + (n >> 0x1b)) ^ value.charCodeAt(1 + offset) & 0xFFFFFFFF;
             offset += 2;
         }
-        return (m + (n * 0x5d588b65));
+        return (m + (n * 0x5d588b65)) & 0xFFFFFFFF;
     }
 
     Object.defineProperty(Object.prototype, 'IsValueType', {
@@ -39,7 +39,6 @@ interface Object {
     });
 
     Object.prototype.GetHashCode = function(refresh?: boolean): number {
-
         if (this.hashCode && !refresh)
             return this.hashCode;
 
