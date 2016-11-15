@@ -49,14 +49,6 @@ interface Object {
     readonly IsValueType: boolean;
     hashCode: number;
 }
-declare abstract class Crc32Bit {
-    private static _crcTbl;
-    private static LENGTH;
-    private static _elemAt;
-    static Init(): void;
-    static ValueString(buf: string): number;
-    static Value(buf: any, offset: number, length: number, elemAt?: (buf: any, index: number) => number): number;
-}
 interface Array<T> extends DotnetJs.Collections.IEnumerable<T> {
 }
 declare class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {

@@ -91,59 +91,24 @@ var DotnetJs;
     }());
     DotnetJs.ValueType = ValueType;
 })(DotnetJs || (DotnetJs = {}));
-var Crc32Bit = (function () {
-    function Crc32Bit() {
-    }
-    Crc32Bit.Init = function () {
-        if (Crc32Bit._crcTbl != null)
-            return;
-        Crc32Bit._crcTbl = new Array(Crc32Bit.LENGTH);
-        var c;
-        for (var i = 0; i < Crc32Bit.LENGTH; i++) {
-            c = i;
-            for (var j = 0; j < 8; j++) {
-                if ((c & 1) == 1) {
-                    c = 0xEDB88320 ^ (c >> 1);
-                }
-                else {
-                    c >>= 1;
-                }
-            }
-            Crc32Bit._crcTbl[i] = c;
-        }
-    };
-    Crc32Bit.ValueString = function (buf) {
-        var elemAt = function (buf, index) {
-            return buf.charCodeAt(index);
-        };
-        return Crc32Bit.Value(buf, 0, buf.length, elemAt);
-    };
-    Crc32Bit.Value = function (buf, offset, length, elemAt) {
-        var c = 0xffffffff;
-        if (Crc32Bit._crcTbl == null) {
-            Crc32Bit.Init();
-        }
-        elemAt = elemAt || Crc32Bit._elemAt;
-        for (var i = 0; i < length; i++) {
-            var index = (c ^ elemAt(buf, i + offset)) & 0xff;
-            c = Crc32Bit._crcTbl[index] ^ (c >> 8);
-        }
-        return ~c;
-    };
-    Crc32Bit._crcTbl = null;
-    Crc32Bit.LENGTH = 256;
-    Crc32Bit._elemAt = function (buf, index) { return buf[index]; };
-    return Crc32Bit;
-}());
 (function () {
-    Crc32Bit.Init();
-    var id = 0;
+    var id = 0x7FEFFFFD;
     function StringHash(obj) {
         if (obj.IsValueType) {
             throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
         }
-        var string = obj.toString();
-        return Crc32Bit.ValueString(string);
+        var value = obj.toString();
+        var m, n = 0x15051505;
+        var offset = 0;
+        for (var i = value.length; i > 0; i = 4) {
+            m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset);
+            if (i <= 2) {
+                break;
+            }
+            n = (((n << 5) + n) + (n >> 0x1b)) ^ value.charCodeAt(1 + offset);
+            offset += 2;
+        }
+        return (m + (n * 0x5d588b65));
     }
     Object.defineProperty(Object.prototype, 'IsValueType', {
         get: function () {
@@ -408,7 +373,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 4, 38);
+        return new DotnetJs.Version(1, 5, 5, 39);
     }
     function Greetings() {
         var version = GetVersion();
