@@ -1,4 +1,7 @@
+/// <reference path="errors.ts" />
+
 module DotnetJs {
+
     export class Version implements ICloneable, IComparable<Version>, IEquatable<Version> {
         private major: number;
         private minor: number;

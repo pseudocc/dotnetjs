@@ -1,4 +1,7 @@
 ﻿/// <reference path="version.ts" />
+/// <reference path="cslext.ts" />
+/// <reference path="numext.ts" />
+/// <reference path="objext.ts" />
 
 module DotnetJs {
 
@@ -34,7 +37,7 @@ module DotnetJs {
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 5, 7, 42);
+        return new Version(1, 5, 8, 44);
     }
 
     export function Greetings() {

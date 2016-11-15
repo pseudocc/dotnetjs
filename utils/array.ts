@@ -1,4 +1,6 @@
-﻿interface Array<T> extends DotnetJs.Collections.IEnumerable<T> { }
+﻿/// <reference path="../Collections/prim.ts" />
+
+interface Array<T> extends DotnetJs.Collections.IEnumerable<T> { }
 
 class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
 
@@ -50,7 +52,7 @@ module DotnetJs.Arrays {
             throw new ArgumentNullException('array');
         if (collection == null)
             throw new ArgumentNullException('collection');
-       length = length || collection.length;
+        length = length || collection.length;
         for (var i = 0; i < length; i++) {
             array.push(collection[i]);
         }

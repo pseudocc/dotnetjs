@@ -1,3 +1,6 @@
+/// <reference path="strext.ts" />
+/// <reference path="errors.ts" />
+
 interface Number {
     toString(format: string | number): string;
 }
