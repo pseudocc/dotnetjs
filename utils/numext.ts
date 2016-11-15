@@ -70,12 +70,19 @@ interface NumberConstructor {
         var exp = digits == null ? value.toExponential() : value.toExponential(digits);
         var ei = exp.indexOf('e');
         var pw = exp.substring(ei + 2);
-        return sign + exp.substring(0, ei - 1) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
+        return sign + exp.substring(0, ei) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
     }
 
     function FixedPoint(sign: string, value: number, digits?: number): string {
         digits = digits || 2;
-        return sign + value.toFixed(digits);
+        var result = "";
+        while (value >= 1e21) {
+            let sub = value % 1e20;
+            result += toString.apply((value - sub) * 1e-20, []);
+            value = sub;
+        }
+        result += value.toFixed(digits);
+        return sign + result;
     }
 
     function Numeric(sign: string, value: number, digits?: number): string {
