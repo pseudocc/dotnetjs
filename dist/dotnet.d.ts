@@ -16,6 +16,9 @@
  *
 **/
 declare module DotnetJs {
+    class InvalidDataException extends Error {
+        constructor(type: string);
+    }
     class FormatException extends Error {
         constructor(msg?: string);
     }
@@ -336,6 +339,16 @@ declare module DotnetJs.Collections {
 declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
+}
+declare module char {
+    function IsControl(value: string, index?: number): boolean;
+    function IsDigit(value: string, index?: number): boolean;
+    function IsLetter(value: string, index?: number): boolean;
+    function IsLower(value: string, index?: number): boolean;
+    function IsPunctuation(value: string, index?: number): boolean;
+    function IsSeparator(value: string, index?: number): boolean;
+    function IsUpper(value: string, index?: number): boolean;
+    function IsWhiteSpace(value: string, index?: number): boolean;
 }
 interface String extends DotnetJs.Collections.IEnumerable<number> {
     PadLeft(totalLength: number, paddingChar?: number | string): string;

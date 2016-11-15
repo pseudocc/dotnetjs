@@ -1,6 +1,85 @@
 /// <reference path="errors.ts" />
 /// <reference path="../collections/linq.ts" />
 /// <reference path="../collections/prim.ts" />
+module char {
+
+    export function IsControl(value: string, index?: number): boolean {
+        Ensure(value, index);
+        var code = value.charCodeAt(index || 0);
+        if (code >= 0 && code <= 31)
+            return true;
+        if (code >= 127 && code <= 159)
+            return true;
+        return false;
+    }
+
+    export function IsDigit(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= '0') && (value <= '9');
+    }
+
+    export function IsLetter(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return IsLower(value) || IsUpper(value);
+    }
+
+    export function IsLower(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= 'a') && (value <= 'Z');
+    }
+
+    export function IsPunctuation(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        switch (value) {
+            case '!': case '"': case '#': case '%':
+            case '&': case '\'': case '(': case ')':
+            case '*': case ',': case '-': case '.':
+            case '/': case ':': case ';': case '?':
+            case '@': case '[': case '\\': case ']':
+            case '_': case '{': case '}': return true;
+            default:
+                return false;
+        }
+    }
+
+    export function IsSeparator(value: string, index?: number) {
+        Ensure(value, index);
+        var code = value.charCodeAt(index || 0);
+        if (code >= 8192 && code <= 8202)
+            return true;
+        switch (code) {
+            case 32: case 160: case 5760: case 6158:
+            case 8239: case 8287: case 12288: return true;
+            default:
+                return false;
+        }
+    }
+
+    export function IsUpper(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= 'A') && (value <= 'Z');
+    }
+
+    export function IsWhiteSpace(value: string, index?: number): boolean {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return value == ' ';
+    }
+
+    function Ensure(value: string, index?: number): void {
+        if (value == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (index == null && value.length != 1)
+            throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
+        if ((index || -1) >= value.length)
+            throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
+    }
+}
 
 interface String extends DotnetJs.Collections.IEnumerable<number> {
     PadLeft(totalLength: number, paddingChar?: number | string): string;

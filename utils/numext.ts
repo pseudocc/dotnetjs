@@ -25,7 +25,7 @@ interface NumberConstructor {
 
         if (format.StartsWith('E', true)) {
             let e = format[0];
-            return Exponential(sign, value, fd, e);
+            return Exponential(sign, value, fd, char.IsLower(e));
         }
 
         if (format.StartsWith('F', true)) {
@@ -33,13 +33,13 @@ interface NumberConstructor {
         }
 
         if (format.StartsWith('G', true)) {
-            let func: (sign: string, value: number, digits: number) => string;
+            let func: (sign: string, value: number, digits?: number, lowerCase?: boolean) => string;
             if (value < 1e-6 || value > 1e+14)
                 func = Exponential;
             if (value == Math.floor(value))
                 func = Decimal;
             func = FixedPoint;
-            return func(sign, value, fd);
+            return func(sign, value, fd, char.IsLower(format, 0));
         }
 
         if (format.StartsWith('N', true)) {
@@ -65,8 +65,8 @@ interface NumberConstructor {
         return sign + base.PadLeft(digits, '0');
     }
 
-    function Exponential(sign: string, value: number, digits?: number, expChar?: string): string {
-        expChar = expChar || 'E';
+    function Exponential(sign: string, value: number, digits?: number, lowerCase?: boolean): string {
+        var expChar = lowerCase ? 'e' : 'E';
         var exp = digits == null ? value.toExponential() : value.toExponential(digits);
         var ei = exp.indexOf('e');
         var pw = exp.substring(ei + 2);
@@ -107,9 +107,9 @@ interface NumberConstructor {
     function Hexadecimal(sign: string, value: number, digits?: number, lowerCase?: boolean): string {
         digits = digits || 0;
         var pre = <string>toString.apply(value, [16]);
-        if (!lowerCase) 
+        if (!lowerCase)
             pre = pre.toUpperCase();
-        return sign + pre.PadLeft(digits, '0');        
+        return sign + pre.PadLeft(digits, '0');
     }
 
     function tryGetParam(format: string): number {

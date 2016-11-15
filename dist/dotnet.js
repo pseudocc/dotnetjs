@@ -22,6 +22,14 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var DotnetJs;
 (function (DotnetJs) {
+    var InvalidDataException = (function (_super) {
+        __extends(InvalidDataException, _super);
+        function InvalidDataException(type) {
+            _super.call(this, 'UnExpected data type: ' + type);
+        }
+        return InvalidDataException;
+    }(Error));
+    DotnetJs.InvalidDataException = InvalidDataException;
     var FormatException = (function (_super) {
         __extends(FormatException, _super);
         function FormatException(msg) {
@@ -373,7 +381,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 5, 40);
+        return new DotnetJs.Version(1, 5, 6, 41);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1904,6 +1912,107 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
+var char;
+(function (char) {
+    function IsControl(value, index) {
+        Ensure(value, index);
+        var code = value.charCodeAt(index || 0);
+        if (code >= 0 && code <= 31)
+            return true;
+        if (code >= 127 && code <= 159)
+            return true;
+        return false;
+    }
+    char.IsControl = IsControl;
+    function IsDigit(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= '0') && (value <= '9');
+    }
+    char.IsDigit = IsDigit;
+    function IsLetter(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return IsLower(value) || IsUpper(value);
+    }
+    char.IsLetter = IsLetter;
+    function IsLower(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= 'a') && (value <= 'Z');
+    }
+    char.IsLower = IsLower;
+    function IsPunctuation(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        switch (value) {
+            case '!':
+            case '"':
+            case '#':
+            case '%':
+            case '&':
+            case '\'':
+            case '(':
+            case ')':
+            case '*':
+            case ',':
+            case '-':
+            case '.':
+            case '/':
+            case ':':
+            case ';':
+            case '?':
+            case '@':
+            case '[':
+            case '\\':
+            case ']':
+            case '_':
+            case '{':
+            case '}': return true;
+            default:
+                return false;
+        }
+    }
+    char.IsPunctuation = IsPunctuation;
+    function IsSeparator(value, index) {
+        Ensure(value, index);
+        var code = value.charCodeAt(index || 0);
+        if (code >= 8192 && code <= 8202)
+            return true;
+        switch (code) {
+            case 32:
+            case 160:
+            case 5760:
+            case 6158:
+            case 8239:
+            case 8287:
+            case 12288: return true;
+            default:
+                return false;
+        }
+    }
+    char.IsSeparator = IsSeparator;
+    function IsUpper(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return (value >= 'A') && (value <= 'Z');
+    }
+    char.IsUpper = IsUpper;
+    function IsWhiteSpace(value, index) {
+        Ensure(value, index);
+        value = value.charAt(index || 0);
+        return value == ' ';
+    }
+    char.IsWhiteSpace = IsWhiteSpace;
+    function Ensure(value, index) {
+        if (value == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (index == null && value.length != 1)
+            throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
+        if ((index || -1) >= value.length)
+            throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
+    }
+})(char || (char = {}));
 var StringEnumerator = (function () {
     function StringEnumerator(str) {
         this.source = str;
@@ -2076,7 +2185,7 @@ var StringEnumerator = (function () {
         }
         if (format.StartsWith('E', true)) {
             var e = format[0];
-            return Exponential(sign, value, fd, e);
+            return Exponential(sign, value, fd, char.IsLower(e));
         }
         if (format.StartsWith('F', true)) {
             return FixedPoint(sign, value, fd);
@@ -2088,7 +2197,7 @@ var StringEnumerator = (function () {
             if (value == Math.floor(value))
                 func = Decimal;
             func = FixedPoint;
-            return func(sign, value, fd);
+            return func(sign, value, fd, char.IsLower(format, 0));
         }
         if (format.StartsWith('N', true)) {
             return Numeric(sign, value, fd);
@@ -2108,8 +2217,8 @@ var StringEnumerator = (function () {
             throw new DotnetJs.FormatException(base + 'is not a decimal');
         return sign + base.PadLeft(digits, '0');
     }
-    function Exponential(sign, value, digits, expChar) {
-        expChar = expChar || 'E';
+    function Exponential(sign, value, digits, lowerCase) {
+        var expChar = lowerCase ? 'e' : 'E';
         var exp = digits == null ? value.toExponential() : value.toExponential(digits);
         var ei = exp.indexOf('e');
         var pw = exp.substring(ei + 2);

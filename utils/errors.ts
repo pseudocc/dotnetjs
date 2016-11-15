@@ -1,5 +1,11 @@
 ﻿module DotnetJs {
 
+    export class InvalidDataException extends Error {
+        constructor(type: string) {
+            super('UnExpected data type: ' + type);
+        }
+    }
+
     export class FormatException extends Error {
         constructor(msg?: string) {
             super('Format specifier was invalid. ' + msg || '');
