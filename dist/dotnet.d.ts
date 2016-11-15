@@ -52,26 +52,6 @@ interface Object {
     readonly IsValueType: boolean;
     hashCode: number;
 }
-interface Array<T> extends DotnetJs.Collections.IEnumerable<T> {
-}
-declare class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
-    private index;
-    private array;
-    private current;
-    constructor(array: T[]);
-    MoveNext(): boolean;
-    readonly Current: T;
-    Reset(): void;
-    Dispose(): void;
-}
-declare module DotnetJs.Arrays {
-    function Copy(sourceArray: any[], sourceIndex: number, destinationArray: any[], destinationIndex: number, length: number): void;
-    function AddRange(array: any[], collection: any[], length?: number): void;
-    function Clear(array: any[], freeIndex?: number, length?: number): void;
-    function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void;
-    function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
-    function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
-}
 declare module DotnetJs {
     class Version implements ICloneable, IComparable<Version>, IEquatable<Version> {
         private major;
@@ -88,6 +68,108 @@ declare module DotnetJs {
         Equals(obj: Version): boolean;
         toString(): string;
     }
+}
+declare module DotnetJs.Linq {
+    function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
+    class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
+        protected toResult: (item: TSource, index: number) => TResult;
+        protected source: Collections.IEnumerable<TSource>;
+        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource, index: number) => TResult);
+        GetEnumerator(): Collections.IEnumerator<TResult>;
+        Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate;
+        Average(): number;
+        All(predicate: (item: TResult) => boolean): boolean;
+        Any(predicate?: (item: TResult) => boolean): boolean;
+        Concat(enumerable: Collections.IEnumerable<TResult>): LinqIntermediate<TResult, TResult>;
+        Contains(element: TResult, comparer?: IEqualityComparer<TResult>): boolean;
+        Count(predicate?: (item: TResult) => boolean): number;
+        ElementAt(index: number): TResult;
+        Except(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
+        First(predicate?: (item: TResult) => boolean): TResult;
+        ForEach(action: (item: TResult) => void): void;
+        IndexOf(element: TResult): number;
+        Intersect(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
+        LastIndexOf(element: TResult): number;
+        Max(comparer?: IComparer<TResult>): TResult;
+        Min(comparer?: IComparer<TResult>): TResult;
+        Reverse(): LinqIntermediate<TResult, TResult>;
+        Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
+        SequenceEqual(second: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TSource>): boolean;
+        SkipWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
+        TakeWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
+        ToArray(): TResult[];
+        ToDictionary<TKey, TElement>(keyValueSelector: (item: TResult) => Collections.KeyValuePair<TKey, TElement>): Collections.Dictionary<TKey, TElement>;
+        ToList(): Collections.List<TResult>;
+        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
+    }
+    function Aggregate<TSource, TAccumulate>(source: Collections.IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate;
+    function Average(source: Collections.IEnumerable<number>): number;
+    function All<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean;
+    function Any<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean;
+    function Concat<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
+    function Contains<TSource>(source: Collections.IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean;
+    function Count<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number;
+    function ElementAt<TSource>(source: Collections.IEnumerable<TSource>, index: number): TSource;
+    function Except<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
+    function First<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource;
+    function ForEach<TSource>(source: Collections.IEnumerable<TSource>, action: (item: TSource) => void): void;
+    function IndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
+    function Intersect<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
+    function LastIndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
+    function Max<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
+    function Min<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
+    function Range(start: number, count: number): LinqIntermediate<number, number>;
+    function Repeat<TResult>(element: TResult, count: number): LinqIntermediate<TResult, TResult>;
+    function Reverse<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
+    function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
+    function SequenceEqual<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): boolean;
+    function SkipWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
+    function TakeWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
+    function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[];
+    function ToDictionary<TSource, TKey, TElement>(source: Collections.IEnumerable<TSource>, keyValueSelector: (item: TSource) => Collections.KeyValuePair<TKey, TElement>, keyComparer?: IEqualityComparer<TKey>): Collections.Dictionary<TKey, TElement>;
+    function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource>;
+    function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;
+}
+declare module DotnetJs.Char {
+    function IsControl(value: string, index?: number): boolean;
+    function IsDigit(value: string, index?: number): boolean;
+    function IsLetter(value: string, index?: number): boolean;
+    function IsLower(value: string, index?: number): boolean;
+    function IsPunctuation(value: string, index?: number): boolean;
+    function IsSeparator(value: string, index?: number): boolean;
+    function IsUpper(value: string, index?: number): boolean;
+    function IsWhiteSpace(value: string, index?: number): boolean;
+}
+interface String extends DotnetJs.Collections.IEnumerable<number> {
+    PadLeft(totalLength: number, paddingChar?: number | string): string;
+    PadRight(totalLength: number, paddingChar?: number | string): string;
+    StartsWith(value: string, ignoreCase?: boolean): any;
+}
+interface StringConstructor {
+    Empty: string;
+    Join(seperator: string, ...args: string[]): any;
+    Format(value: string, ...args: any[]): string;
+    IsNullOrEmpty(value: string): boolean;
+    IsNullOrWhiteSpace(value: string): boolean;
+}
+declare class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
+    private source;
+    private index;
+    private current;
+    constructor(str: String);
+    MoveNext(): boolean;
+    readonly Current: number;
+    Reset(): void;
+    Dispose(): void;
+}
+interface Console {
+    writeLine(format?: string, ...args: any[]): any;
+}
+interface Number {
+    toString(format: string | number): string;
+}
+interface NumberConstructor {
+    TryParseInt(value: string, out: DotnetJs.OutParam<number>): any;
 }
 declare module DotnetJs {
     interface IDisposable {
@@ -155,6 +237,26 @@ declare module DotnetJs.Collections {
     class KeyNotFoundException extends Error {
         constructor(msg: string);
     }
+}
+interface Array<T> extends DotnetJs.Collections.IEnumerable<T> {
+}
+declare class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
+    private index;
+    private array;
+    private current;
+    constructor(array: T[]);
+    MoveNext(): boolean;
+    readonly Current: T;
+    Reset(): void;
+    Dispose(): void;
+}
+declare module DotnetJs.Arrays {
+    function Copy(sourceArray: any[], sourceIndex: number, destinationArray: any[], destinationIndex: number, length: number): void;
+    function AddRange(array: any[], collection: any[], length?: number): void;
+    function Clear(array: any[], freeIndex?: number, length?: number): void;
+    function Sort(array: any[], index?: number, count?: number, comparison?: IComparer<any>): void;
+    function IndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
+    function LastIndexOf(array: any[], item: any, startIndex?: number, length?: number, comparer?: IEqualityComparer<any>): number;
 }
 declare module DotnetJs.Collections {
     class Dictionary<TKey extends Object, TValue> implements IDictionary<TKey, TValue> {
@@ -240,67 +342,6 @@ declare module DotnetJs.Collections {
         Invalidate(): void;
     }
 }
-declare module DotnetJs.Linq {
-    function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
-    class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
-        protected toResult: (item: TSource, index: number) => TResult;
-        protected source: Collections.IEnumerable<TSource>;
-        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource, index: number) => TResult);
-        GetEnumerator(): Collections.IEnumerator<TResult>;
-        Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate;
-        Average(): number;
-        All(predicate: (item: TResult) => boolean): boolean;
-        Any(predicate?: (item: TResult) => boolean): boolean;
-        Concat(enumerable: Collections.IEnumerable<TResult>): LinqIntermediate<TResult, TResult>;
-        Contains(element: TResult, comparer?: IEqualityComparer<TResult>): boolean;
-        Count(predicate?: (item: TResult) => boolean): number;
-        ElementAt(index: number): TResult;
-        Except(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
-        First(predicate?: (item: TResult) => boolean): TResult;
-        ForEach(action: (item: TResult) => void): void;
-        IndexOf(element: TResult): number;
-        Intersect(enumerable: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TResult>): LinqIntermediate<TResult, TResult>;
-        LastIndexOf(element: TResult): number;
-        Max(comparer?: IComparer<TResult>): TResult;
-        Min(comparer?: IComparer<TResult>): TResult;
-        Reverse(): LinqIntermediate<TResult, TResult>;
-        Select<UDes>(func: (item: TResult) => UDes): LinqIntermediate<TResult, UDes>;
-        SequenceEqual(second: Collections.IEnumerable<TResult>, comparer?: IEqualityComparer<TSource>): boolean;
-        SkipWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
-        TakeWhile(predicate: (item: TResult, index: number) => boolean): LinqIntermediate<TResult, TResult>;
-        ToArray(): TResult[];
-        ToDictionary<TKey, TElement>(keyValueSelector: (item: TResult) => Collections.KeyValuePair<TKey, TElement>): Collections.Dictionary<TKey, TElement>;
-        ToList(): Collections.List<TResult>;
-        Where(predicate: (item: TResult) => boolean): LinqIntermediate<TResult, TResult>;
-    }
-    function Aggregate<TSource, TAccumulate>(source: Collections.IEnumerable<TSource>, seed: TAccumulate, func: (acc: TAccumulate, item: TSource) => TAccumulate): TAccumulate;
-    function Average(source: Collections.IEnumerable<number>): number;
-    function All<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): boolean;
-    function Any<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean;
-    function Concat<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
-    function Contains<TSource>(source: Collections.IEnumerable<TSource>, element: TSource, comparer?: IEqualityComparer<TSource>): boolean;
-    function Count<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number;
-    function ElementAt<TSource>(source: Collections.IEnumerable<TSource>, index: number): TSource;
-    function Except<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
-    function First<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): TSource;
-    function ForEach<TSource>(source: Collections.IEnumerable<TSource>, action: (item: TSource) => void): void;
-    function IndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
-    function Intersect<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): LinqIntermediate<TSource, TSource>;
-    function LastIndexOf<TSource>(source: Collections.IEnumerable<TSource>, element: TSource): number;
-    function Max<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
-    function Min<TSource>(source: Collections.IEnumerable<TSource>, comparer?: IComparer<TSource>): TSource;
-    function Range(start: number, count: number): LinqIntermediate<number, number>;
-    function Repeat<TResult>(element: TResult, count: number): LinqIntermediate<TResult, TResult>;
-    function Reverse<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource>;
-    function Select<TSource, TResult>(source: Collections.IEnumerable<TSource>, func: (item: TSource) => TResult): LinqIntermediate<TSource, TResult>;
-    function SequenceEqual<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>, comparer?: IEqualityComparer<TSource>): boolean;
-    function SkipWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
-    function TakeWhile<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource, index: number) => boolean): LinqIntermediate<TSource, TSource>;
-    function ToArray<TSource>(source: Collections.IEnumerable<TSource>): TSource[];
-    function ToDictionary<TSource, TKey, TElement>(source: Collections.IEnumerable<TSource>, keyValueSelector: (item: TSource) => Collections.KeyValuePair<TKey, TElement>, keyComparer?: IEqualityComparer<TKey>): Collections.Dictionary<TKey, TElement>;
-    function ToList<TSource>(source: Collections.IEnumerable<TSource>): Collections.List<TSource>;
-    function Where<TSource>(source: Collections.IEnumerable<TSource>, predicate: (item: TSource) => boolean): LinqIntermediate<TSource, TSource>;
-}
 declare module DotnetJs.Collections {
     class List<T extends Object> implements ICollection<T> {
         private items;
@@ -339,45 +380,4 @@ declare module DotnetJs.Collections {
 declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
-}
-declare module DotnetJs.Char {
-    function IsControl(value: string, index?: number): boolean;
-    function IsDigit(value: string, index?: number): boolean;
-    function IsLetter(value: string, index?: number): boolean;
-    function IsLower(value: string, index?: number): boolean;
-    function IsPunctuation(value: string, index?: number): boolean;
-    function IsSeparator(value: string, index?: number): boolean;
-    function IsUpper(value: string, index?: number): boolean;
-    function IsWhiteSpace(value: string, index?: number): boolean;
-}
-interface String extends DotnetJs.Collections.IEnumerable<number> {
-    PadLeft(totalLength: number, paddingChar?: number | string): string;
-    PadRight(totalLength: number, paddingChar?: number | string): string;
-    StartsWith(value: string, ignoreCase?: boolean): any;
-}
-interface StringConstructor {
-    Empty: string;
-    Join(seperator: string, ...args: string[]): any;
-    Format(value: string, ...args: any[]): string;
-    IsNullOrEmpty(value: string): boolean;
-    IsNullOrWhiteSpace(value: string): boolean;
-}
-declare class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
-    private source;
-    private index;
-    private current;
-    constructor(str: String);
-    MoveNext(): boolean;
-    readonly Current: number;
-    Reset(): void;
-    Dispose(): void;
-}
-interface Console {
-    writeLine(format?: string, ...args: any[]): any;
-}
-interface Number {
-    toString(format: string | number): string;
-}
-interface NumberConstructor {
-    TryParseInt(value: string, out: DotnetJs.OutParam<number>): any;
 }

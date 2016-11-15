@@ -157,6 +157,977 @@ var DotnetJs;
         return new ArrayEnumerator(this);
     };
 })();
+var DotnetJs;
+(function (DotnetJs) {
+    var Version = (function () {
+        function Version(major, minor, build, revision) {
+            this.Major = major || 1;
+            this.Minor = minor || 0;
+            this.Build = build;
+            this.Revision = revision;
+        }
+        Object.defineProperty(Version.prototype, "Major", {
+            get: function () {
+                return this.major;
+            },
+            set: function (value) {
+                if (value == null)
+                    throw new DotnetJs.ArgumentNullException('major');
+                if (value < 0)
+                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
+                this.major = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Version.prototype, "Minor", {
+            get: function () {
+                return this.minor;
+            },
+            set: function (value) {
+                if (value == null)
+                    throw new DotnetJs.ArgumentNullException('major');
+                if (value < 0)
+                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
+                this.minor = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Version.prototype, "Build", {
+            get: function () {
+                return this.build;
+            },
+            set: function (value) {
+                if (value < 0)
+                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
+                this.build = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Version.prototype, "Revision", {
+            get: function () {
+                if (this.build == null)
+                    return null;
+                return this.revision;
+            },
+            set: function (value) {
+                if (value < 0)
+                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
+                this.revision = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Version.prototype.Clone = function () {
+            return new Version(this.major, this.minor, this.build, this.revision);
+        };
+        Version.prototype.CompareTo = function (obj) {
+            if (this.major > obj.major)
+                return 1;
+            if (this.major < obj.major)
+                return -1;
+            if (this.minor > obj.minor)
+                return 1;
+            if (this.minor < obj.minor)
+                return -1;
+            if (this.build || 0 > obj.build || 0)
+                return 1;
+            if (this.build || 0 < obj.build || 0)
+                return -1;
+            if (this.revision || 0 > obj.revision || 0)
+                return 1;
+            if (this.revision || 0 < obj.revision || 0)
+                return -1;
+            return 0;
+        };
+        Version.prototype.Equals = function (obj) {
+            return this.CompareTo(obj) == 0;
+        };
+        Version.prototype.toString = function () {
+            var result = this.major.toString();
+            result += '.' + this.minor;
+            if (this.build != null) {
+                result += '.' + this.build;
+                if (this.revision != null) {
+                    result += '.' + this.revision;
+                }
+            }
+            return result;
+        };
+        return Version;
+    }());
+    DotnetJs.Version = Version;
+})(DotnetJs || (DotnetJs = {}));
+var DotnetJs;
+(function (DotnetJs) {
+    var Linq;
+    (function (Linq) {
+        function LinqStart(source) {
+            return new LinqIntermediate(source, function (item) { return item; });
+        }
+        Linq.LinqStart = LinqStart;
+        var LinqIntermediate = (function () {
+            function LinqIntermediate(source, func) {
+                this.source = source;
+                this.toResult = func;
+            }
+            LinqIntermediate.prototype.GetEnumerator = function () {
+                return new LinqEnumerator(this.source, this.toResult);
+            };
+            LinqIntermediate.prototype.Aggregate = function (seed, func) {
+                return Aggregate(this, seed, func);
+            };
+            LinqIntermediate.prototype.Average = function () {
+                return Average(this);
+            };
+            LinqIntermediate.prototype.All = function (predicate) {
+                return All(this, predicate);
+            };
+            LinqIntermediate.prototype.Any = function (predicate) {
+                return Any(this, predicate);
+            };
+            LinqIntermediate.prototype.Concat = function (enumerable) {
+                return Concat(this, enumerable);
+            };
+            LinqIntermediate.prototype.Contains = function (element, comparer) {
+                return Contains(this, element, comparer);
+            };
+            LinqIntermediate.prototype.Count = function (predicate) {
+                return Count(this, predicate);
+            };
+            LinqIntermediate.prototype.ElementAt = function (index) {
+                return ElementAt(this, index);
+            };
+            LinqIntermediate.prototype.Except = function (enumerable, comparer) {
+                return Except(this, enumerable, comparer);
+            };
+            LinqIntermediate.prototype.First = function (predicate) {
+                return First(this, predicate);
+            };
+            LinqIntermediate.prototype.ForEach = function (action) {
+                ForEach(this, action);
+            };
+            LinqIntermediate.prototype.IndexOf = function (element) {
+                return IndexOf(this, element);
+            };
+            LinqIntermediate.prototype.Intersect = function (enumerable, comparer) {
+                return Intersect(this, enumerable, comparer);
+            };
+            LinqIntermediate.prototype.LastIndexOf = function (element) {
+                return LastIndexOf(this, element);
+            };
+            LinqIntermediate.prototype.Max = function (comparer) {
+                return Max(this, comparer);
+            };
+            LinqIntermediate.prototype.Min = function (comparer) {
+                return Min(this, comparer);
+            };
+            LinqIntermediate.prototype.Reverse = function () {
+                return Reverse(this);
+            };
+            LinqIntermediate.prototype.Select = function (func) {
+                return Select(this, func);
+            };
+            LinqIntermediate.prototype.SequenceEqual = function (second, comparer) {
+                return SequenceEqual(this, second);
+            };
+            LinqIntermediate.prototype.SkipWhile = function (predicate) {
+                return SkipWhile(this, predicate);
+            };
+            LinqIntermediate.prototype.TakeWhile = function (predicate) {
+                return TakeWhile(this, predicate);
+            };
+            LinqIntermediate.prototype.ToArray = function () {
+                return ToArray(this);
+            };
+            LinqIntermediate.prototype.ToDictionary = function (keyValueSelector) {
+                return ToDictionary(this, keyValueSelector);
+            };
+            LinqIntermediate.prototype.ToList = function () {
+                return ToList(this);
+            };
+            LinqIntermediate.prototype.Where = function (predicate) {
+                return Where(this, predicate);
+            };
+            return LinqIntermediate;
+        }());
+        Linq.LinqIntermediate = LinqIntermediate;
+        var LinqEnumerator = (function () {
+            function LinqEnumerator(source, toResult) {
+                this.sourceIndex = -1;
+                this.enumerator = source.GetEnumerator();
+                this.toResult = toResult;
+            }
+            LinqEnumerator.prototype.SourceMoveNext = function () {
+                var next = this.enumerator.MoveNext();
+                this.sourceIndex++;
+                return next;
+            };
+            LinqEnumerator.prototype.MoveNext = function () {
+                var next = this.SourceMoveNext();
+                while (next && this.Current === DotnetJs.DefaultDelegate.EmptyReturn) {
+                    next = this.SourceMoveNext();
+                }
+                return next;
+            };
+            Object.defineProperty(LinqEnumerator.prototype, "Current", {
+                get: function () {
+                    return this.toResult(this.enumerator.Current, this.sourceIndex);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            LinqEnumerator.prototype.Reset = function () {
+                this.enumerator.Reset();
+            };
+            LinqEnumerator.prototype.Dispose = function () {
+                this.enumerator.Dispose();
+            };
+            return LinqEnumerator;
+        }());
+        function Aggregate(source, seed, func) {
+            if (seed == null)
+                throw new DotnetJs.ArgumentNullException('seed');
+            if (func == null)
+                throw new DotnetJs.ArgumentNullException('func');
+            ForEach(source, function (item) {
+                seed = func(seed, item);
+            });
+            return seed;
+        }
+        Linq.Aggregate = Aggregate;
+        function Average(source) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var result = 0;
+            var length = 0;
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                if (typeof enumerator.Current != 'number')
+                    throw new DotnetJs.ArgumentException('not a number');
+                length++;
+                result += enumerator.Current;
+            }
+            return result / length;
+        }
+        Linq.Average = Average;
+        function All(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (predicate == null)
+                throw new DotnetJs.ArgumentNullException('predicate');
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                if (predicate(enumerator.Current)) {
+                    continue;
+                }
+                return false;
+            }
+            return true;
+        }
+        Linq.All = All;
+        function Any(source, predicate) {
+            return Count(source, predicate) === 0;
+        }
+        Linq.Any = Any;
+        function Concat(first, second) {
+            if (first == null)
+                throw new DotnetJs.ArgumentNullException('first');
+            if (second == null)
+                throw new DotnetJs.ArgumentNullException('second');
+            var result = [];
+            var enumerators = [first.GetEnumerator(), second.GetEnumerator()];
+            for (var i = 0; i < 2; i++)
+                while (enumerators[i].MoveNext()) {
+                    result.push(enumerators[i].Current);
+                }
+            var linq = new LinqIntermediate(result, function (item) { return item; });
+            return linq;
+        }
+        Linq.Concat = Concat;
+        function Contains(source, element, comparer) {
+            if (element == null)
+                throw new DotnetJs.ArgumentNullException('element');
+            comparer = comparer || DotnetJs.DefaultDelegate.EqualityComparer;
+            return Any(source, function (item) { return comparer(item, element); });
+        }
+        Linq.Contains = Contains;
+        function Count(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            predicate = predicate || DotnetJs.DefaultDelegate.Predicate;
+            var enumerator = source.GetEnumerator();
+            var count = 0;
+            while (enumerator.MoveNext()) {
+                if (predicate(enumerator.Current)) {
+                    count++;
+                }
+            }
+            return count;
+        }
+        Linq.Count = Count;
+        function ElementAt(source, index) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (index < 0)
+                throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
+            var enumerator = source.GetEnumerator();
+            for (var i = 0; i <= index; i++) {
+                if (!enumerator.MoveNext())
+                    throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
+            }
+            return enumerator.Current;
+        }
+        Linq.ElementAt = ElementAt;
+        function Except(first, second, comparer) {
+            if (first == null)
+                throw new DotnetJs.ArgumentNullException('first');
+            if (second == null)
+                throw new DotnetJs.ArgumentNullException('second');
+            var result = [];
+            var enumerator = first.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                if (!Contains(second, enumerator.Current, comparer))
+                    result.push(enumerator.Current);
+            }
+            var linq = new LinqIntermediate(result, function (item) { return item; });
+            return linq;
+        }
+        Linq.Except = Except;
+        function First(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            predicate = predicate || DotnetJs.DefaultDelegate.Predicate;
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                var current = enumerator.Current;
+                if (predicate(current)) {
+                    return current;
+                }
+            }
+            return null;
+        }
+        Linq.First = First;
+        function ForEach(source, action) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (action == null)
+                throw new DotnetJs.ArgumentNullException('action');
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                action(enumerator.Current);
+            }
+        }
+        Linq.ForEach = ForEach;
+        function IndexOf(source, element) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var enumerator = source.GetEnumerator();
+            var index = 0;
+            while (enumerator.MoveNext()) {
+                if (element === enumerator.Current)
+                    return index;
+                index++;
+            }
+            return -1;
+        }
+        Linq.IndexOf = IndexOf;
+        function Intersect(first, second, comparer) {
+            if (first == null)
+                throw new DotnetJs.ArgumentNullException('first');
+            if (second == null)
+                throw new DotnetJs.ArgumentNullException('second');
+            var result = [];
+            var enumerator = first.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                if (Contains(second, enumerator.Current, comparer))
+                    result.push(enumerator.Current);
+            }
+            var linq = new LinqIntermediate(result, function (item) { return item; });
+            return linq;
+        }
+        Linq.Intersect = Intersect;
+        function LastIndexOf(source, element) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var enumerator = source.GetEnumerator();
+            var index = 0;
+            var rtn = -1;
+            while (enumerator.MoveNext()) {
+                if (element === enumerator.Current)
+                    rtn = index;
+                index++;
+            }
+            return rtn;
+        }
+        Linq.LastIndexOf = LastIndexOf;
+        function Max(source, comparer) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            comparer = comparer || (function (a, b) {
+                if (a === b)
+                    return 0;
+                if (a > b)
+                    return 1;
+                if (a < b)
+                    return -1;
+                return 0;
+            });
+            var max = null;
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                var current = enumerator.Current;
+                if (comparer(max, current) > 0 && current != null)
+                    max = current;
+            }
+            return max;
+        }
+        Linq.Max = Max;
+        function Min(source, comparer) {
+            var reverseComparer = comparer || (function (a, b) {
+                if (a === b)
+                    return 0;
+                if (a > b)
+                    return -1;
+                if (a < b)
+                    return 1;
+                return 0;
+            });
+            return Max(source, reverseComparer);
+        }
+        Linq.Min = Min;
+        function Range(start, count) {
+            if (start == null)
+                throw new DotnetJs.ArgumentNullException('start');
+            if (count == null)
+                throw new DotnetJs.ArgumentNullException('count');
+            var result = [];
+            for (var i = start; i < start + count; i++) {
+                result.push(i);
+            }
+            var linq = new LinqIntermediate(result, function (item) { return item; });
+            return linq;
+        }
+        Linq.Range = Range;
+        function Repeat(element, count) {
+            if (count == null)
+                throw new DotnetJs.ArgumentNullException('count');
+            var result = [];
+            for (var i = 0; i < count; i++) {
+                result.push(element);
+            }
+            var linq = new LinqIntermediate(result, function (item) { return item; });
+            return linq;
+        }
+        Linq.Repeat = Repeat;
+        function Reverse(source) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var enumerator = source.GetEnumerator();
+            var result = [];
+            while (enumerator.MoveNext()) {
+                result.unshift(enumerator.Current);
+            }
+            return LinqStart(result);
+        }
+        Linq.Reverse = Reverse;
+        function Select(source, func) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (func == null)
+                throw new DotnetJs.ArgumentNullException('func');
+            var linq = new LinqIntermediate(source, func);
+            return linq;
+        }
+        Linq.Select = Select;
+        function SequenceEqual(first, second, comparer) {
+            if (first == null)
+                throw new DotnetJs.ArgumentNullException('first');
+            if (second == null)
+                throw new DotnetJs.ArgumentNullException('second');
+            comparer = comparer || DotnetJs.DefaultDelegate.EqualityComparer;
+            var fe = first.GetEnumerator();
+            var se = second.GetEnumerator();
+            while (fe.MoveNext()) {
+                if (!se.MoveNext())
+                    return false;
+                if (!comparer(fe.Current, se.Current))
+                    return false;
+            }
+            return !se.MoveNext();
+        }
+        Linq.SequenceEqual = SequenceEqual;
+        function SkipWhile(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (predicate == null)
+                throw new DotnetJs.ArgumentNullException('predicate');
+            var func = function (item, index) {
+                if (predicate(item, index))
+                    return DotnetJs.DefaultDelegate.EmptyReturn;
+                return item;
+            };
+            var linq = new LinqIntermediate(source, func);
+            return linq;
+        }
+        Linq.SkipWhile = SkipWhile;
+        function TakeWhile(source, predicate) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (predicate == null)
+                throw new DotnetJs.ArgumentNullException('predicate');
+            var func = function (item, index) {
+                if (predicate(item, index))
+                    return item;
+                return DotnetJs.DefaultDelegate.EmptyReturn;
+            };
+            var linq = new LinqIntermediate(source, func);
+            return linq;
+        }
+        Linq.TakeWhile = TakeWhile;
+        function ToArray(source) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            var enumerator = source.GetEnumerator();
+            var result = [];
+            while (enumerator.MoveNext()) {
+                result.push(enumerator.Current);
+            }
+            return result;
+        }
+        Linq.ToArray = ToArray;
+        function ToDictionary(source, keyValueSelector, keyComparer) {
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            if (keyValueSelector == null)
+                throw new DotnetJs.ArgumentNullException('keyValueSelector');
+            var array = ToArray(source);
+            var dict = new DotnetJs.Collections.Dictionary(array.length, keyComparer);
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                var pair = keyValueSelector(enumerator.Current);
+                if (pair == null)
+                    continue;
+                dict.Add(pair.Key, pair.Value);
+            }
+            return dict;
+        }
+        Linq.ToDictionary = ToDictionary;
+        function ToList(source) {
+            return new DotnetJs.Collections.List(ToArray(source));
+        }
+        Linq.ToList = ToList;
+        function Where(source, predicate) {
+            return TakeWhile(source, predicate);
+        }
+        Linq.Where = Where;
+    })(Linq = DotnetJs.Linq || (DotnetJs.Linq = {}));
+})(DotnetJs || (DotnetJs = {}));
+var DotnetJs;
+(function (DotnetJs) {
+    var Char;
+    (function (Char) {
+        function IsControl(value, index) {
+            Ensure(value, index);
+            var code = value.charCodeAt(index || 0);
+            if (code >= 0 && code <= 31)
+                return true;
+            if (code >= 127 && code <= 159)
+                return true;
+            return false;
+        }
+        Char.IsControl = IsControl;
+        function IsDigit(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= '0') && (value <= '9');
+        }
+        Char.IsDigit = IsDigit;
+        function IsLetter(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return IsLower(value) || IsUpper(value);
+        }
+        Char.IsLetter = IsLetter;
+        function IsLower(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= 'a') && (value <= 'Z');
+        }
+        Char.IsLower = IsLower;
+        function IsPunctuation(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            switch (value) {
+                case '!':
+                case '"':
+                case '#':
+                case '%':
+                case '&':
+                case '\'':
+                case '(':
+                case ')':
+                case '*':
+                case ',':
+                case '-':
+                case '.':
+                case '/':
+                case ':':
+                case ';':
+                case '?':
+                case '@':
+                case '[':
+                case '\\':
+                case ']':
+                case '_':
+                case '{':
+                case '}': return true;
+                default:
+                    return false;
+            }
+        }
+        Char.IsPunctuation = IsPunctuation;
+        function IsSeparator(value, index) {
+            Ensure(value, index);
+            var code = value.charCodeAt(index || 0);
+            if (code >= 8192 && code <= 8202)
+                return true;
+            switch (code) {
+                case 32:
+                case 160:
+                case 5760:
+                case 6158:
+                case 8239:
+                case 8287:
+                case 12288: return true;
+                default:
+                    return false;
+            }
+        }
+        Char.IsSeparator = IsSeparator;
+        function IsUpper(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= 'A') && (value <= 'Z');
+        }
+        Char.IsUpper = IsUpper;
+        function IsWhiteSpace(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return value == ' ';
+        }
+        Char.IsWhiteSpace = IsWhiteSpace;
+        function Ensure(value, index) {
+            if (value == null)
+                throw new DotnetJs.ArgumentNullException('value');
+            if (index == null && value.length != 1)
+                throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
+            if ((index || -1) >= value.length)
+                throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
+        }
+    })(Char = DotnetJs.Char || (DotnetJs.Char = {}));
+})(DotnetJs || (DotnetJs = {}));
+var StringEnumerator = (function () {
+    function StringEnumerator(str) {
+        this.source = str;
+        this.index = 0;
+        this.current = null;
+    }
+    StringEnumerator.prototype.MoveNext = function () {
+        if (this.index >= this.source.length)
+            return false;
+        this.current = this.source.charCodeAt(this.index++);
+        return true;
+    };
+    Object.defineProperty(StringEnumerator.prototype, "Current", {
+        get: function () {
+            return this.current;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    StringEnumerator.prototype.Reset = function () {
+        this.index = 0;
+    };
+    StringEnumerator.prototype.Dispose = function () {
+    };
+    return StringEnumerator;
+}());
+(function () {
+    String.Empty = "";
+    Object.freeze(String.Empty);
+    String.Format = function (value) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        return value.replace(/{(\d+(,[-\d]+)?(:[^\t\r\n\{\}]+)?)}/g, function (match, content) {
+            var exp = DotnetJs.Linq.LinqStart(content);
+            var colon = exp.IndexOf(':'.charCodeAt(0));
+            var comma = exp.IndexOf(','.charCodeAt(0));
+            var index;
+            var format;
+            var alignment;
+            var getNumber = function (left, right) {
+                var result = content.substring(left, right);
+                return parseInt(result);
+            };
+            var tryGetString = function (i, f) {
+                if (i >= args.length)
+                    throw new DotnetJs.ArgumentOutOfRangeException('args[' + i + ']');
+                var result = args[index];
+                if (typeof result === 'undefined')
+                    return 'undefined';
+                if (result == null)
+                    return null;
+                if (f == null)
+                    return result.toString();
+                return result.toString.apply(result, [f]);
+            };
+            if (colon > comma && comma != -1)
+                throw new DotnetJs.ArgumentException('malformated');
+            if (colon == -1 && comma == -1) {
+                index = parseInt(content);
+                return tryGetString(index);
+            }
+            if (colon != -1) {
+                format = content.substring(colon + 1);
+                index = (comma == -1) ? getNumber(0, colon) : getNumber(0, comma);
+            }
+            if (comma != -1) {
+                index = index || getNumber(0, comma);
+                alignment = (colon == -1) ? getNumber(comma + 1) : getNumber(comma + 1, colon);
+            }
+            var result = tryGetString(index, format);
+            if (alignment == null)
+                return result;
+            return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
+        });
+    };
+    String.Join = function (seperator) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (seperator == null)
+            throw new DotnetJs.ArgumentNullException('seperator');
+        if (args.length == 0)
+            throw new DotnetJs.ArgumentException('args length is zerp');
+        var result = "";
+        args.forEach(function (value) { return result += value; });
+        return result;
+    };
+    String.IsNullOrEmpty = function (value) {
+        if (value == null || value == String.Empty)
+            return true;
+        return false;
+    };
+    String.IsNullOrWhiteSpace = function (value) {
+        if (value == null)
+            return true;
+        return value.replace(/\s/g, String.Empty).length < 1;
+    };
+    function internalPad(spaceLength, paddingChar) {
+        paddingChar = paddingChar || ' ';
+        if (typeof paddingChar === 'string') {
+            if (paddingChar.length > 1)
+                throw new DotnetJs.ArgumentException('paddingChar is not a char, but a string.');
+            paddingChar = paddingChar.charCodeAt(0);
+        }
+        var spaces = DotnetJs.Linq.Repeat(paddingChar, spaceLength).ToArray();
+        return String.fromCharCode.apply(null, spaces);
+    }
+    String.prototype.GetEnumerator = function () {
+        return new StringEnumerator(this);
+    };
+    String.prototype.PadLeft = function (totalLength, paddingChar) {
+        if (totalLength == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (totalLength < 0)
+            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
+        var me = this;
+        var spaceLength = totalLength - me.length;
+        return internalPad(spaceLength, paddingChar) + me;
+    };
+    String.prototype.PadRight = function (totalLength, paddingChar) {
+        if (totalLength == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        if (totalLength < 0)
+            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
+        var me = this;
+        var spaceLength = totalLength - me.length;
+        return me + internalPad(spaceLength, paddingChar);
+    };
+    String.prototype.StartsWith = function (value, ignoreCase) {
+        if (value == null)
+            throw new DotnetJs.ArgumentNullException('value');
+        var me = this;
+        if (me.length < value.length)
+            return false;
+        var sub = me.substring(0, value.length);
+        if (ignoreCase) {
+            sub = sub.toLowerCase();
+            value = value.toLowerCase();
+        }
+        return sub === value;
+    };
+})();
+(function () {
+    console.writeLine = function (format) {
+        if (format == null) {
+            console.log();
+            return;
+        }
+        var msg = String.Format.apply(null, arguments);
+        console.log(msg);
+    };
+})();
+(function () {
+    var char = DotnetJs.Char;
+    var toString = Number.prototype.toString;
+    Number.TryParseInt = TryParseInt;
+    Number.prototype.toString = function (format) {
+        if (format == null || typeof format == 'number' || TryParseInt(format, function (out) { return format = out; }))
+            return toString.apply(this, [format]);
+        if (format.length == 0)
+            throw new DotnetJs.FormatException('format = ' + format);
+        var sign = this.valueOf() < 0 ? '-' : '';
+        var value = Math.abs(this.valueOf());
+        var fd = tryGetParam(format);
+        if (format.StartsWith('D', true)) {
+            return Decimal(sign, value, fd);
+        }
+        if (format.StartsWith('E', true)) {
+            var e = format[0];
+            return Exponential(sign, value, fd, char.IsLower(e));
+        }
+        if (format.StartsWith('F', true)) {
+            return FixedPoint(sign, value, fd);
+        }
+        if (format.StartsWith('G', true)) {
+            var func = void 0;
+            if (value < 1e-6 || value > 1e+14)
+                func = Exponential;
+            if (value == Math.floor(value))
+                func = Decimal;
+            func = FixedPoint;
+            return func(sign, value, fd, char.IsLower(format, 0));
+        }
+        if (format.StartsWith('N', true)) {
+            return Numeric(sign, value, fd);
+        }
+        if (format.StartsWith('P', true)) {
+            return Percentage(sign, value, fd);
+        }
+        if (format.StartsWith('X', true)) {
+            return Hexadecimal(sign, value, fd, format[0] == 'x');
+        }
+        throw new DotnetJs.FormatException('format = ' + format);
+    };
+    function Decimal(sign, value, digits) {
+        digits = digits || 0;
+        var base = toString.apply(value, []);
+        if (base.indexOf('.') != -1)
+            throw new DotnetJs.FormatException(base + 'is not a decimal');
+        return sign + base.PadLeft(digits, '0');
+    }
+    function Exponential(sign, value, digits, lowerCase) {
+        var expChar = lowerCase ? 'e' : 'E';
+        var exp = digits == null ? value.toExponential() : value.toExponential(digits);
+        var ei = exp.indexOf('e');
+        var pw = exp.substring(ei + 2);
+        return sign + exp.substring(0, ei) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
+    }
+    function FixedPoint(sign, value, digits) {
+        digits = digits || 2;
+        var result = "";
+        while (value >= 1e21) {
+            var sub = value % 1e20;
+            result += toString.apply((value - sub) * 1e-20, []);
+            value = sub;
+        }
+        result += value.toFixed(digits);
+        return sign + result;
+    }
+    function Numeric(sign, value, digits) {
+        var pre = FixedPoint('', value, digits);
+        var pi = pre.indexOf('.');
+        var rtn = sign;
+        if (pi == -1)
+            pi = pre.length;
+        for (var i = 0; i < pre.length; i++) {
+            if (i != 0 && i <= pi - 3 && (pi - i) % 3 == 0)
+                rtn += ',';
+            rtn += pre[i];
+        }
+        return rtn;
+    }
+    function Percentage(sign, value, digits) {
+        var pre = Numeric(sign, value * 100, digits);
+        return pre + ' %';
+    }
+    function Hexadecimal(sign, value, digits, lowerCase) {
+        digits = digits || 0;
+        var pre = toString.apply(value, [16]);
+        if (!lowerCase)
+            pre = pre.toUpperCase();
+        return sign + pre.PadLeft(digits, '0');
+    }
+    function tryGetParam(format) {
+        if (format.length > 1) {
+            var fd = Number(format.substring(1));
+            if (isNaN(fd))
+                throw new DotnetJs.FormatException('format = ' + format);
+            return fd;
+        }
+        return null;
+    }
+    function TryParseInt(value, out) {
+        var num = Number(value);
+        if (isNaN(num))
+            return false;
+        out(num);
+        return true;
+    }
+})();
+var DotnetJs;
+(function (DotnetJs) {
+    var DefaultDelegate = (function () {
+        function DefaultDelegate() {
+        }
+        DefaultDelegate.Predicate = function () { return true; };
+        DefaultDelegate.Action = function () { };
+        DefaultDelegate.Func = function () { return null; };
+        DefaultDelegate.EmptyReturn = { value: 'Empty' };
+        DefaultDelegate.EqualityComparer = function (a, b) { return a.Equals(b); };
+        return DefaultDelegate;
+    }());
+    DotnetJs.DefaultDelegate = DefaultDelegate;
+    function GetVersion() {
+        return new DotnetJs.Version(1, 5, 8, 44);
+    }
+    function Greetings() {
+        var version = GetVersion();
+        console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
+    }
+    DotnetJs.Greetings = Greetings;
+})(DotnetJs || (DotnetJs = {}));
+var DotnetJs;
+(function (DotnetJs) {
+    var Collections;
+    (function (Collections) {
+        var KeyNotFoundException = (function (_super) {
+            __extends(KeyNotFoundException, _super);
+            function KeyNotFoundException(msg) {
+                _super.call(this, 'KeyNotFoundException: ' + msg);
+            }
+            return KeyNotFoundException;
+        }(Error));
+        Collections.KeyNotFoundException = KeyNotFoundException;
+    })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
+})(DotnetJs || (DotnetJs = {}));
 var ArrayEnumerator = (function () {
     function ArrayEnumerator(array) {
         this.array = array;
@@ -263,145 +1234,6 @@ var DotnetJs;
         }
         Arrays.LastIndexOf = LastIndexOf;
     })(Arrays = DotnetJs.Arrays || (DotnetJs.Arrays = {}));
-})(DotnetJs || (DotnetJs = {}));
-var DotnetJs;
-(function (DotnetJs) {
-    var Version = (function () {
-        function Version(major, minor, build, revision) {
-            this.Major = major || 1;
-            this.Minor = minor || 0;
-            this.Build = build;
-            this.Revision = revision;
-        }
-        Object.defineProperty(Version.prototype, "Major", {
-            get: function () {
-                return this.major;
-            },
-            set: function (value) {
-                if (value == null)
-                    throw new DotnetJs.ArgumentNullException('major');
-                if (value < 0)
-                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
-                this.major = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Version.prototype, "Minor", {
-            get: function () {
-                return this.minor;
-            },
-            set: function (value) {
-                if (value == null)
-                    throw new DotnetJs.ArgumentNullException('major');
-                if (value < 0)
-                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
-                this.minor = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Version.prototype, "Build", {
-            get: function () {
-                return this.build;
-            },
-            set: function (value) {
-                if (value < 0)
-                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
-                this.build = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Version.prototype, "Revision", {
-            get: function () {
-                if (this.build == null)
-                    return null;
-                return this.revision;
-            },
-            set: function (value) {
-                if (value < 0)
-                    throw new DotnetJs.ArgumentOutOfRangeException('below zero');
-                this.revision = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Version.prototype.Clone = function () {
-            return new Version(this.major, this.minor, this.build, this.revision);
-        };
-        Version.prototype.CompareTo = function (obj) {
-            if (this.major > obj.major)
-                return 1;
-            if (this.major < obj.major)
-                return -1;
-            if (this.minor > obj.minor)
-                return 1;
-            if (this.minor < obj.minor)
-                return -1;
-            if (this.build || 0 > obj.build || 0)
-                return 1;
-            if (this.build || 0 < obj.build || 0)
-                return -1;
-            if (this.revision || 0 > obj.revision || 0)
-                return 1;
-            if (this.revision || 0 < obj.revision || 0)
-                return -1;
-            return 0;
-        };
-        Version.prototype.Equals = function (obj) {
-            return this.CompareTo(obj) == 0;
-        };
-        Version.prototype.toString = function () {
-            var result = this.major.toString();
-            result += '.' + this.minor;
-            if (this.build != null) {
-                result += '.' + this.build;
-                if (this.revision != null) {
-                    result += '.' + this.revision;
-                }
-            }
-            return result;
-        };
-        return Version;
-    }());
-    DotnetJs.Version = Version;
-})(DotnetJs || (DotnetJs = {}));
-var DotnetJs;
-(function (DotnetJs) {
-    var DefaultDelegate = (function () {
-        function DefaultDelegate() {
-        }
-        DefaultDelegate.Predicate = function () { return true; };
-        DefaultDelegate.Action = function () { };
-        DefaultDelegate.Func = function () { return null; };
-        DefaultDelegate.EmptyReturn = { value: 'Empty' };
-        DefaultDelegate.EqualityComparer = function (a, b) { return a.Equals(b); };
-        return DefaultDelegate;
-    }());
-    DotnetJs.DefaultDelegate = DefaultDelegate;
-    function GetVersion() {
-        return new DotnetJs.Version(1, 5, 7, 42);
-    }
-    function Greetings() {
-        var version = GetVersion();
-        console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
-    }
-    DotnetJs.Greetings = Greetings;
-})(DotnetJs || (DotnetJs = {}));
-var DotnetJs;
-(function (DotnetJs) {
-    var Collections;
-    (function (Collections) {
-        var KeyNotFoundException = (function (_super) {
-            __extends(KeyNotFoundException, _super);
-            function KeyNotFoundException(msg) {
-                _super.call(this, 'KeyNotFoundException: ' + msg);
-            }
-            return KeyNotFoundException;
-        }(Error));
-        Collections.KeyNotFoundException = KeyNotFoundException;
-    })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
 })(DotnetJs || (DotnetJs = {}));
 var DotnetJs;
 (function (DotnetJs) {
@@ -1107,471 +1939,6 @@ var DotnetJs;
 })(DotnetJs || (DotnetJs = {}));
 var DotnetJs;
 (function (DotnetJs) {
-    var Linq;
-    (function (Linq) {
-        function LinqStart(source) {
-            return new LinqIntermediate(source, function (item) { return item; });
-        }
-        Linq.LinqStart = LinqStart;
-        var LinqIntermediate = (function () {
-            function LinqIntermediate(source, func) {
-                this.source = source;
-                this.toResult = func;
-            }
-            LinqIntermediate.prototype.GetEnumerator = function () {
-                return new LinqEnumerator(this.source, this.toResult);
-            };
-            LinqIntermediate.prototype.Aggregate = function (seed, func) {
-                return Aggregate(this, seed, func);
-            };
-            LinqIntermediate.prototype.Average = function () {
-                return Average(this);
-            };
-            LinqIntermediate.prototype.All = function (predicate) {
-                return All(this, predicate);
-            };
-            LinqIntermediate.prototype.Any = function (predicate) {
-                return Any(this, predicate);
-            };
-            LinqIntermediate.prototype.Concat = function (enumerable) {
-                return Concat(this, enumerable);
-            };
-            LinqIntermediate.prototype.Contains = function (element, comparer) {
-                return Contains(this, element, comparer);
-            };
-            LinqIntermediate.prototype.Count = function (predicate) {
-                return Count(this, predicate);
-            };
-            LinqIntermediate.prototype.ElementAt = function (index) {
-                return ElementAt(this, index);
-            };
-            LinqIntermediate.prototype.Except = function (enumerable, comparer) {
-                return Except(this, enumerable, comparer);
-            };
-            LinqIntermediate.prototype.First = function (predicate) {
-                return First(this, predicate);
-            };
-            LinqIntermediate.prototype.ForEach = function (action) {
-                ForEach(this, action);
-            };
-            LinqIntermediate.prototype.IndexOf = function (element) {
-                return IndexOf(this, element);
-            };
-            LinqIntermediate.prototype.Intersect = function (enumerable, comparer) {
-                return Intersect(this, enumerable, comparer);
-            };
-            LinqIntermediate.prototype.LastIndexOf = function (element) {
-                return LastIndexOf(this, element);
-            };
-            LinqIntermediate.prototype.Max = function (comparer) {
-                return Max(this, comparer);
-            };
-            LinqIntermediate.prototype.Min = function (comparer) {
-                return Min(this, comparer);
-            };
-            LinqIntermediate.prototype.Reverse = function () {
-                return Reverse(this);
-            };
-            LinqIntermediate.prototype.Select = function (func) {
-                return Select(this, func);
-            };
-            LinqIntermediate.prototype.SequenceEqual = function (second, comparer) {
-                return SequenceEqual(this, second);
-            };
-            LinqIntermediate.prototype.SkipWhile = function (predicate) {
-                return SkipWhile(this, predicate);
-            };
-            LinqIntermediate.prototype.TakeWhile = function (predicate) {
-                return TakeWhile(this, predicate);
-            };
-            LinqIntermediate.prototype.ToArray = function () {
-                return ToArray(this);
-            };
-            LinqIntermediate.prototype.ToDictionary = function (keyValueSelector) {
-                return ToDictionary(this, keyValueSelector);
-            };
-            LinqIntermediate.prototype.ToList = function () {
-                return ToList(this);
-            };
-            LinqIntermediate.prototype.Where = function (predicate) {
-                return Where(this, predicate);
-            };
-            return LinqIntermediate;
-        }());
-        Linq.LinqIntermediate = LinqIntermediate;
-        var LinqEnumerator = (function () {
-            function LinqEnumerator(source, toResult) {
-                this.sourceIndex = -1;
-                this.enumerator = source.GetEnumerator();
-                this.toResult = toResult;
-            }
-            LinqEnumerator.prototype.SourceMoveNext = function () {
-                var next = this.enumerator.MoveNext();
-                this.sourceIndex++;
-                return next;
-            };
-            LinqEnumerator.prototype.MoveNext = function () {
-                var next = this.SourceMoveNext();
-                while (next && this.Current === DotnetJs.DefaultDelegate.EmptyReturn) {
-                    next = this.SourceMoveNext();
-                }
-                return next;
-            };
-            Object.defineProperty(LinqEnumerator.prototype, "Current", {
-                get: function () {
-                    return this.toResult(this.enumerator.Current, this.sourceIndex);
-                },
-                enumerable: true,
-                configurable: true
-            });
-            LinqEnumerator.prototype.Reset = function () {
-                this.enumerator.Reset();
-            };
-            LinqEnumerator.prototype.Dispose = function () {
-                this.enumerator.Dispose();
-            };
-            return LinqEnumerator;
-        }());
-        function Aggregate(source, seed, func) {
-            if (seed == null)
-                throw new DotnetJs.ArgumentNullException('seed');
-            if (func == null)
-                throw new DotnetJs.ArgumentNullException('func');
-            ForEach(source, function (item) {
-                seed = func(seed, item);
-            });
-            return seed;
-        }
-        Linq.Aggregate = Aggregate;
-        function Average(source) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            var result = 0;
-            var length = 0;
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (typeof enumerator.Current != 'number')
-                    throw new DotnetJs.ArgumentException('not a number');
-                length++;
-                result += enumerator.Current;
-            }
-            return result / length;
-        }
-        Linq.Average = Average;
-        function All(source, predicate) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (predicate == null)
-                throw new DotnetJs.ArgumentNullException('predicate');
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (predicate(enumerator.Current)) {
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
-        Linq.All = All;
-        function Any(source, predicate) {
-            return Count(source, predicate) === 0;
-        }
-        Linq.Any = Any;
-        function Concat(first, second) {
-            if (first == null)
-                throw new DotnetJs.ArgumentNullException('first');
-            if (second == null)
-                throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerators = [first.GetEnumerator(), second.GetEnumerator()];
-            for (var i = 0; i < 2; i++)
-                while (enumerators[i].MoveNext()) {
-                    result.push(enumerators[i].Current);
-                }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
-            return linq;
-        }
-        Linq.Concat = Concat;
-        function Contains(source, element, comparer) {
-            if (element == null)
-                throw new DotnetJs.ArgumentNullException('element');
-            comparer = comparer || DotnetJs.DefaultDelegate.EqualityComparer;
-            return Any(source, function (item) { return comparer(item, element); });
-        }
-        Linq.Contains = Contains;
-        function Count(source, predicate) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            predicate = predicate || DotnetJs.DefaultDelegate.Predicate;
-            var enumerator = source.GetEnumerator();
-            var count = 0;
-            while (enumerator.MoveNext()) {
-                if (predicate(enumerator.Current)) {
-                    count++;
-                }
-            }
-            return count;
-        }
-        Linq.Count = Count;
-        function ElementAt(source, index) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (index < 0)
-                throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
-            var enumerator = source.GetEnumerator();
-            for (var i = 0; i <= index; i++) {
-                if (!enumerator.MoveNext())
-                    throw new DotnetJs.ArgumentOutOfRangeException('index: ' + index);
-            }
-            return enumerator.Current;
-        }
-        Linq.ElementAt = ElementAt;
-        function Except(first, second, comparer) {
-            if (first == null)
-                throw new DotnetJs.ArgumentNullException('first');
-            if (second == null)
-                throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerator = first.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (!Contains(second, enumerator.Current, comparer))
-                    result.push(enumerator.Current);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
-            return linq;
-        }
-        Linq.Except = Except;
-        function First(source, predicate) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            predicate = predicate || DotnetJs.DefaultDelegate.Predicate;
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                var current = enumerator.Current;
-                if (predicate(current)) {
-                    return current;
-                }
-            }
-            return null;
-        }
-        Linq.First = First;
-        function ForEach(source, action) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (action == null)
-                throw new DotnetJs.ArgumentNullException('action');
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                action(enumerator.Current);
-            }
-        }
-        Linq.ForEach = ForEach;
-        function IndexOf(source, element) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            var enumerator = source.GetEnumerator();
-            var index = 0;
-            while (enumerator.MoveNext()) {
-                if (element === enumerator.Current)
-                    return index;
-                index++;
-            }
-            return -1;
-        }
-        Linq.IndexOf = IndexOf;
-        function Intersect(first, second, comparer) {
-            if (first == null)
-                throw new DotnetJs.ArgumentNullException('first');
-            if (second == null)
-                throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerator = first.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (Contains(second, enumerator.Current, comparer))
-                    result.push(enumerator.Current);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
-            return linq;
-        }
-        Linq.Intersect = Intersect;
-        function LastIndexOf(source, element) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            var enumerator = source.GetEnumerator();
-            var index = 0;
-            var rtn = -1;
-            while (enumerator.MoveNext()) {
-                if (element === enumerator.Current)
-                    rtn = index;
-                index++;
-            }
-            return rtn;
-        }
-        Linq.LastIndexOf = LastIndexOf;
-        function Max(source, comparer) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            comparer = comparer || (function (a, b) {
-                if (a === b)
-                    return 0;
-                if (a > b)
-                    return 1;
-                if (a < b)
-                    return -1;
-                return 0;
-            });
-            var max = null;
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                var current = enumerator.Current;
-                if (comparer(max, current) > 0 && current != null)
-                    max = current;
-            }
-            return max;
-        }
-        Linq.Max = Max;
-        function Min(source, comparer) {
-            var reverseComparer = comparer || (function (a, b) {
-                if (a === b)
-                    return 0;
-                if (a > b)
-                    return -1;
-                if (a < b)
-                    return 1;
-                return 0;
-            });
-            return Max(source, reverseComparer);
-        }
-        Linq.Min = Min;
-        function Range(start, count) {
-            if (start == null)
-                throw new DotnetJs.ArgumentNullException('start');
-            if (count == null)
-                throw new DotnetJs.ArgumentNullException('count');
-            var result = [];
-            for (var i = start; i < start + count; i++) {
-                result.push(i);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
-            return linq;
-        }
-        Linq.Range = Range;
-        function Repeat(element, count) {
-            if (count == null)
-                throw new DotnetJs.ArgumentNullException('count');
-            var result = [];
-            for (var i = 0; i < count; i++) {
-                result.push(element);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
-            return linq;
-        }
-        Linq.Repeat = Repeat;
-        function Reverse(source) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            var enumerator = source.GetEnumerator();
-            var result = [];
-            while (enumerator.MoveNext()) {
-                result.unshift(enumerator.Current);
-            }
-            return LinqStart(result);
-        }
-        Linq.Reverse = Reverse;
-        function Select(source, func) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (func == null)
-                throw new DotnetJs.ArgumentNullException('func');
-            var linq = new LinqIntermediate(source, func);
-            return linq;
-        }
-        Linq.Select = Select;
-        function SequenceEqual(first, second, comparer) {
-            if (first == null)
-                throw new DotnetJs.ArgumentNullException('first');
-            if (second == null)
-                throw new DotnetJs.ArgumentNullException('second');
-            comparer = comparer || DotnetJs.DefaultDelegate.EqualityComparer;
-            var fe = first.GetEnumerator();
-            var se = second.GetEnumerator();
-            while (fe.MoveNext()) {
-                if (!se.MoveNext())
-                    return false;
-                if (!comparer(fe.Current, se.Current))
-                    return false;
-            }
-            return !se.MoveNext();
-        }
-        Linq.SequenceEqual = SequenceEqual;
-        function SkipWhile(source, predicate) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (predicate == null)
-                throw new DotnetJs.ArgumentNullException('predicate');
-            var func = function (item, index) {
-                if (predicate(item, index))
-                    return DotnetJs.DefaultDelegate.EmptyReturn;
-                return item;
-            };
-            var linq = new LinqIntermediate(source, func);
-            return linq;
-        }
-        Linq.SkipWhile = SkipWhile;
-        function TakeWhile(source, predicate) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (predicate == null)
-                throw new DotnetJs.ArgumentNullException('predicate');
-            var func = function (item, index) {
-                if (predicate(item, index))
-                    return item;
-                return DotnetJs.DefaultDelegate.EmptyReturn;
-            };
-            var linq = new LinqIntermediate(source, func);
-            return linq;
-        }
-        Linq.TakeWhile = TakeWhile;
-        function ToArray(source) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            var enumerator = source.GetEnumerator();
-            var result = [];
-            while (enumerator.MoveNext()) {
-                result.push(enumerator.Current);
-            }
-            return result;
-        }
-        Linq.ToArray = ToArray;
-        function ToDictionary(source, keyValueSelector, keyComparer) {
-            if (source == null)
-                throw new DotnetJs.ArgumentNullException('source');
-            if (keyValueSelector == null)
-                throw new DotnetJs.ArgumentNullException('keyValueSelector');
-            var array = ToArray(source);
-            var dict = new DotnetJs.Collections.Dictionary(array.length, keyComparer);
-            var enumerator = source.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                var pair = keyValueSelector(enumerator.Current);
-                if (pair == null)
-                    continue;
-                dict.Add(pair.Key, pair.Value);
-            }
-            return dict;
-        }
-        Linq.ToDictionary = ToDictionary;
-        function ToList(source) {
-            return new DotnetJs.Collections.List(ToArray(source));
-        }
-        Linq.ToList = ToList;
-        function Where(source, predicate) {
-            return TakeWhile(source, predicate);
-        }
-        Linq.Where = Where;
-    })(Linq = DotnetJs.Linq || (DotnetJs.Linq = {}));
-})(DotnetJs || (DotnetJs = {}));
-var DotnetJs;
-(function (DotnetJs) {
     var Collections;
     (function (Collections) {
         var List = (function () {
@@ -1912,370 +2279,3 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
-var DotnetJs;
-(function (DotnetJs) {
-    var Char;
-    (function (Char) {
-        function IsControl(value, index) {
-            Ensure(value, index);
-            var code = value.charCodeAt(index || 0);
-            if (code >= 0 && code <= 31)
-                return true;
-            if (code >= 127 && code <= 159)
-                return true;
-            return false;
-        }
-        Char.IsControl = IsControl;
-        function IsDigit(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            return (value >= '0') && (value <= '9');
-        }
-        Char.IsDigit = IsDigit;
-        function IsLetter(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            return IsLower(value) || IsUpper(value);
-        }
-        Char.IsLetter = IsLetter;
-        function IsLower(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            return (value >= 'a') && (value <= 'Z');
-        }
-        Char.IsLower = IsLower;
-        function IsPunctuation(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            switch (value) {
-                case '!':
-                case '"':
-                case '#':
-                case '%':
-                case '&':
-                case '\'':
-                case '(':
-                case ')':
-                case '*':
-                case ',':
-                case '-':
-                case '.':
-                case '/':
-                case ':':
-                case ';':
-                case '?':
-                case '@':
-                case '[':
-                case '\\':
-                case ']':
-                case '_':
-                case '{':
-                case '}': return true;
-                default:
-                    return false;
-            }
-        }
-        Char.IsPunctuation = IsPunctuation;
-        function IsSeparator(value, index) {
-            Ensure(value, index);
-            var code = value.charCodeAt(index || 0);
-            if (code >= 8192 && code <= 8202)
-                return true;
-            switch (code) {
-                case 32:
-                case 160:
-                case 5760:
-                case 6158:
-                case 8239:
-                case 8287:
-                case 12288: return true;
-                default:
-                    return false;
-            }
-        }
-        Char.IsSeparator = IsSeparator;
-        function IsUpper(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            return (value >= 'A') && (value <= 'Z');
-        }
-        Char.IsUpper = IsUpper;
-        function IsWhiteSpace(value, index) {
-            Ensure(value, index);
-            value = value.charAt(index || 0);
-            return value == ' ';
-        }
-        Char.IsWhiteSpace = IsWhiteSpace;
-        function Ensure(value, index) {
-            if (value == null)
-                throw new DotnetJs.ArgumentNullException('value');
-            if (index == null && value.length != 1)
-                throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
-            if ((index || -1) >= value.length)
-                throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
-        }
-    })(Char = DotnetJs.Char || (DotnetJs.Char = {}));
-})(DotnetJs || (DotnetJs = {}));
-var StringEnumerator = (function () {
-    function StringEnumerator(str) {
-        this.source = str;
-        this.index = 0;
-        this.current = null;
-    }
-    StringEnumerator.prototype.MoveNext = function () {
-        if (this.index >= this.source.length)
-            return false;
-        this.current = this.source.charCodeAt(this.index++);
-        return true;
-    };
-    Object.defineProperty(StringEnumerator.prototype, "Current", {
-        get: function () {
-            return this.current;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    StringEnumerator.prototype.Reset = function () {
-        this.index = 0;
-    };
-    StringEnumerator.prototype.Dispose = function () {
-    };
-    return StringEnumerator;
-}());
-(function () {
-    String.Empty = "";
-    Object.freeze(String.Empty);
-    String.Format = function (value) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        return value.replace(/{(\d+(,[-\d]+)?(:[^\t\r\n\{\}]+)?)}/g, function (match, content) {
-            var exp = DotnetJs.Linq.LinqStart(content);
-            var colon = exp.IndexOf(':'.charCodeAt(0));
-            var comma = exp.IndexOf(','.charCodeAt(0));
-            var index;
-            var format;
-            var alignment;
-            var getNumber = function (left, right) {
-                var result = content.substring(left, right);
-                return parseInt(result);
-            };
-            var tryGetString = function (i, f) {
-                if (i >= args.length)
-                    throw new DotnetJs.ArgumentOutOfRangeException('args[' + i + ']');
-                var result = args[index];
-                if (typeof result === 'undefined')
-                    return 'undefined';
-                if (result == null)
-                    return null;
-                if (f == null)
-                    return result.toString();
-                return result.toString.apply(result, [f]);
-            };
-            if (colon > comma && comma != -1)
-                throw new DotnetJs.ArgumentException('malformated');
-            if (colon == -1 && comma == -1) {
-                index = parseInt(content);
-                return tryGetString(index);
-            }
-            if (colon != -1) {
-                format = content.substring(colon + 1);
-                index = (comma == -1) ? getNumber(0, colon) : getNumber(0, comma);
-            }
-            if (comma != -1) {
-                index = index || getNumber(0, comma);
-                alignment = (colon == -1) ? getNumber(comma + 1) : getNumber(comma + 1, colon);
-            }
-            var result = tryGetString(index, format);
-            if (alignment == null)
-                return result;
-            return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
-        });
-    };
-    String.Join = function (seperator) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        if (seperator == null)
-            throw new DotnetJs.ArgumentNullException('seperator');
-        if (args.length == 0)
-            throw new DotnetJs.ArgumentException('args length is zerp');
-        var result = "";
-        args.forEach(function (value) { return result += value; });
-        return result;
-    };
-    String.IsNullOrEmpty = function (value) {
-        if (value == null || value == String.Empty)
-            return true;
-        return false;
-    };
-    String.IsNullOrWhiteSpace = function (value) {
-        if (value == null)
-            return true;
-        return value.replace(/\s/g, String.Empty).length < 1;
-    };
-    function internalPad(spaceLength, paddingChar) {
-        paddingChar = paddingChar || ' ';
-        if (typeof paddingChar === 'string') {
-            if (paddingChar.length > 1)
-                throw new DotnetJs.ArgumentException('paddingChar is not a char, but a string.');
-            paddingChar = paddingChar.charCodeAt(0);
-        }
-        var spaces = DotnetJs.Linq.Repeat(paddingChar, spaceLength).ToArray();
-        return String.fromCharCode.apply(null, spaces);
-    }
-    String.prototype.GetEnumerator = function () {
-        return new StringEnumerator(this);
-    };
-    String.prototype.PadLeft = function (totalLength, paddingChar) {
-        if (totalLength == null)
-            throw new DotnetJs.ArgumentNullException('value');
-        if (totalLength < 0)
-            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
-        var me = this;
-        var spaceLength = totalLength - me.length;
-        return internalPad(spaceLength, paddingChar) + me;
-    };
-    String.prototype.PadRight = function (totalLength, paddingChar) {
-        if (totalLength == null)
-            throw new DotnetJs.ArgumentNullException('value');
-        if (totalLength < 0)
-            throw new DotnetJs.ArgumentOutOfRangeException('totalLength < 0');
-        var me = this;
-        var spaceLength = totalLength - me.length;
-        return me + internalPad(spaceLength, paddingChar);
-    };
-    String.prototype.StartsWith = function (value, ignoreCase) {
-        if (value == null)
-            throw new DotnetJs.ArgumentNullException('value');
-        var me = this;
-        if (me.length < value.length)
-            return false;
-        var sub = me.substring(0, value.length);
-        if (ignoreCase) {
-            sub = sub.toLowerCase();
-            value = value.toLowerCase();
-        }
-        return sub === value;
-    };
-})();
-(function () {
-    console.writeLine = function (format) {
-        if (format == null) {
-            console.log();
-            return;
-        }
-        var msg = String.Format.apply(null, arguments);
-        console.log(msg);
-    };
-})();
-(function () {
-    var char = DotnetJs.Char;
-    var toString = Number.prototype.toString;
-    Number.TryParseInt = TryParseInt;
-    Number.prototype.toString = function (format) {
-        if (format == null || typeof format == 'number' || TryParseInt(format, function (out) { return format = out; }))
-            return toString.apply(this, [format]);
-        if (format.length == 0)
-            throw new DotnetJs.FormatException('format = ' + format);
-        var sign = this.valueOf() < 0 ? '-' : '';
-        var value = Math.abs(this.valueOf());
-        var fd = tryGetParam(format);
-        if (format.StartsWith('D', true)) {
-            return Decimal(sign, value, fd);
-        }
-        if (format.StartsWith('E', true)) {
-            var e = format[0];
-            return Exponential(sign, value, fd, char.IsLower(e));
-        }
-        if (format.StartsWith('F', true)) {
-            return FixedPoint(sign, value, fd);
-        }
-        if (format.StartsWith('G', true)) {
-            var func = void 0;
-            if (value < 1e-6 || value > 1e+14)
-                func = Exponential;
-            if (value == Math.floor(value))
-                func = Decimal;
-            func = FixedPoint;
-            return func(sign, value, fd, char.IsLower(format, 0));
-        }
-        if (format.StartsWith('N', true)) {
-            return Numeric(sign, value, fd);
-        }
-        if (format.StartsWith('P', true)) {
-            return Percentage(sign, value, fd);
-        }
-        if (format.StartsWith('X', true)) {
-            return Hexadecimal(sign, value, fd, format[0] == 'x');
-        }
-        throw new DotnetJs.FormatException('format = ' + format);
-    };
-    function Decimal(sign, value, digits) {
-        digits = digits || 0;
-        var base = toString.apply(value, []);
-        if (base.indexOf('.') != -1)
-            throw new DotnetJs.FormatException(base + 'is not a decimal');
-        return sign + base.PadLeft(digits, '0');
-    }
-    function Exponential(sign, value, digits, lowerCase) {
-        var expChar = lowerCase ? 'e' : 'E';
-        var exp = digits == null ? value.toExponential() : value.toExponential(digits);
-        var ei = exp.indexOf('e');
-        var pw = exp.substring(ei + 2);
-        return sign + exp.substring(0, ei) + expChar + exp[ei + 1] + pw.PadLeft(3, '0');
-    }
-    function FixedPoint(sign, value, digits) {
-        digits = digits || 2;
-        var result = "";
-        while (value >= 1e21) {
-            var sub = value % 1e20;
-            result += toString.apply((value - sub) * 1e-20, []);
-            value = sub;
-        }
-        result += value.toFixed(digits);
-        return sign + result;
-    }
-    function Numeric(sign, value, digits) {
-        var pre = FixedPoint('', value, digits);
-        var pi = pre.indexOf('.');
-        var rtn = sign;
-        if (pi == -1)
-            pi = pre.length;
-        for (var i = 0; i < pre.length; i++) {
-            if (i != 0 && i <= pi - 3 && (pi - i) % 3 == 0)
-                rtn += ',';
-            rtn += pre[i];
-        }
-        return rtn;
-    }
-    function Percentage(sign, value, digits) {
-        var pre = Numeric(sign, value * 100, digits);
-        return pre + ' %';
-    }
-    function Hexadecimal(sign, value, digits, lowerCase) {
-        digits = digits || 0;
-        var pre = toString.apply(value, [16]);
-        if (!lowerCase)
-            pre = pre.toUpperCase();
-        return sign + pre.PadLeft(digits, '0');
-    }
-    function tryGetParam(format) {
-        if (format.length > 1) {
-            var fd = Number(format.substring(1));
-            if (isNaN(fd))
-                throw new DotnetJs.FormatException('format = ' + format);
-            return fd;
-        }
-        return null;
-    }
-    function TryParseInt(value, out) {
-        var num = Number(value);
-        if (isNaN(num))
-            return false;
-        out(num);
-        return true;
-    }
-})();
