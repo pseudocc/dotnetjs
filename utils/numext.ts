@@ -7,7 +7,7 @@ interface NumberConstructor {
 }
 
 (function () {
-    var expressions: any = {};
+    var char = DotnetJs.Char;
     var toString = Number.prototype.toString;
     Number.TryParseInt = TryParseInt;
     Number.prototype.toString = function (format: string | number): string {

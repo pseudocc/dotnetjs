@@ -381,7 +381,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 6, 41);
+        return new DotnetJs.Version(1, 5, 7, 42);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1912,107 +1912,110 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
-var char;
-(function (char) {
-    function IsControl(value, index) {
-        Ensure(value, index);
-        var code = value.charCodeAt(index || 0);
-        if (code >= 0 && code <= 31)
-            return true;
-        if (code >= 127 && code <= 159)
-            return true;
-        return false;
-    }
-    char.IsControl = IsControl;
-    function IsDigit(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        return (value >= '0') && (value <= '9');
-    }
-    char.IsDigit = IsDigit;
-    function IsLetter(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        return IsLower(value) || IsUpper(value);
-    }
-    char.IsLetter = IsLetter;
-    function IsLower(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        return (value >= 'a') && (value <= 'Z');
-    }
-    char.IsLower = IsLower;
-    function IsPunctuation(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        switch (value) {
-            case '!':
-            case '"':
-            case '#':
-            case '%':
-            case '&':
-            case '\'':
-            case '(':
-            case ')':
-            case '*':
-            case ',':
-            case '-':
-            case '.':
-            case '/':
-            case ':':
-            case ';':
-            case '?':
-            case '@':
-            case '[':
-            case '\\':
-            case ']':
-            case '_':
-            case '{':
-            case '}': return true;
-            default:
-                return false;
+var DotnetJs;
+(function (DotnetJs) {
+    var Char;
+    (function (Char) {
+        function IsControl(value, index) {
+            Ensure(value, index);
+            var code = value.charCodeAt(index || 0);
+            if (code >= 0 && code <= 31)
+                return true;
+            if (code >= 127 && code <= 159)
+                return true;
+            return false;
         }
-    }
-    char.IsPunctuation = IsPunctuation;
-    function IsSeparator(value, index) {
-        Ensure(value, index);
-        var code = value.charCodeAt(index || 0);
-        if (code >= 8192 && code <= 8202)
-            return true;
-        switch (code) {
-            case 32:
-            case 160:
-            case 5760:
-            case 6158:
-            case 8239:
-            case 8287:
-            case 12288: return true;
-            default:
-                return false;
+        Char.IsControl = IsControl;
+        function IsDigit(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= '0') && (value <= '9');
         }
-    }
-    char.IsSeparator = IsSeparator;
-    function IsUpper(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        return (value >= 'A') && (value <= 'Z');
-    }
-    char.IsUpper = IsUpper;
-    function IsWhiteSpace(value, index) {
-        Ensure(value, index);
-        value = value.charAt(index || 0);
-        return value == ' ';
-    }
-    char.IsWhiteSpace = IsWhiteSpace;
-    function Ensure(value, index) {
-        if (value == null)
-            throw new DotnetJs.ArgumentNullException('value');
-        if (index == null && value.length != 1)
-            throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
-        if ((index || -1) >= value.length)
-            throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
-    }
-})(char || (char = {}));
+        Char.IsDigit = IsDigit;
+        function IsLetter(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return IsLower(value) || IsUpper(value);
+        }
+        Char.IsLetter = IsLetter;
+        function IsLower(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= 'a') && (value <= 'Z');
+        }
+        Char.IsLower = IsLower;
+        function IsPunctuation(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            switch (value) {
+                case '!':
+                case '"':
+                case '#':
+                case '%':
+                case '&':
+                case '\'':
+                case '(':
+                case ')':
+                case '*':
+                case ',':
+                case '-':
+                case '.':
+                case '/':
+                case ':':
+                case ';':
+                case '?':
+                case '@':
+                case '[':
+                case '\\':
+                case ']':
+                case '_':
+                case '{':
+                case '}': return true;
+                default:
+                    return false;
+            }
+        }
+        Char.IsPunctuation = IsPunctuation;
+        function IsSeparator(value, index) {
+            Ensure(value, index);
+            var code = value.charCodeAt(index || 0);
+            if (code >= 8192 && code <= 8202)
+                return true;
+            switch (code) {
+                case 32:
+                case 160:
+                case 5760:
+                case 6158:
+                case 8239:
+                case 8287:
+                case 12288: return true;
+                default:
+                    return false;
+            }
+        }
+        Char.IsSeparator = IsSeparator;
+        function IsUpper(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return (value >= 'A') && (value <= 'Z');
+        }
+        Char.IsUpper = IsUpper;
+        function IsWhiteSpace(value, index) {
+            Ensure(value, index);
+            value = value.charAt(index || 0);
+            return value == ' ';
+        }
+        Char.IsWhiteSpace = IsWhiteSpace;
+        function Ensure(value, index) {
+            if (value == null)
+                throw new DotnetJs.ArgumentNullException('value');
+            if (index == null && value.length != 1)
+                throw new DotnetJs.InvalidDataException(value + ' is not a char but a string');
+            if ((index || -1) >= value.length)
+                throw new DotnetJs.ArgumentOutOfRangeException('index = ' + index);
+        }
+    })(Char = DotnetJs.Char || (DotnetJs.Char = {}));
+})(DotnetJs || (DotnetJs = {}));
 var StringEnumerator = (function () {
     function StringEnumerator(str) {
         this.source = str;
@@ -2169,7 +2172,7 @@ var StringEnumerator = (function () {
     };
 })();
 (function () {
-    var expressions = {};
+    var char = DotnetJs.Char;
     var toString = Number.prototype.toString;
     Number.TryParseInt = TryParseInt;
     Number.prototype.toString = function (format) {

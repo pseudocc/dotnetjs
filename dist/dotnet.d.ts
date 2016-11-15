@@ -340,7 +340,7 @@ declare module 'dotnetjs' {
     import dotnetjs = DotnetJs;
     export = dotnetjs;
 }
-declare module char {
+declare module DotnetJs.Char {
     function IsControl(value: string, index?: number): boolean;
     function IsDigit(value: string, index?: number): boolean;
     function IsLetter(value: string, index?: number): boolean;
