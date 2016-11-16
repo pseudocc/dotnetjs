@@ -1,7 +1,7 @@
 /// <reference path="../typings/node.d.ts" />
 "use strict";
 var assert = require('assert');
-var char_1 = require('./char');
+var char_1 = require('./utils/char');
 try {
     char_1.default(asserEqual);
 }

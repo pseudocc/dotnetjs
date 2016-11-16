@@ -1,6 +1,6 @@
-/// <reference path="../dist/dotnet.d.ts" />
+/// <reference path="../../dist/dotnet.d.ts" />
 import DotnetJs = require('dotnetjs');
-// import DotnetJs = require('../dist/dotnet.js');
+// import DotnetJs = require('../../dist/dotnet.js');
 var char = DotnetJs.Char;
 
 export default function runTest(assertEqual: (expect: Object, result: Object) => void) {

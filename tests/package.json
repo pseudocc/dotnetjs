@@ -1,0 +1,16 @@
+{
+  "name": "dotnetjs_test",
+  "version": "0.0.0",
+  "description": "test solution for dotnetjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [
+    "typescript",
+    "javascript"
+  ],
+  "author": "Master Yu",
+  "license": "MIT"
+}
+ 

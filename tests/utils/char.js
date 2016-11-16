@@ -1,7 +1,7 @@
 "use strict";
-/// <reference path="../dist/dotnet.d.ts" />
-var DotnetJs = require('../dist/dotnet.js');
-// import DotnetJs = require('../dist/dotnet.js');
+/// <reference path="../../dist/dotnet.d.ts" />
+var DotnetJs = require('dotnetjs');
+// import DotnetJs = require('../../dist/dotnet.js');
 var char = DotnetJs.Char;
 function runTest(assertEqual) {
     assertEqual(false, char.IsUpper('Foo', 1));

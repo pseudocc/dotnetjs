@@ -1,7 +1,7 @@
 /// <reference path="../typings/node.d.ts" />
 
 import assert = require('assert');
-import charTest from './char';
+import charTest from './utils/char';
 try {
     charTest(asserEqual);
 }
