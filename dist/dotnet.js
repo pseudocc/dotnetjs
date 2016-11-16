@@ -120,11 +120,12 @@ var DotnetJs;
     }
     Object.defineProperty(Object.prototype, 'IsValueType', {
         get: function () {
-            var type = typeof this;
+            var value = this.valueOf();
+            var type = typeof value;
             return type == 'number'
                 || type == 'boolean'
                 || type == 'string'
-                || this instanceof DotnetJs.ValueType;
+                || value instanceof DotnetJs.ValueType;
         }
     });
     Object.prototype.GetHashCode = function (refresh) {
@@ -135,6 +136,8 @@ var DotnetJs;
         switch (type) {
             case 'number':
                 return value;
+            case 'boolean':
+                return value ? 1 : 0;
             case 'object':
                 if (this.IsValueType) {
                     throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
@@ -754,7 +757,7 @@ var DotnetJs;
         function IsLower(value, index) {
             Ensure(value, index);
             value = value.charAt(index || 0);
-            return (value >= 'a') && (value <= 'Z');
+            return (value >= 'a') && (value <= 'z');
         }
         Char.IsLower = IsLower;
         function IsPunctuation(value, index) {
@@ -1106,7 +1109,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 8, 44);
+        return new DotnetJs.Version(1, 5, 9, 45);
     }
     function Greetings() {
         var version = GetVersion();

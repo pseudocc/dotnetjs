@@ -29,7 +29,7 @@ module DotnetJs.Char {
     export function IsLower(value: string, index?: number): boolean {
         Ensure(value, index);
         value = value.charAt(index || 0);
-        return (value >= 'a') && (value <= 'Z');
+        return (value >= 'a') && (value <= 'z');
     }
 
     export function IsPunctuation(value: string, index?: number): boolean {

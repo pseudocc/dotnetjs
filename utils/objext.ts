@@ -31,11 +31,12 @@ interface Object {
 
     Object.defineProperty(Object.prototype, 'IsValueType', {
         get: function() {
-            var type = typeof this;
+            var value = this.valueOf();
+            var type = typeof value;
             return type == 'number'
                 || type == 'boolean'
                 || type == 'string'
-                || this instanceof DotnetJs.ValueType;
+                || value instanceof DotnetJs.ValueType;
         }
     });
 
@@ -48,6 +49,8 @@ interface Object {
         switch (type) {
             case 'number':
                 return value;
+            case 'boolean':
+                return value ? 1 : 0;
             case 'object':
                 if (this.IsValueType) {
                     throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
