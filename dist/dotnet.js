@@ -1125,7 +1125,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 10, 47);
+        return new DotnetJs.Version(1, 5, 11, 49);
     }
     function Greetings() {
         var version = GetVersion();
@@ -2298,3 +2298,4 @@ catch (e) {
 finally {
     DotnetJs.Greetings();
 }
+//# sourceMappingURL=dotnet.js.map
