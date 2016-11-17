@@ -122,6 +122,10 @@ If you inherit from typescript abstract class ValueType, remember to override Eq
 
 More String extensions. 
 
+## Test
+
+Change directory to tests, then run ```npm install dotnetjs --save``` first, to set up the local dependence, then run ```node index.js``` to start the test.
+
 ## Contributors
 
 [Master76](https://github.com/Master76) Author
