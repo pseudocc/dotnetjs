@@ -28,7 +28,10 @@
     or run ```bower install dotnetjs```
 
     ```html
+    <!--if debug-->
     <script src="dotnet.js"></script>
+    <!--if release-->
+    <script src="dotnet.min.js"></script>
     <script src="your.js"></script>
     ```
 
