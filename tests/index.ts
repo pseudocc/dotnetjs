@@ -2,17 +2,24 @@
 
 import assert = require('assert');
 import charTest from './utils/char';
-try {
-    charTest(asserEqual);
+
+var testCases: ((Function) => number)[] = [charTest];
+var passed = 0;
+for (var i = 0; i < testCases.length; i++) {
+    let ut = testCases[i];
+    try {
+        let code = ut(asserEqual);
+        if (code == 0)
+            passed++;
+    }
+    catch (e) {
+        var exception = <Error>e;
+        console.warn(exception.stack);
+    }
 }
-catch (e) {
-    var exception = <Error>e;
-    console.warn(exception.stack);
-    process.exit(1);
-}
-finally {
-    process.exit(0);
-}
+console.writeLine("{0} of {1} test cases passed.", passed, testCases.length);
+
+process.exit(0);
 
 function asserEqual(expected: Object, actual: Object) {
     if (!actual.Equals(expected)) {
