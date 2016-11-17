@@ -26,6 +26,8 @@ var DotnetJs;
         __extends(InvalidDataException, _super);
         function InvalidDataException(type) {
             _super.call(this, 'UnExpected data type: ' + type);
+            this.stack = (new Error()).stack;
+            this.name = 'InvalidDataException';
         }
         return InvalidDataException;
     }(Error));
@@ -34,6 +36,8 @@ var DotnetJs;
         __extends(FormatException, _super);
         function FormatException(msg) {
             _super.call(this, 'Format specifier was invalid. ' + msg || '');
+            this.stack = (new Error()).stack;
+            this.name = 'InvalidDataException';
         }
         return FormatException;
     }(Error));
@@ -42,6 +46,8 @@ var DotnetJs;
         __extends(NotImplementedExeption, _super);
         function NotImplementedExeption(methodName) {
             _super.call(this, (methodName || 'Method') + ' Not Implemented.');
+            this.stack = (new Error()).stack;
+            this.name = 'InvalidDataException';
         }
         return NotImplementedExeption;
     }(Error));
@@ -49,7 +55,9 @@ var DotnetJs;
     var UnknownExeption = (function (_super) {
         __extends(UnknownExeption, _super);
         function UnknownExeption() {
-            _super.call(this, 'UnknownExeption');
+            _super.call(this, 'An unknown exeption occured. Please send the stack trace to me. Thank you.');
+            this.stack = (new Error()).stack;
+            this.name = 'UnknownExeption';
         }
         return UnknownExeption;
     }(Error));
@@ -57,7 +65,9 @@ var DotnetJs;
     var ArgumentException = (function (_super) {
         __extends(ArgumentException, _super);
         function ArgumentException(msg) {
-            _super.call(this, 'ArgumentException: ' + msg);
+            _super.call(this, 'An argument exception occured: ' + msg);
+            this.stack = (new Error()).stack;
+            this.name = 'ArgumentException';
         }
         return ArgumentException;
     }(Error));
@@ -65,7 +75,9 @@ var DotnetJs;
     var ArgumentNullException = (function (_super) {
         __extends(ArgumentNullException, _super);
         function ArgumentNullException(msg) {
-            _super.call(this, 'ArgumentNullException: ' + msg);
+            _super.call(this, 'Argument with parameter name ' + msg + ' is null or undefined.');
+            this.stack = (new Error()).stack;
+            this.name = 'ArgumentNullException';
         }
         return ArgumentNullException;
     }(Error));
@@ -73,7 +85,9 @@ var DotnetJs;
     var ArgumentOutOfRangeException = (function (_super) {
         __extends(ArgumentOutOfRangeException, _super);
         function ArgumentOutOfRangeException(msg) {
-            _super.call(this, 'ArgumentOutOfRangeException: ' + msg);
+            _super.call(this, 'Argument given was out of range: ' + msg);
+            this.stack = (new Error()).stack;
+            this.name = 'ArgumentOutOfRangeException';
         }
         return ArgumentOutOfRangeException;
     }(Error));
@@ -81,7 +95,9 @@ var DotnetJs;
     var InvalidOperationException = (function (_super) {
         __extends(InvalidOperationException, _super);
         function InvalidOperationException(msg) {
-            _super.call(this, 'InvalidOperationException: ' + msg);
+            _super.call(this, 'Operation is invalid: ' + msg);
+            this.stack = (new Error()).stack;
+            this.name = 'InvalidOperationException';
         }
         return InvalidOperationException;
     }(Error));
@@ -1109,7 +1125,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 9, 45);
+        return new DotnetJs.Version(1, 5, 10, 47);
     }
     function Greetings() {
         var version = GetVersion();
