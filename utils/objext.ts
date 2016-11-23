@@ -12,9 +12,6 @@ interface Object {
     var id = 0x7FEFFFFD;
 
     function StringHash(obj: Object): number {
-        if (obj.IsValueType) {
-            throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
-        }
         var value = obj.toString();
         var m, n = 0x15051505;
         var offset = 0;
