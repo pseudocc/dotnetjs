@@ -2,8 +2,11 @@
 
 import assert = require('assert');
 import charTest from './utils/char';
+import stringTest from './utils/string'
 
-var testCases: ((Function) => number)[] = [charTest];
+var testCases: ((Function) => number)[] = [
+    charTest, stringTest
+];
 var passed = 0;
 for (var i = 0; i < testCases.length; i++) {
     let ut = testCases[i];
