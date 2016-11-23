@@ -1105,11 +1105,13 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 12, 51);
+        return new DotnetJs.Version(1, 5, 12, 52);
     }
     function Greetings() {
         var version = GetVersion();
         console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
+        console.log('DotnetJs is released under the MIT license by Master Yu.');
+        console.log('See the full license at https://github.com/Master76/dotnetjs/blob/master/LICENSE.');
     }
     DotnetJs.Greetings = Greetings;
 })(DotnetJs || (DotnetJs = {}));
