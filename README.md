@@ -127,7 +127,7 @@ More extensions. If you have any idea, please feel free to contact me.
 
 ## Test
 
-Change directory to tests, then run ```tsc``` to compile the typescript files, then run ```npm install dotnetjs --save``` secondly, to set up the local dependence, finally run ```node index.js``` to start the test.
+Change directory to tests, then run ```tsc``` to compile the typescript files, then run ```npm link ../``` secondly, to set up the local dependence, finally run ```node index.js``` to start the test.
 
 ## Contributors
 
