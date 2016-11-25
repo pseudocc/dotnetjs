@@ -1,5 +1,6 @@
 ﻿/// <reference path="../utils/array.ts" />
 /// <reference path="../utils/errors.ts" />
+/// <reference path="linq.ts" />
 
 module DotnetJs.Collections {
 
@@ -8,8 +9,13 @@ module DotnetJs.Collections {
         private items: T[];
         private version: number;
 
-        constructor(collection?: T[]) {
-            this.items = collection || [];
+        constructor(collection?: T[] | IEnumerable<T>) {
+            if (collection == null)
+                this.items = [];
+            else if (collection instanceof Array) {
+                this.items = collection;
+            }
+            else this.items = Linq.ToArray(collection);
             this.version = 0;
         }
 
@@ -227,10 +233,16 @@ module DotnetJs.Collections {
             if (index >= this.Count) {
                 throw new ArgumentOutOfRangeException('index');
             }
-            if (index < this.Count) {
-                Arrays.Copy(this.items, index + 1, this.items, index, this.Count - index);
+            if (index == 0) {
+                this.items.shift();
             }
-            this.items.length--;
+            else if (index == this.Count - 1) {
+                this.items.pop();
+            }
+            else {
+                Arrays.Copy(this.items, index + 1, this.items, index, this.Count - index);
+                this.items.length--;
+            }
             this.version++;
         }
 
