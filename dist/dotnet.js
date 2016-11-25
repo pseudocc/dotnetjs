@@ -1105,7 +1105,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 13, 53);
+        return new DotnetJs.Version(1, 5, 14, 56);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1944,7 +1944,13 @@ var DotnetJs;
     (function (Collections) {
         var List = (function () {
             function List(collection) {
-                this.items = collection || [];
+                if (collection == null)
+                    this.items = [];
+                else if (collection instanceof Array) {
+                    this.items = collection;
+                }
+                else
+                    this.items = DotnetJs.Linq.ToArray(collection);
                 this.version = 0;
             }
             Object.defineProperty(List.prototype, "Count", {
@@ -2156,10 +2162,16 @@ var DotnetJs;
                 if (index >= this.Count) {
                     throw new DotnetJs.ArgumentOutOfRangeException('index');
                 }
-                if (index < this.Count) {
-                    DotnetJs.Arrays.Copy(this.items, index + 1, this.items, index, this.Count - index);
+                if (index == 0) {
+                    this.items.shift();
                 }
-                this.items.length--;
+                else if (index == this.Count - 1) {
+                    this.items.pop();
+                }
+                else {
+                    DotnetJs.Arrays.Copy(this.items, index + 1, this.items, index, this.Count - index);
+                    this.items.length--;
+                }
                 this.version++;
             };
             List.prototype.RemoveLast = function () {
