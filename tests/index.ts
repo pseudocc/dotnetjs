@@ -2,10 +2,11 @@
 
 import assert = require('assert');
 import charTest from './utils/char';
-import stringTest from './utils/string'
+import stringTest from './utils/string';
+import listTest from './collections/list';
 
 var testCases: ((Function) => number)[] = [
-    charTest, stringTest
+    charTest, stringTest, listTest
 ];
 var passed = 0;
 for (var i = 0; i < testCases.length; i++) {
