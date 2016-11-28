@@ -346,7 +346,7 @@ declare module DotnetJs.Collections {
     class List<T extends Object> implements ICollection<T> {
         private items;
         private version;
-        constructor(collection?: T[]);
+        constructor(collection?: T[] | IEnumerable<T>);
         readonly Count: number;
         readonly IsReadOnly: boolean;
         readonly Values: T[];
