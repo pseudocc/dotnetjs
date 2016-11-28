@@ -458,8 +458,9 @@
             throw new ArgumentNullException('source');
         var enumerator = source.GetEnumerator();
         var result: TSource[] = [];
+        var i = 0;
         while (enumerator.MoveNext()) {
-            result.push(enumerator.Current);
+            result[i++] = enumerator.Current;
         }
         return result;
     }

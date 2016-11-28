@@ -53,8 +53,10 @@ module DotnetJs.Arrays {
         if (collection == null)
             throw new ArgumentNullException('collection');
         length = length || collection.length;
+        var startIndex = array.length;
         for (var i = 0; i < length; i++) {
-            array.push(collection[i]);
+            let index = startIndex + i;
+            array[index] = collection[i];
         }
     }
 
