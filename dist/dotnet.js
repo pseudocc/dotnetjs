@@ -691,8 +691,9 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('source');
             var enumerator = source.GetEnumerator();
             var result = [];
+            var i = 0;
             while (enumerator.MoveNext()) {
-                result.push(enumerator.Current);
+                result[i++] = enumerator.Current;
             }
             return result;
         }
@@ -1105,7 +1106,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 14, 56);
+        return new DotnetJs.Version(1, 5, 15, 57);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1175,8 +1176,10 @@ var DotnetJs;
             if (collection == null)
                 throw new DotnetJs.ArgumentNullException('collection');
             length = length || collection.length;
+            var startIndex = array.length;
             for (var i = 0; i < length; i++) {
-                array.push(collection[i]);
+                var index = startIndex + i;
+                array[index] = collection[i];
             }
         }
         Arrays.AddRange = AddRange;
