@@ -4,9 +4,10 @@ import assert = require('assert');
 import charTest from './utils/char';
 import stringTest from './utils/string';
 import listTest from './collections/list';
+import linqTest from './collections/linq';
 
 var testCases: ((Function) => number)[] = [
-    charTest, stringTest, listTest
+    charTest, stringTest, listTest, linqTest
 ];
 var passed = 0;
 for (var i = 0; i < testCases.length; i++) {
