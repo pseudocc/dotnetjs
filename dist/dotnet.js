@@ -122,36 +122,43 @@ var DotnetJs;
                 || type == 'boolean'
                 || type == 'string'
                 || value instanceof DotnetJs.ValueType;
-        }
+        },
+        enumerable: false
     });
-    Object.prototype.GetHashCode = function (refresh) {
-        if (this.hashCode && !refresh)
-            return this.hashCode;
-        var value = this.valueOf();
-        var type = typeof value;
-        switch (type) {
-            case 'number':
-                return value;
-            case 'boolean':
-                return value ? 1 : 0;
-            case 'object':
-                if (this.IsValueType) {
-                    throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
-                }
-                break;
-            default:
-                return StringHash(value);
-        }
-        var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
-        this.hashCode = newId;
-        return newId;
-    };
-    Object.prototype.Equals = function (obj) {
-        if (!obj.IsValueType)
-            return obj === this;
-        var vt = obj;
-        return vt.GetHashCode() === this.GetHashCode();
-    };
+    Object.defineProperty(Object.prototype, 'GetHashCode', {
+        value: function (refresh) {
+            if (this.hashCode && !refresh)
+                return this.hashCode;
+            var value = this.valueOf();
+            var type = typeof value;
+            switch (type) {
+                case 'number':
+                    return value;
+                case 'boolean':
+                    return value ? 1 : 0;
+                case 'object':
+                    if (this.IsValueType) {
+                        throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
+                    }
+                    break;
+                default:
+                    return StringHash(value);
+            }
+            var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
+            this.hashCode = newId;
+            return newId;
+        },
+        enumerable: false
+    });
+    Object.defineProperty(Object.prototype, 'Equals', {
+        value: function (obj) {
+            if (!obj.IsValueType)
+                return obj === this;
+            var vt = obj;
+            return vt.GetHashCode() === this.GetHashCode();
+        },
+        enumerable: false
+    });
     Array.prototype.GetEnumerator = function () {
         return new ArrayEnumerator(this);
     };
@@ -1106,7 +1113,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 15, 57);
+        return new DotnetJs.Version(1, 5, 16, 58);
     }
     function Greetings() {
         var version = GetVersion();
