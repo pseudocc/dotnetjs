@@ -8,7 +8,7 @@ interface Object {
     hashCode: number;
 }
 
-(function() {
+(function () {
     var id = 0x7FEFFFFD;
 
     function StringHash(obj: Object): number {
@@ -27,50 +27,57 @@ interface Object {
     }
 
     Object.defineProperty(Object.prototype, 'IsValueType', {
-        get: function() {
+        get: function () {
             var value = this.valueOf();
             var type = typeof value;
             return type == 'number'
                 || type == 'boolean'
                 || type == 'string'
                 || value instanceof DotnetJs.ValueType;
-        }
+        },
+        enumerable: false
+    });
+    
+    Object.defineProperty(Object.prototype, 'GetHashCode', {
+        value: function (refresh?: boolean): number {
+            if (this.hashCode && !refresh)
+                return this.hashCode;
+
+            var value = this.valueOf();
+            var type = typeof value;
+            switch (type) {
+                case 'number':
+                    return value;
+                case 'boolean':
+                    return value ? 1 : 0;
+                case 'object':
+                    if (this.IsValueType) {
+                        throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
+                    }
+                    break;
+                default:
+                    return StringHash(value);
+            }
+
+            var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
+            this.hashCode = newId;
+            return newId;
+        },
+        enumerable: false
     });
 
-    Object.prototype.GetHashCode = function(refresh?: boolean): number {
-        if (this.hashCode && !refresh)
-            return this.hashCode;
+    Object.defineProperty(Object.prototype, 'Equals', {
+        value: function (obj: Object): boolean {
+            if (!obj.IsValueType)
+                return obj === this;
 
-        var value = this.valueOf();
-        var type = typeof value;
-        switch (type) {
-            case 'number':
-                return value;
-            case 'boolean':
-                return value ? 1 : 0;
-            case 'object':
-                if (this.IsValueType) {
-                    throw new DotnetJs.NotImplementedExeption('GetHashCode(boolean)');
-                }
-                break;
-            default:
-                return StringHash(value);
-        }
+            var vt = <DotnetJs.ValueType>obj;
+            return vt.GetHashCode() === this.GetHashCode();
+        },
+        enumerable: false
+    });
 
-        var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
-        this.hashCode = newId;
-        return newId;
-    };
-
-    Object.prototype.Equals = function(obj: Object): boolean {
-        if (!obj.IsValueType)
-            return obj === this;
-
-        var vt = <DotnetJs.ValueType>obj;
-        return vt.GetHashCode() === this.GetHashCode();
-    }
-
-    Array.prototype.GetEnumerator = function() {
+    Array.prototype.GetEnumerator = function () {
         return new ArrayEnumerator(this);
     }
 })();
