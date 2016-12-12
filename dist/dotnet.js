@@ -863,8 +863,13 @@ var StringEnumerator = (function () {
     return StringEnumerator;
 }());
 (function () {
-    String.Empty = "";
-    Object.freeze(String.Empty);
+    var _empty = "";
+    Object.defineProperty(String, 'Empty', {
+        get: function () {
+            return _empty;
+        },
+        enumerable: false
+    });
     String.Format = function (value) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -1113,7 +1118,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 16, 58);
+        return new DotnetJs.Version(1, 5, 17, 59);
     }
     function Greetings() {
         var version = GetVersion();

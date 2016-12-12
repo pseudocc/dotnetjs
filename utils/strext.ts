@@ -129,8 +129,13 @@ class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
 }
 
 (function () {
-    String.Empty = "";
-    Object.freeze(String.Empty);
+    var _empty = "";
+    Object.defineProperty(String, 'Empty', {
+        get: function() {
+            return _empty;
+        },
+        enumerable: false
+    });
 
     String.Format = function (value: string, ...args: Object[]): string {
         // match case: {index[,alignment][:formatString]}
