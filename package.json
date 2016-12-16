@@ -1,6 +1,6 @@
 {
   "name": "dotnetjs",
-  "version": "1.5.17",
+  "version": "1.5.18",
   "description": ".Net framework support in javascript",
   "main": "dist/dotnet.js",
   "types": "dist/dotnet.d.ts",

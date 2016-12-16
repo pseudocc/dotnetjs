@@ -1118,7 +1118,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 17, 59);
+        return new DotnetJs.Version(1, 5, 18, 60);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1163,6 +1163,7 @@ var ArrayEnumerator = (function () {
     });
     ArrayEnumerator.prototype.Reset = function () {
         this.index = 0;
+        this.current = null;
     };
     ArrayEnumerator.prototype.Dispose = function () {
     };

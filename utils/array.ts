@@ -28,6 +28,7 @@ class ArrayEnumerator<T> implements DotnetJs.Collections.IEnumerator<T> {
 
     public Reset(): void {
         this.index = 0;
+        this.current = null;
     }
 
     public Dispose(): void {
