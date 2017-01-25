@@ -928,17 +928,19 @@ var StringEnumerator = (function () {
             return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
         });
     };
-    String.Join = function (seperator) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    String.Join = function (seperator, array) {
         if (seperator == null)
             throw new DotnetJs.ArgumentNullException('seperator');
-        if (args.length == 0)
-            throw new DotnetJs.ArgumentException('args length is zerp');
+        if (array == null)
+            throw new DotnetJs.ArgumentNullException('array');
+        if (array.length == 0)
+            throw new DotnetJs.ArgumentException('array length is zero');
         var result = "";
-        args.forEach(function (value) { return result += value; });
+        for (var i = 0; i < array.length; i++) {
+            result += array[i];
+            if (i != array.length - 1)
+                result += seperator;
+        }
         return result;
     };
     String.IsNullOrEmpty = function (value) {
@@ -1128,7 +1130,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 0, 61);
+        return new DotnetJs.Version(1, 6, 1, 62);
     }
     function Greetings() {
         var version = GetVersion();
