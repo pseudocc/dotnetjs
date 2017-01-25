@@ -123,12 +123,12 @@ If you inherit from typescript abstract class ValueType, remember to override Eq
 
 ### ContainsKey
 
-    ```typescript
-    var obj = { name: 'readme' };
+```typescript
+var obj = { name: 'readme' };
 
-    console.log(obj.ContainsKey('name'));
-    // output: true
-    ```
+console.log(obj.ContainsKey('name'));
+// output: true
+```
 
 ### TODO
 
