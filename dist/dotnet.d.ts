@@ -148,7 +148,7 @@ interface String extends DotnetJs.Collections.IEnumerable<number> {
 }
 interface StringConstructor {
     Empty: string;
-    Join(seperator: string, array: string[]): any;
+    Join(seperator: string, enumerable: DotnetJs.Collections.IEnumerable<string>): any;
     Format(value: string, ...args: any[]): string;
     IsNullOrEmpty(value: string): boolean;
     IsNullOrWhiteSpace(value: string): boolean;

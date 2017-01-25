@@ -928,18 +928,24 @@ var StringEnumerator = (function () {
             return (alignment < 0) ? result.PadRight(-alignment) : result.PadLeft(alignment);
         });
     };
-    String.Join = function (seperator, array) {
+    String.Join = function (seperator, enumerable) {
         if (seperator == null)
             throw new DotnetJs.ArgumentNullException('seperator');
-        if (array == null)
+        if (enumerable == null)
             throw new DotnetJs.ArgumentNullException('array');
-        if (array.length == 0)
-            throw new DotnetJs.ArgumentException('array length is zero');
+        var enumerator = enumerable.GetEnumerator();
         var result = "";
-        for (var i = 0; i < array.length; i++) {
-            result += array[i];
-            if (i != array.length - 1)
-                result += seperator;
+        var last, current;
+        current = null;
+        while (true) {
+            last = current;
+            current = enumerator.MoveNext() ? enumerator.Current : null;
+            if (last == null)
+                continue;
+            result += last;
+            if (current == null)
+                break;
+            result += seperator;
         }
         return result;
     };
@@ -1130,7 +1136,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 1, 62);
+        return new DotnetJs.Version(1, 6, 2, 64);
     }
     function Greetings() {
         var version = GetVersion();

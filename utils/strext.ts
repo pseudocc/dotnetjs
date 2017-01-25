@@ -90,7 +90,7 @@ interface String extends DotnetJs.Collections.IEnumerable<number> {
 
 interface StringConstructor {
     Empty: string;
-    Join(seperator: string, array: string[]);
+    Join(seperator: string, enumerable: DotnetJs.Collections.IEnumerable<string>);
     Format(value: string, ...args): string;
     IsNullOrEmpty(value: string): boolean;
     IsNullOrWhiteSpace(value: string): boolean;
@@ -188,18 +188,24 @@ class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
         });
     }
 
-    String.Join = function (seperator: string, array: string[]): string {
+    String.Join = function (seperator: string,  enumerable: DotnetJs.Collections.IEnumerable<string>): string {
         if (seperator == null)
             throw new DotnetJs.ArgumentNullException('seperator');
-        if (array == null)
+        if (enumerable == null)
             throw new DotnetJs.ArgumentNullException('array');
-        if (array.length == 0)
-            throw new DotnetJs.ArgumentException('array length is zero');
+        var enumerator = enumerable.GetEnumerator();
         var result = "";
-        for (var i = 0; i < array.length; i++) {
-            result += array[i];
-            if (i != array.length - 1)
-                result +=seperator;
+        var last, current: string;
+        current = null;
+        while (true) {
+            last = current;
+            current = enumerator.MoveNext() ? enumerator.Current : null;
+            if (last == null)
+                continue;
+            result += last;
+            if (current == null)
+                break;
+            result += seperator;
         }
         return result;
     }
