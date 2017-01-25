@@ -114,14 +114,22 @@ var DotnetJs;
         }
         return (m + (n * 0x5d588b65)) & 0xFFFFFFFF;
     }
-    Object.defineProperty(Object.prototype, 'IsValueType', {
-        get: function () {
-            var value = this.valueOf();
-            var type = typeof value;
-            return type == 'number'
-                || type == 'boolean'
-                || type == 'string'
-                || value instanceof DotnetJs.ValueType;
+    Object.defineProperty(Object.prototype, 'ContainsKey', {
+        value: function (_key) {
+            for (var key in this) {
+                if (key == _key)
+                    return true;
+            }
+            return false;
+        },
+        enumerable: false
+    });
+    Object.defineProperty(Object.prototype, 'Equals', {
+        value: function (obj) {
+            if (!obj.IsValueType)
+                return obj === this;
+            var vt = obj;
+            return vt.GetHashCode() === this.GetHashCode();
         },
         enumerable: false
     });
@@ -150,12 +158,14 @@ var DotnetJs;
         },
         enumerable: false
     });
-    Object.defineProperty(Object.prototype, 'Equals', {
-        value: function (obj) {
-            if (!obj.IsValueType)
-                return obj === this;
-            var vt = obj;
-            return vt.GetHashCode() === this.GetHashCode();
+    Object.defineProperty(Object.prototype, 'IsValueType', {
+        get: function () {
+            var value = this.valueOf();
+            var type = typeof value;
+            return type == 'number'
+                || type == 'boolean'
+                || type == 'string'
+                || value instanceof DotnetJs.ValueType;
         },
         enumerable: false
     });
@@ -1118,7 +1128,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 5, 18, 60);
+        return new DotnetJs.Version(1, 6, 0, 61);
     }
     function Greetings() {
         var version = GetVersion();

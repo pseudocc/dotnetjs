@@ -121,6 +121,15 @@ To get a new hashcode for an object, call the method with parameter 'ture'. But 
 
 If you inherit from typescript abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other.
 
+### ContainsKey
+
+    ```typescript
+    var obj = { name: 'readme' };
+
+    console.log(obj.ContainsKey('name'));
+    // output: true
+    ```
+
 ### TODO
 
 More extensions. If you have any idea, please feel free to contact me.

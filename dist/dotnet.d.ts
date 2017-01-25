@@ -47,8 +47,9 @@ declare module DotnetJs {
     }
 }
 interface Object {
-    GetHashCode: (refresh?: boolean) => number;
+    ContainsKey: (key: string) => boolean;
     Equals: (obj: Object) => boolean;
+    GetHashCode: (refresh?: boolean) => number;
     readonly IsValueType: boolean;
     hashCode: number;
 }

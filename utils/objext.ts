@@ -2,8 +2,9 @@
 /// <reference path="valueType.ts" />
 
 interface Object {
-    GetHashCode: (refresh?: boolean) => number;
+    ContainsKey: (key: string) => boolean;
     Equals: (obj: Object) => boolean;
+    GetHashCode: (refresh?: boolean) => number;
     readonly IsValueType: boolean;
     hashCode: number;
 }
@@ -26,18 +27,28 @@ interface Object {
         return (m + (n * 0x5d588b65)) & 0xFFFFFFFF;
     }
 
-    Object.defineProperty(Object.prototype, 'IsValueType', {
-        get: function () {
-            var value = this.valueOf();
-            var type = typeof value;
-            return type == 'number'
-                || type == 'boolean'
-                || type == 'string'
-                || value instanceof DotnetJs.ValueType;
+    Object.defineProperty(Object.prototype, 'ContainsKey', {
+        value: function (_key: string): boolean {
+            for (var key in this) {
+                if (key == _key) 
+                    return true;
+            }
+            return false;
         },
         enumerable: false
     });
-    
+
+    Object.defineProperty(Object.prototype, 'Equals', {
+        value: function (obj: Object): boolean {
+            if (!obj.IsValueType)
+                return obj === this;
+
+            var vt = <DotnetJs.ValueType>obj;
+            return vt.GetHashCode() === this.GetHashCode();
+        },
+        enumerable: false
+    });
+
     Object.defineProperty(Object.prototype, 'GetHashCode', {
         value: function (refresh?: boolean): number {
             if (this.hashCode && !refresh)
@@ -66,17 +77,18 @@ interface Object {
         enumerable: false
     });
 
-    Object.defineProperty(Object.prototype, 'Equals', {
-        value: function (obj: Object): boolean {
-            if (!obj.IsValueType)
-                return obj === this;
-
-            var vt = <DotnetJs.ValueType>obj;
-            return vt.GetHashCode() === this.GetHashCode();
+    Object.defineProperty(Object.prototype, 'IsValueType', {
+        get: function () {
+            var value = this.valueOf();
+            var type = typeof value;
+            return type == 'number'
+                || type == 'boolean'
+                || type == 'string'
+                || value instanceof DotnetJs.ValueType;
         },
         enumerable: false
     });
-
+    
     Array.prototype.GetEnumerator = function () {
         return new ArrayEnumerator(this);
     }
