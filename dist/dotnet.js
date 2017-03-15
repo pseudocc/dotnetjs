@@ -1136,7 +1136,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 3, 65);
+        return new DotnetJs.Version(1, 6, 4, 66);
     }
     function Greetings() {
         var version = GetVersion();

@@ -325,9 +325,9 @@ declare module DotnetJs.Collections {
         RemoveLast(): void;
         private InternalInsertNodeBefore(node, newNode);
         private InternalInsertNodeToEmptyList(newNode);
-        InternalRemoveNode(node: LinkedListNode<T>): void;
-        ValidateNewNode(node: LinkedListNode<T>): void;
-        ValidateNode(node: LinkedListNode<T>): void;
+        private InternalRemoveNode(node);
+        private ValidateNewNode(node);
+        private ValidateNode(node);
         readonly IsSynchronized: boolean;
     }
     class LinkedListNode<T> {

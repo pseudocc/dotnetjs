@@ -219,7 +219,7 @@
             this.count++;
         }
 
-        public InternalRemoveNode(node: LinkedListNode<T>): void {
+        private InternalRemoveNode(node: LinkedListNode<T>): void {
             if (node.next == node) {
                 this.head = null;
             }
@@ -235,7 +235,7 @@
             this.version++;
         }
 
-        public ValidateNewNode(node: LinkedListNode<T>): void {
+        private ValidateNewNode(node: LinkedListNode<T>): void {
             if (node == null) {
                 throw new ArgumentNullException('node');
             }
@@ -244,7 +244,7 @@
             }
         }
 
-        public ValidateNode(node: LinkedListNode<T>): void {
+        private ValidateNode(node: LinkedListNode<T>): void {
             if (node == null) {
                 throw new ArgumentNullException('node');
             }
