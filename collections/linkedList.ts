@@ -2,7 +2,7 @@
 
     export class LinkedList<T> implements ICollection<T>
     {
-        public head: LinkedListNode<T>;
+        private head: LinkedListNode<T>;
         private count: number;
         private version: number;
 
@@ -275,11 +275,11 @@
         }
 
         public get Next(): LinkedListNode<T> {
-            return this.next == null || this.next == this.list.head ? null : this.next;
+            return this.next == null || this.next == this.list.First ? null : this.next;
         }
 
         public get Previous(): LinkedListNode<T> {
-            return this.prev == null || this == this.list.head ? null : this.prev;
+            return this.prev == null || this == this.list.First ? null : this.prev;
         }
 
         public get Value(): T {
@@ -307,7 +307,7 @@
         constructor(list: LinkedList<T>) {
             this._list = list;
             this._version = list.Version;
-            this._node = list.head;
+            this._node = list.First;
             this._current = null;
             this._index = 0;
         }
@@ -327,7 +327,7 @@
             ++this._index;
             this._current = this._node.item;
             this._node = this._node.next;
-            if (this._node == this._list.head) {
+            if (this._node == this._list.First) {
                 this._node = null;
             }
             return true;
@@ -338,7 +338,7 @@
                 throw new InvalidOperationException('version failed');
             }
             this._current = null;
-            this._node = this._list.head;
+            this._node = this._list.First;
             this._index = 0;
         }
 

@@ -1136,7 +1136,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 2, 64);
+        return new DotnetJs.Version(1, 6, 3, 65);
     }
     function Greetings() {
         var version = GetVersion();
@@ -1897,14 +1897,14 @@ var DotnetJs;
             });
             Object.defineProperty(LinkedListNode.prototype, "Next", {
                 get: function () {
-                    return this.next == null || this.next == this.list.head ? null : this.next;
+                    return this.next == null || this.next == this.list.First ? null : this.next;
                 },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(LinkedListNode.prototype, "Previous", {
                 get: function () {
-                    return this.prev == null || this == this.list.head ? null : this.prev;
+                    return this.prev == null || this == this.list.First ? null : this.prev;
                 },
                 enumerable: true,
                 configurable: true
@@ -1931,7 +1931,7 @@ var DotnetJs;
             function Enumerator(list) {
                 this._list = list;
                 this._version = list.Version;
-                this._node = list.head;
+                this._node = list.First;
                 this._current = null;
                 this._index = 0;
             }
@@ -1953,7 +1953,7 @@ var DotnetJs;
                 ++this._index;
                 this._current = this._node.item;
                 this._node = this._node.next;
-                if (this._node == this._list.head) {
+                if (this._node == this._list.First) {
                     this._node = null;
                 }
                 return true;
@@ -1963,7 +1963,7 @@ var DotnetJs;
                     throw new DotnetJs.InvalidOperationException('version failed');
                 }
                 this._current = null;
-                this._node = this._list.head;
+                this._node = this._list.First;
                 this._index = 0;
             };
             Enumerator.prototype.Dispose = function () {

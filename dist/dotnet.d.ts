@@ -300,7 +300,7 @@ declare module DotnetJs.Collections {
 }
 declare module DotnetJs.Collections {
     class LinkedList<T> implements ICollection<T> {
-        head: LinkedListNode<T>;
+        private head;
         private count;
         private version;
         constructor(collection?: IEnumerable<T>);
