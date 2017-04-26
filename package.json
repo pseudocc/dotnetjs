@@ -5,7 +5,7 @@
   "main": "dist/dotnet.js",
   "types": "dist/dotnet.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/index.js"
   },
   "keywords": [
     "javascript",
