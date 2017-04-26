@@ -116,6 +116,8 @@ var DotnetJs;
     }
     Object.defineProperty(Object.prototype, 'ContainsKey', {
         value: function (_key) {
+            if (this[key] != null)
+                return true;
             for (var key in this) {
                 if (key == _key)
                     return true;
@@ -1136,7 +1138,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 4, 66);
+        return new DotnetJs.Version(1, 6, 5, 67);
     }
     function Greetings() {
         var version = GetVersion();

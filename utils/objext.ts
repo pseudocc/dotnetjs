@@ -29,6 +29,8 @@ interface Object {
 
     Object.defineProperty(Object.prototype, 'ContainsKey', {
         value: function (_key: string): boolean {
+            if (this[key] != null)
+                return true;
             for (var key in this) {
                 if (key == _key) 
                     return true;
