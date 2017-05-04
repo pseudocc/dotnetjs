@@ -1,5 +1,4 @@
-﻿/// <reference path="typings/node.d.ts" />
-/// <reference path="utils/prim.ts" />
+﻿/// <reference path="utils/prim.ts" />
 
 try {
     module.exports = DotnetJs;
