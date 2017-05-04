@@ -283,16 +283,16 @@ var DotnetJs;
     var Linq;
     (function (Linq) {
         function LinqStart(source) {
-            return new LinqIntermediate(source, function (item) { return item; });
+            return new LinqIntermediate([source], function (item) { return item; });
         }
         Linq.LinqStart = LinqStart;
         var LinqIntermediate = (function () {
-            function LinqIntermediate(source, func) {
-                this.source = source;
+            function LinqIntermediate(sources, func) {
+                this.sources = sources;
                 this.toResult = func;
             }
             LinqIntermediate.prototype.GetEnumerator = function () {
-                return new LinqEnumerator(this.source, this.toResult);
+                return new LinqEnumerator(this.sources, this.toResult);
             };
             LinqIntermediate.prototype.Aggregate = function (seed, func) {
                 return Aggregate(this, seed, func);
@@ -373,14 +373,16 @@ var DotnetJs;
         }());
         Linq.LinqIntermediate = LinqIntermediate;
         var LinqEnumerator = (function () {
-            function LinqEnumerator(source, toResult) {
-                this.sourceIndex = -1;
-                this.enumerator = source.GetEnumerator();
+            function LinqEnumerator(sources, toResult) {
+                this.sourceIndex = 0;
+                this.index = -1;
+                this.sources = sources;
+                this.enumerator = sources[this.sourceIndex].GetEnumerator();
                 this.toResult = toResult;
             }
             LinqEnumerator.prototype.SourceMoveNext = function () {
                 var next = this.enumerator.MoveNext();
-                this.sourceIndex++;
+                this.index++;
                 return next;
             };
             LinqEnumerator.prototype.MoveNext = function () {
@@ -388,17 +390,22 @@ var DotnetJs;
                 while (next && this.Current === DotnetJs.DefaultDelegate.EmptyReturn) {
                     next = this.SourceMoveNext();
                 }
+                while (!next && ++this.sourceIndex < this.sources.length) {
+                    this.enumerator = this.sources[this.sourceIndex].GetEnumerator();
+                    next = this.SourceMoveNext();
+                }
                 return next;
             };
             Object.defineProperty(LinqEnumerator.prototype, "Current", {
                 get: function () {
-                    return this.toResult(this.enumerator.Current, this.sourceIndex);
+                    return this.toResult(this.enumerator.Current, this.index);
                 },
                 enumerable: true,
                 configurable: true
             });
             LinqEnumerator.prototype.Reset = function () {
-                this.enumerator.Reset();
+                this.sourceIndex = 0;
+                this.enumerator = this.sources[this.sourceIndex].GetEnumerator();
             };
             LinqEnumerator.prototype.Dispose = function () {
                 this.enumerator.Dispose();
@@ -455,12 +462,7 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('first');
             if (second == null)
                 throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerators = [first.GetEnumerator(), second.GetEnumerator()];
-            for (var i = 0; i < 2; i++)
-                while (enumerators[i].MoveNext()) {
-                    result.push(enumerators[i].Current);
-                }
+            var result = [first, second];
             var linq = new LinqIntermediate(result, function (item) { return item; });
             return linq;
         }
@@ -504,13 +506,12 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('first');
             if (second == null)
                 throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerator = first.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (!Contains(second, enumerator.Current, comparer))
-                    result.push(enumerator.Current);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
+            var func = function (item) {
+                if (!Contains(second, item, comparer))
+                    return item;
+                return DotnetJs.DefaultDelegate.EmptyReturn;
+            };
+            var linq = new LinqIntermediate([first], func);
             return linq;
         }
         Linq.Except = Except;
@@ -557,13 +558,12 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('first');
             if (second == null)
                 throw new DotnetJs.ArgumentNullException('second');
-            var result = [];
-            var enumerator = first.GetEnumerator();
-            while (enumerator.MoveNext()) {
-                if (Contains(second, enumerator.Current, comparer))
-                    result.push(enumerator.Current);
-            }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
+            var func = function (item) {
+                if (Contains(second, item, comparer))
+                    return item;
+                return DotnetJs.DefaultDelegate.EmptyReturn;
+            };
+            var linq = new LinqIntermediate([first], func);
             return linq;
         }
         Linq.Intersect = Intersect;
@@ -625,7 +625,7 @@ var DotnetJs;
             for (var i = start; i < start + count; i++) {
                 result.push(i);
             }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
+            var linq = new LinqIntermediate([result], function (item) { return item; });
             return linq;
         }
         Linq.Range = Range;
@@ -636,7 +636,7 @@ var DotnetJs;
             for (var i = 0; i < count; i++) {
                 result.push(element);
             }
-            var linq = new LinqIntermediate(result, function (item) { return item; });
+            var linq = new LinqIntermediate([result], function (item) { return item; });
             return linq;
         }
         Linq.Repeat = Repeat;
@@ -656,7 +656,7 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('source');
             if (func == null)
                 throw new DotnetJs.ArgumentNullException('func');
-            var linq = new LinqIntermediate(source, func);
+            var linq = new LinqIntermediate([source], func);
             return linq;
         }
         Linq.Select = Select;
@@ -687,7 +687,7 @@ var DotnetJs;
                     return DotnetJs.DefaultDelegate.EmptyReturn;
                 return item;
             };
-            var linq = new LinqIntermediate(source, func);
+            var linq = new LinqIntermediate([source], func);
             return linq;
         }
         Linq.SkipWhile = SkipWhile;
@@ -701,7 +701,7 @@ var DotnetJs;
                     return item;
                 return DotnetJs.DefaultDelegate.EmptyReturn;
             };
-            var linq = new LinqIntermediate(source, func);
+            var linq = new LinqIntermediate([source], func);
             return linq;
         }
         Linq.TakeWhile = TakeWhile;
@@ -1138,7 +1138,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 6, 5, 67);
+        return new DotnetJs.Version(1, 7, 0, 68);
     }
     function Greetings() {
         var version = GetVersion();

@@ -1,21 +1,21 @@
 ﻿module DotnetJs.Linq {
 
     export function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
-        return new LinqIntermediate<TSource, TSource>(source, item => item);
+        return new LinqIntermediate<TSource, TSource>([source], item => item);
     }
 
     export class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
 
         protected toResult: (item: TSource, index: number) => TResult;
-        protected source: Collections.IEnumerable<TSource>;
+        protected sources: Collections.IEnumerable<TSource>[];
 
-        constructor(source: Collections.IEnumerable<TSource>, func: (item: TSource, index: number) => TResult) {
-            this.source = source;
+        constructor(sources: Collections.IEnumerable<TSource>[], func: (item: TSource, index: number) => TResult) {
+            this.sources = sources;
             this.toResult = func;
         }
 
         public GetEnumerator(): Collections.IEnumerator<TResult> {
-            return new LinqEnumerator(this.source, this.toResult);
+            return new LinqEnumerator(this.sources, this.toResult);
         }
 
         public Aggregate<TAccumulate>(seed: TAccumulate, func: (acc: TAccumulate, item: TResult) => TAccumulate): TAccumulate {
@@ -123,17 +123,20 @@
     class LinqEnumerator<TSource, TResult> implements Collections.IEnumerator<TResult> {
 
         private toResult: (item: TSource, index: number) => TResult;
-        private sourceIndex: number = -1;
         private enumerator: Collections.IEnumerator<TSource>;
+        private sources: Collections.IEnumerable<TSource>[];
+        private sourceIndex = 0;
+        private index = -1;
 
-        constructor(source: Collections.IEnumerable<TSource>, toResult: (item: TSource, index: number) => TResult) {
-            this.enumerator = source.GetEnumerator();
+        constructor(sources: Collections.IEnumerable<TSource>[], toResult: (item: TSource, index: number) => TResult) {
+            this.sources = sources;
+            this.enumerator = sources[this.sourceIndex].GetEnumerator();
             this.toResult = toResult;
         }
 
         private SourceMoveNext(): boolean {
             var next = this.enumerator.MoveNext();
-            this.sourceIndex++;
+            this.index++;
             return next;
         }
 
@@ -142,15 +145,20 @@
             while (next && this.Current === DefaultDelegate.EmptyReturn) {
                 next = this.SourceMoveNext();
             }
+            while (!next && ++this.sourceIndex < this.sources.length) {
+                this.enumerator = this.sources[this.sourceIndex].GetEnumerator();
+                next = this.SourceMoveNext();
+            }
             return next;
         }
 
         public get Current(): TResult {
-            return this.toResult(this.enumerator.Current, this.sourceIndex);
+            return this.toResult(this.enumerator.Current, this.index);
         }
 
         public Reset(): void {
-            this.enumerator.Reset();
+            this.sourceIndex = 0;
+            this.enumerator = this.sources[this.sourceIndex].GetEnumerator();
         }
 
         public Dispose(): void {
@@ -209,13 +217,8 @@
             throw new ArgumentNullException('first');
         if (second == null)
             throw new ArgumentNullException('second');
-        var result: TSource[] = [];
-        var enumerators = [first.GetEnumerator(), second.GetEnumerator()];
-        for (var i = 0; i < 2; i++)
-            while (enumerators[i].MoveNext()) {
-                result.push(enumerators[i].Current);
-            }
-        var linq = new LinqIntermediate<TSource, TSource>(result, (item) => item);
+        var result = [first, second]
+        var linq = new LinqIntermediate<TSource, TSource>(result, item => item);
         return linq;
     }
 
@@ -258,13 +261,12 @@
             throw new ArgumentNullException('first');
         if (second == null)
             throw new ArgumentNullException('second');
-        var result: TSource[] = [];
-        var enumerator = first.GetEnumerator();
-        while (enumerator.MoveNext()) {
-            if (!Contains(second, enumerator.Current, comparer))
-                result.push(enumerator.Current);
+        var func = (item: TSource) => {
+            if (!Contains(second, item, comparer))
+                return item;
+            return DefaultDelegate.EmptyReturn;
         }
-        var linq = new LinqIntermediate<TSource, TSource>(result, (item) => item);
+        var linq = new LinqIntermediate<TSource, TSource>([first], func);
         return linq;
     }
 
@@ -311,13 +313,12 @@
             throw new ArgumentNullException('first');
         if (second == null)
             throw new ArgumentNullException('second');
-        var result: TSource[] = [];
-        var enumerator = first.GetEnumerator();
-        while (enumerator.MoveNext()) {
-            if (Contains(second, enumerator.Current, comparer))
-                result.push(enumerator.Current);
+        var func = (item: TSource) => {
+            if (Contains(second, item, comparer))
+                return item;
+            return DefaultDelegate.EmptyReturn;
         }
-        var linq = new LinqIntermediate<TSource, TSource>(result, (item) => item);
+        var linq = new LinqIntermediate<TSource, TSource>([first], func);
         return linq;
     }
 
@@ -373,7 +374,7 @@
         for (var i = start; i < start + count; i++) {
             result.push(i);
         }
-        var linq = new LinqIntermediate<number, number>(result, (item) => item);
+        var linq = new LinqIntermediate<number, number>([result], (item) => item);
         return linq;
     }
 
@@ -384,7 +385,7 @@
         for (var i = 0; i < count; i++) {
             result.push(element);
         }
-        var linq = new LinqIntermediate<TResult, TResult>(result, (item) => item);
+        var linq = new LinqIntermediate<TResult, TResult>([result], (item) => item);
         return linq;
     }
 
@@ -404,7 +405,7 @@
             throw new ArgumentNullException('source');
         if (func == null)
             throw new ArgumentNullException('func');
-        var linq = new LinqIntermediate<TSource, TResult>(source, func);
+        var linq = new LinqIntermediate<TSource, TResult>([source], func);
         return linq;
     }
 
@@ -435,7 +436,7 @@
                 return DefaultDelegate.EmptyReturn;
             return item;
         };
-        var linq = new LinqIntermediate<TSource, TSource>(source, func);
+        var linq = new LinqIntermediate<TSource, TSource>([source], func);
         return linq;
     }
 
@@ -449,7 +450,7 @@
                 return item;
             return DefaultDelegate.EmptyReturn;
         };
-        var linq = new LinqIntermediate<TSource, TSource>(source, func);
+        var linq = new LinqIntermediate<TSource, TSource>([source], func);
         return linq;
     }
 

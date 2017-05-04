@@ -1,14 +1,13 @@
 {
   "name": "dotnetjs",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "description": ".Net framework support in javascript",
   "main": "dist/dotnet.js",
   "types": "dist/dotnet.d.ts",
   "scripts": {
     "test": "node tests/index.js",
     "compile": "tsc -p src/",
-    "minify": "uglifyjs --compress --output dist/dotnet.min.js -- dist/dotnet.js",
-    "build": "concurrently \"npm run build\" \"npm run minify\""
+    "minify": "uglifyjs --compress --output dist/dotnet.min.js -- dist/dotnet.js"
   },
   "keywords": [
     "javascript",
