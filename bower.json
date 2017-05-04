@@ -16,15 +16,8 @@
   ],
   "homepage": "https://github.com/Master76/dotnetjs",
   "ignore": [
-    "**/.*",
     "node_modules",
     "bower_components",
-    "typings",
-    "tests",
-    "utils",
-    "collections",
-    "tsconfig.json",
-    "dotnet.ts",
-    "package.json"
+    "tests"
   ]
 }
