@@ -16,6 +16,7 @@
   ],
   "homepage": "https://github.com/Master76/dotnetjs",
   "ignore": [
+    ".vscode",
     "node_modules",
     "bower_components",
     "tests"
