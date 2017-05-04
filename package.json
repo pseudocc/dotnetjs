@@ -5,7 +5,10 @@
   "main": "dist/dotnet.js",
   "types": "dist/dotnet.d.ts",
   "scripts": {
-    "test": "node tests/index.js"
+    "test": "node tests/index.js",
+    "compile": "tsc -p src/",
+    "minify": "uglifyjs --compress --output dist/dotnet.min.js -- dist/dotnet.js",
+    "build": "concurrently \"npm run build\" \"npm run minify\""
   },
   "keywords": [
     "javascript",
@@ -20,5 +23,8 @@
     "url": "https://github.com/Master76/dotnetjs.git"
   },
   "author": "Master Yu",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^7.0.16"
+  }
 }
