@@ -2,12 +2,15 @@
     "compilerOptions": {
         "module": "amd",
         "target": "es5",
-        "outFile": "dist/dotnet.js",
+        "outFile": "../dist/dotnet.js",
         "sourceMap": true,
         "removeComments": true,
         "declaration": true,
         "noImplicitAny": false,
-        "noEmitOnError": false
+        "noEmitOnError": false,
+        "typeRoots": [
+            "../node_modules/@types"
+        ]
     },
     "include": [
         "collections/*.ts",
