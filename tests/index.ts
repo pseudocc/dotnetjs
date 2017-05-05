@@ -1,5 +1,3 @@
-/// <reference path="../typings/node.d.ts" />
-
 import assert = require('assert');
 import charTest from './utils/char';
 import stringTest from './utils/string';
