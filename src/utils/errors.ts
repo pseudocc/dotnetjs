@@ -2,7 +2,7 @@
 
     export class InvalidDataException extends Error {
         constructor(type: string) {
-            super('UnExpected data type: ' + type);
+            super('Unexpected data type: ' + type);
             this.stack = (new Error()).stack;
             this.name = 'InvalidDataException';
         }
