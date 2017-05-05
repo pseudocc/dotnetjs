@@ -25,6 +25,7 @@ module DotnetJs {
         public static Predicate = () => true;
         public static Action = () => { };
         public static Func = () => null;
+        public static SelfReturn = item => item;
 
         public static EmptyReturn: any = { value: 'Empty' };
         public static EqualityComparer: IEqualityComparer<any> = (a, b) => a.Equals(b);
@@ -37,7 +38,7 @@ module DotnetJs {
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 7, 1, 69);
+        return new Version(1, 7, 2, 72);
     }
 
     export function Greetings() {

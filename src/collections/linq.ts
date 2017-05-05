@@ -1,7 +1,7 @@
 ﻿module DotnetJs.Linq {
 
     export function LinqStart<TSource>(source: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
-        return new LinqIntermediate<TSource, TSource>([source], item => item);
+        return new LinqIntermediate<TSource, TSource>([source], DefaultDelegate.SelfReturn);
     }
 
     export class LinqIntermediate<TSource, TResult> implements Collections.IEnumerable<TResult> {
@@ -172,7 +172,7 @@
             throw new ArgumentNullException('seed');
         if (func == null)
             throw new ArgumentNullException('func');
-        ForEach(source, (item) => {
+        ForEach(source, item => {
             seed = func(seed, item);
         });
         return seed;
@@ -200,16 +200,23 @@
             throw new ArgumentNullException('predicate');
         var enumerator = source.GetEnumerator();
         while (enumerator.MoveNext()) {
-            if (predicate(enumerator.Current)) {
+            if (predicate(enumerator.Current)) 
                 continue;
-            }
             return false;
         }
         return true;
     }
 
     export function Any<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): boolean {
-        return Count(source, predicate) === 0;
+        if (source == null)
+            throw new ArgumentNullException('source');
+        predicate = predicate || DefaultDelegate.Predicate;
+        var enumerator = source.GetEnumerator();
+        while (enumerator.MoveNext()) {
+            if (predicate(enumerator.Current)) 
+                return true;
+        }
+        return false;
     }
 
     export function Concat<TSource>(first: Collections.IEnumerable<TSource>, second: Collections.IEnumerable<TSource>): LinqIntermediate<TSource, TSource> {
@@ -217,8 +224,8 @@
             throw new ArgumentNullException('first');
         if (second == null)
             throw new ArgumentNullException('second');
-        var result = [first, second]
-        var linq = new LinqIntermediate<TSource, TSource>(result, item => item);
+        var result = [first, second];
+        var linq = new LinqIntermediate<TSource, TSource>(result, DefaultDelegate.SelfReturn);
         return linq;
     }
 
@@ -226,7 +233,7 @@
         if (element == null)
             throw new ArgumentNullException('element');
         comparer = comparer || DefaultDelegate.EqualityComparer;
-        return Any(source, (item) => comparer(item, element));
+        return Any(source, item => comparer(item, element));
     }
 
     export function Count<TSource>(source: Collections.IEnumerable<TSource>, predicate?: (item: TSource) => boolean): number {
@@ -236,9 +243,8 @@
         var enumerator = source.GetEnumerator();
         var count = 0;
         while (enumerator.MoveNext()) {
-            if (predicate(enumerator.Current)) {
+            if (predicate(enumerator.Current)) 
                 count++;
-            }
         }
         return count;
     }
@@ -277,9 +283,8 @@
         var enumerator = source.GetEnumerator();
         while (enumerator.MoveNext()) {
             let current = enumerator.Current;
-            if (predicate(current)) {
+            if (predicate(current)) 
                 return current;
-            }
         }
         return null;
     }
@@ -374,7 +379,7 @@
         for (var i = start; i < start + count; i++) {
             result.push(i);
         }
-        var linq = new LinqIntermediate<number, number>([result], (item) => item);
+        var linq = new LinqIntermediate<number, number>([result], DefaultDelegate.SelfReturn);
         return linq;
     }
 
@@ -385,7 +390,7 @@
         for (var i = 0; i < count; i++) {
             result.push(element);
         }
-        var linq = new LinqIntermediate<TResult, TResult>([result], (item) => item);
+        var linq = new LinqIntermediate<TResult, TResult>([result], DefaultDelegate.SelfReturn);
         return linq;
     }
 
