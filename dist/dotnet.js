@@ -284,7 +284,7 @@ var DotnetJs;
     var Linq;
     (function (Linq) {
         function LinqStart(source) {
-            return new LinqIntermediate([source], function (item) { return item; });
+            return new LinqIntermediate([source], DotnetJs.DefaultDelegate.SelfReturn);
         }
         Linq.LinqStart = LinqStart;
         var LinqIntermediate = (function () {
@@ -446,16 +446,23 @@ var DotnetJs;
                 throw new DotnetJs.ArgumentNullException('predicate');
             var enumerator = source.GetEnumerator();
             while (enumerator.MoveNext()) {
-                if (predicate(enumerator.Current)) {
+                if (predicate(enumerator.Current))
                     continue;
-                }
                 return false;
             }
             return true;
         }
         Linq.All = All;
         function Any(source, predicate) {
-            return Count(source, predicate) === 0;
+            if (source == null)
+                throw new DotnetJs.ArgumentNullException('source');
+            predicate = predicate || DotnetJs.DefaultDelegate.Predicate;
+            var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext()) {
+                if (predicate(enumerator.Current))
+                    return true;
+            }
+            return false;
         }
         Linq.Any = Any;
         function Concat(first, second) {
@@ -464,7 +471,7 @@ var DotnetJs;
             if (second == null)
                 throw new DotnetJs.ArgumentNullException('second');
             var result = [first, second];
-            var linq = new LinqIntermediate(result, function (item) { return item; });
+            var linq = new LinqIntermediate(result, DotnetJs.DefaultDelegate.SelfReturn);
             return linq;
         }
         Linq.Concat = Concat;
@@ -482,9 +489,8 @@ var DotnetJs;
             var enumerator = source.GetEnumerator();
             var count = 0;
             while (enumerator.MoveNext()) {
-                if (predicate(enumerator.Current)) {
+                if (predicate(enumerator.Current))
                     count++;
-                }
             }
             return count;
         }
@@ -523,9 +529,8 @@ var DotnetJs;
             var enumerator = source.GetEnumerator();
             while (enumerator.MoveNext()) {
                 var current = enumerator.Current;
-                if (predicate(current)) {
+                if (predicate(current))
                     return current;
-                }
             }
             return null;
         }
@@ -626,7 +631,7 @@ var DotnetJs;
             for (var i = start; i < start + count; i++) {
                 result.push(i);
             }
-            var linq = new LinqIntermediate([result], function (item) { return item; });
+            var linq = new LinqIntermediate([result], DotnetJs.DefaultDelegate.SelfReturn);
             return linq;
         }
         Linq.Range = Range;
@@ -637,7 +642,7 @@ var DotnetJs;
             for (var i = 0; i < count; i++) {
                 result.push(element);
             }
-            var linq = new LinqIntermediate([result], function (item) { return item; });
+            var linq = new LinqIntermediate([result], DotnetJs.DefaultDelegate.SelfReturn);
             return linq;
         }
         Linq.Repeat = Repeat;
@@ -1133,13 +1138,14 @@ var DotnetJs;
         DefaultDelegate.Predicate = function () { return true; };
         DefaultDelegate.Action = function () { };
         DefaultDelegate.Func = function () { return null; };
+        DefaultDelegate.SelfReturn = function (item) { return item; };
         DefaultDelegate.EmptyReturn = { value: 'Empty' };
         DefaultDelegate.EqualityComparer = function (a, b) { return a.Equals(b); };
         return DefaultDelegate;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 7, 1, 69);
+        return new DotnetJs.Version(1, 7, 2, 72);
     }
     function Greetings() {
         var version = GetVersion();

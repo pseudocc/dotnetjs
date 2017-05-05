@@ -173,6 +173,7 @@ declare module DotnetJs {
         static Predicate: () => boolean;
         static Action: () => void;
         static Func: () => any;
+        static SelfReturn: (item: any) => any;
         static EmptyReturn: any;
         static EqualityComparer: IEqualityComparer<any>;
     }
