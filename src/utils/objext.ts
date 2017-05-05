@@ -16,15 +16,16 @@ interface Object {
         var value = obj.toString();
         var m, n = 0x15051505;
         var offset = 0;
+        var mask = 0xFFFFFFFF;
         for (var i = value.length; i > 0; i -= 4) {
-            m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset) & 0xFFFFFFFF;
+            m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset) & mask;
             if (i <= 2) {
                 break;
             }
-            n = (((n << 5) + n) + (n >> 0x1b)) ^ value.charCodeAt(1 + offset) & 0xFFFFFFFF;
+            n = (((n << 5) + n) + (n >> 0x1b)) ^ value.charCodeAt(1 + offset) & mask;
             offset += 2;
         }
-        return (m + (n * 0x5d588b65)) & 0xFFFFFFFF;
+        return (m + (n * 0x5d588b65)) & mask;
     }
 
     Object.defineProperty(Object.prototype, 'ContainsKey', {

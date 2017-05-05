@@ -176,7 +176,7 @@ declare module DotnetJs {
         static EmptyReturn: any;
         static EqualityComparer: IEqualityComparer<any>;
     }
-    type OutParam<T> = (out) => void;
+    type OutParam<T> = (outValue) => void;
     type IEqualityComparer<T> = (a: T, b: T) => boolean;
     type IComparer<T> = (a: T, b: T) => number;
     function Greetings(): void;
@@ -220,7 +220,7 @@ declare module DotnetJs.Collections {
         Value: TValue;
     };
     class KeyNotFoundException extends Error {
-        constructor(msg: string);
+        constructor(key: any);
     }
 }
 interface Array<T> extends DotnetJs.Collections.IEnumerable<T> {
