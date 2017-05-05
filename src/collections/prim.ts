@@ -45,8 +45,10 @@ module DotnetJs.Collections {
     }
 
     export class KeyNotFoundException extends Error {
-        constructor(msg: string) {
-            super('KeyNotFoundException: ' + msg);
+        constructor(key: any) {
+            super('The given key was not present in the dictionary, key: ' + key.toString());
+            this.stack = (new Error()).stack;
+            this.name = 'KeyNotFoundException';
         }
     }
 }

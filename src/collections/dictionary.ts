@@ -86,7 +86,7 @@ module DotnetJs.Collections {
             var i: number = this.FindEntry(key);
             if (i >= 0)
                 return this.entries[i].value;
-            throw new KeyNotFoundException(key.toString());
+            throw new KeyNotFoundException(key);
         }
 
         public SetValue(key: TKey, value: TValue): void {
