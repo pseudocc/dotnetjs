@@ -30,14 +30,14 @@ module DotnetJs {
         public static EqualityComparer: IEqualityComparer<any> = (a, b) => a.Equals(b);
     }
 
-    export type OutParam<T> = (out) => void;
+    export type OutParam<T> = (outValue) => void;
 
     export type IEqualityComparer<T> = (a: T, b: T) => boolean;
 
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 7, 0, 68);
+        return new Version(1, 7, 1, 69);
     }
 
     export function Greetings() {
