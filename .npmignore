@@ -1,6 +1,9 @@
 # Bower
 bower.json
 
+# VSCode developing configurations
+.vscode/
+
 #################
 ## Eclipse
 #################
