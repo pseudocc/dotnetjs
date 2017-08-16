@@ -43,14 +43,14 @@
 
         public AddAfter(node: LinkedListNode<T>, value: T): LinkedListNode<T> {
             this.ValidateNode(node);
-            var result = new LinkedListNode<T>(node.list, value);
+            let result = new LinkedListNode<T>(node.list, value);
             this.InternalInsertNodeBefore(node.next, result);
             return result;
         }
 
         public AddBefore(node: LinkedListNode<T>, value: T): LinkedListNode<T> {
             this.ValidateNode(node);
-            var result = new LinkedListNode<T>(node.list, value);
+            let result = new LinkedListNode<T>(node.list, value);
             this.InternalInsertNodeBefore(node, result);
             if (node == this.head) {
                 this.head = result;
@@ -59,7 +59,7 @@
         }
 
         public AddFirst(value: T): LinkedListNode<T> {
-            var result = new LinkedListNode<T>(this, value);
+            let result = new LinkedListNode<T>(this, value);
             if (this.head == null) {
                 this.InternalInsertNodeToEmptyList(result);
             }
@@ -71,7 +71,7 @@
         }
 
         public AddLast(value: T): LinkedListNode<T> {
-            var result = new LinkedListNode<T>(this, value);
+            let result = new LinkedListNode<T>(this, value);
             if (this.head == null) {
                 this.InternalInsertNodeToEmptyList(result);
             }
@@ -82,9 +82,9 @@
         }
 
         public Clear(): void {
-            var current = this.head;
+            let current = this.head;
             while (current != null) {
-                var temp = current;
+                let temp = current;
                 current = current.Next;
                 temp.Invalidate();
             }
@@ -110,7 +110,7 @@
             if (array.length - index < this.Count) {
                 throw new ArgumentException('insufficient space');
             }
-            var node = this.head;
+            let node = this.head;
             if (node != null) {
                 do {
                     array[index++] = node.item;
@@ -121,8 +121,8 @@
         }
 
         public Find(value: T): LinkedListNode<T> {
-            var node = this.head;
-            var comparer = DefaultDelegate.EqualityComparer;
+            let node = this.head;
+            let comparer = DefaultDelegate.EqualityComparer;
             if (node != null) {
                 if (value != null) {
                     do {
@@ -149,9 +149,9 @@
         public FindLast(value: T): LinkedListNode<T> {
             if (this.head == null)
                 return null;
-            var last = this.head.prev;
-            var node = last;
-            var comparer = DefaultDelegate.EqualityComparer;
+            let last = this.head.prev;
+            let node = last;
+            let comparer = DefaultDelegate.EqualityComparer;
             if (node != null) {
                 if (value != null) {
                     do {
@@ -180,7 +180,7 @@
         }
 
         public Remove(value: T): boolean {
-            var node = this.Find(value);
+            let node = this.Find(value);
             if (node != null) {
                 this.InternalRemoveNode(node);
                 return true;

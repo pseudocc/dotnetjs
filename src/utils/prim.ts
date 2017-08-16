@@ -38,14 +38,17 @@ module DotnetJs {
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 7, 2, 72);
+        return new Version(1, 7, 3, 74);
     }
 
+    let said = false;
+
     export function Greetings() {
-        var version = GetVersion();
-        console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
-        console.log('DotnetJs is released under the MIT license by Master Yu.')
-        console.log('See the full license at https://github.com/Master76/dotnetjs/blob/master/LICENSE.');
+        if (said) 
+            return;
+        said = true;
+        let version = GetVersion();
+        console.log('DotNetJs -', version.toString(), '- https://github.com/Master76/dotnetjs/ - (MIT license)');
     }
 
 }

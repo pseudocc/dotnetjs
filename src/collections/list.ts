@@ -90,7 +90,7 @@ module DotnetJs.Collections {
             if (match == null) {
                 throw new ArgumentNullException('match');
             }
-            for (var i = 0; i < this.Count; i++) {
+            for (let i = 0; i < this.Count; i++) {
                 if (match(this.items[i])) {
                     return this.items[i];
                 }
@@ -102,8 +102,8 @@ module DotnetJs.Collections {
             if (match == null) {
                 throw new ArgumentNullException('match');
             }
-            var list = new List<T>();
-            for (var i = 0; i < this.Count; i++) {
+            let list = new List<T>();
+            for (let i = 0; i < this.Count; i++) {
                 if (match(this.items[i])) {
                     list.Add(this.items[i]);
                 }
@@ -121,8 +121,8 @@ module DotnetJs.Collections {
             if (match == null) {
                 throw new ArgumentNullException('match');
             }
-            var endIndex = startIndex + count;
-            for (var i = startIndex; i < endIndex; i++) {
+            let endIndex = startIndex + count;
+            for (let i = startIndex; i < endIndex; i++) {
                 if (match(this.items[i])) {
                     if (i > -1 && i < startIndex + count)
                         return i;
@@ -147,8 +147,8 @@ module DotnetJs.Collections {
             if (count < 0 || startIndex - count + 1 < 0) {
                 throw new ArgumentOutOfRangeException('count ' + count);
             }
-            var endIndex = startIndex - count;
-            for (var i = startIndex; i > endIndex; i--) {
+            let endIndex = startIndex - count;
+            for (let i = startIndex; i > endIndex; i--) {
                 if (match(this.items[i])) {
                     if (i > -1 && i > startIndex)
                         return i;
@@ -162,8 +162,8 @@ module DotnetJs.Collections {
             if (action == null) {
                 throw new ArgumentNullException('action');
             }
-            var version = this.version;
-            for (var i = 0; i < this.Count; i++) {
+            let version = this.version;
+            for (let i = 0; i < this.Count; i++) {
                 if (version != this.version) {
                     break;
                 }
@@ -187,7 +187,7 @@ module DotnetJs.Collections {
             if (this.Count - index < count) {
                 throw new ArgumentException('invalid offlen');
             }
-            var list = new List<T>();
+            let list = new List<T>();
             Arrays.Copy(this.items, index, list.items, 0, count);
             return list;
         }
@@ -197,7 +197,7 @@ module DotnetJs.Collections {
         }
 
         public Remove(item: T): boolean {
-            var index = this.IndexOf(item);
+            let index = this.IndexOf(item);
             if (index >= 0) {
                 this.RemoveAt(index);
                 return true;
@@ -210,12 +210,12 @@ module DotnetJs.Collections {
                 throw new ArgumentNullException('match');
             }
 
-            var freeIndex = 0;
+            let freeIndex = 0;
             while (freeIndex < this.Count && !match(this.items[freeIndex]))
                 freeIndex++;
             if (freeIndex >= this.Count)
                 return 0;
-            var current = freeIndex + 1;
+            let current = freeIndex + 1;
             while (current < this.Count) {
                 while (current < this.Count && match(this.items[current]))
                     current++;
@@ -224,7 +224,7 @@ module DotnetJs.Collections {
                 }
             }
             Arrays.Clear(this.items, freeIndex, this.Count - freeIndex);
-            var result = this.Count - freeIndex;
+            let result = this.Count - freeIndex;
             this.version++;
             return result;
         }
@@ -247,7 +247,7 @@ module DotnetJs.Collections {
         }
 
         public RemoveLast(): T {
-            var rtn = this.items.pop();
+            let rtn = this.items.pop();
             this.version++;
             return rtn;
         }
@@ -279,11 +279,11 @@ module DotnetJs.Collections {
             }
             if (this.Count - index < count)
                 throw new ArgumentException('invalid offset');
-            var i = index;
-            var j = index + count - 1;
-            var array = this.items;
+            let i = index;
+            let j = index + count - 1;
+            let array = this.items;
             while (i < j) {
-                var temp = array[i];
+                let temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
                 i++;
@@ -309,7 +309,7 @@ module DotnetJs.Collections {
             if (this.Count == 0) {
                 return [];
             }
-            var array: T[] = [];
+            let array: T[] = [];
             Arrays.Copy(this.items, 0, array, 0, this.Count);
             return array;
         }
@@ -331,7 +331,7 @@ module DotnetJs.Collections {
         }
 
         public MoveNext(): boolean {
-            var localList: List<T> = this.list;
+            let localList: List<T> = this.list;
             if (this.version == localList.Version && (this.index < localList.Count)) {
                 this.current = localList.GetValue(this.index);
                 this.index++;

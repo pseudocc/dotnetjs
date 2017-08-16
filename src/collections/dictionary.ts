@@ -38,10 +38,10 @@ module DotnetJs.Collections {
         }
 
         public get Keys(): TKey[] {
-            var keys: TKey[] = [];
+            let keys: TKey[] = [];
             if (this.Count == 0)
                 return keys;
-            for (var i = 0; i < this.count; i++) {
+            for (let i = 0; i < this.count; i++) {
                 if (this.entries[i].hashCode < 0)
                     return;
 
@@ -51,10 +51,10 @@ module DotnetJs.Collections {
         }
 
         public get KeyValuePairs(): KeyValuePair<TKey, TValue>[] {
-            var pairs: KeyValuePair<TKey, TValue>[] = [];
+            let pairs: KeyValuePair<TKey, TValue>[] = [];
             if (this.Count == 0)
                 return pairs;
-            for (var i = 0; i < this.count; i++) {
+            for (let i = 0; i < this.count; i++) {
                 let pair: KeyValuePair<TKey, TValue> = { Key: this.entries[i].key, Value: this.entries[i].value };
                 pairs.push(pair);
             }
@@ -66,10 +66,10 @@ module DotnetJs.Collections {
         }
 
         public get Values(): TValue[] {
-            var values: TValue[] = [];
+            let values: TValue[] = [];
             if (this.Count == 0)
                 return values;
-            for (var i = 0; i < this.count; i++) {
+            for (let i = 0; i < this.count; i++) {
                 if (this.entries[i].hashCode < 0)
                     return;
 
@@ -83,7 +83,7 @@ module DotnetJs.Collections {
         }
 
         public GetValue(key: TKey): TValue {
-            var i: number = this.FindEntry(key);
+            let i: number = this.FindEntry(key);
             if (i >= 0)
                 return this.entries[i].value;
             throw new KeyNotFoundException(key);
@@ -99,7 +99,7 @@ module DotnetJs.Collections {
 
         public Clear(): void {
             if (this.count > 0) {
-                for (var i = 0; i < this.buckets.length; i++)
+                for (let i = 0; i < this.buckets.length; i++)
                     this.buckets[i] = -1;
                 Arrays.Clear(this.entries, 0, this.count);
                 this.freeList = -1;
@@ -110,8 +110,8 @@ module DotnetJs.Collections {
         }
 
         public Contains(keyValuePair: KeyValuePair<TKey, TValue>): boolean {
-            var i: number = this.FindEntry(keyValuePair.Key);
-            var comparer: IEqualityComparer<TValue> = DefaultDelegate.EqualityComparer;
+            let i: number = this.FindEntry(keyValuePair.Key);
+            let comparer: IEqualityComparer<TValue> = DefaultDelegate.EqualityComparer;
             if (i >= 0 && comparer(this.entries[i].value, keyValuePair.Value)) {
                 return true;
             }
@@ -123,15 +123,15 @@ module DotnetJs.Collections {
         }
 
         public ContainsValue(value: TValue): boolean {
-            var comparer: IEqualityComparer<TValue> = DefaultDelegate.EqualityComparer;
+            let comparer: IEqualityComparer<TValue> = DefaultDelegate.EqualityComparer;
             if (value == null) {
-                for (var i = 0; i < this.count; i++) {
+                for (let i = 0; i < this.count; i++) {
                     if (this.entries[i].hashCode >= 0 && this.entries[i].value == null)
                         return true;
                 }
             }
             else {
-                for (var i = 0; i < this.count; i++) {
+                for (let i = 0; i < this.count; i++) {
                     if (this.entries[i].hashCode >= 0 && comparer(this.entries[i].value, value))
                         return true;
                 }
@@ -143,10 +143,10 @@ module DotnetJs.Collections {
             if (key == null) {
                 throw new ArgumentNullException(key.toString());
             }
-            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
+            let comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
             if (this.buckets != null) {
-                var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
-                for (var i: number = this.buckets[hashCode % this.buckets.length]; i >= 0; i = this.entries[i].next) {
+                let hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
+                for (let i: number = this.buckets[hashCode % this.buckets.length]; i >= 0; i = this.entries[i].next) {
                     if (this.entries[i].hashCode == hashCode && comparer(this.entries[i].key, key))
                         return i;
                 }
@@ -160,9 +160,9 @@ module DotnetJs.Collections {
             }
             if (this.Count == 0)
                 return;
-            var version: number = this.version;
-            for (var i = 0; i < this.count; i++) {
-                var pair: KeyValuePair<TKey, TValue> = { Key: this.entries[i].key, Value: this.entries[i].value };
+            let version: number = this.version;
+            for (let i = 0; i < this.count; i++) {
+                let pair: KeyValuePair<TKey, TValue> = { Key: this.entries[i].key, Value: this.entries[i].value };
                 action(pair);
             }
             if (version != this.version)
@@ -174,12 +174,12 @@ module DotnetJs.Collections {
         }
 
         private Initialize(capacity: number): void {
-            var size: number = HashHelpers.GetPrime(capacity);
+            let size: number = HashHelpers.GetPrime(capacity);
             this.buckets = new Array(size);
-            for (var i: number = 0; i < this.buckets.length; i++)
+            for (let i: number = 0; i < this.buckets.length; i++)
                 this.buckets[i] = -1;
             this.entries = new Array(size);
-            for (var i: number = 0; i < this.entries.length; i++)
+            for (let i: number = 0; i < this.entries.length; i++)
                 this.entries[i] = {};
             this.count = 0;
             this.version = 0;
@@ -193,10 +193,10 @@ module DotnetJs.Collections {
             }
             if (this.buckets == null)
                 this.Initialize(0);
-            var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
-            var targetBucket: number = hashCode % this.buckets.length;
-            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
-            for (var i: number = this.buckets[targetBucket]; i >= 0; i = this.entries[i].next) {
+            let hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
+            let targetBucket: number = hashCode % this.buckets.length;
+            let comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
+            for (let i: number = this.buckets[targetBucket]; i >= 0; i = this.entries[i].next) {
                 if (this.entries[i].hashCode == hashCode && comparer(this.entries[i].key, key)) {
                     if (add) {
                         throw new ArgumentException('duplicate key ' + key.toString());
@@ -206,7 +206,7 @@ module DotnetJs.Collections {
                     return;
                 }
             }
-            var index: number;
+            let index: number;
             if (this.freeCount > 0) {
                 index = this.freeList;
                 this.freeList = this.entries[index].next;
@@ -229,17 +229,17 @@ module DotnetJs.Collections {
         }
 
         private Resize(): void {
-            var newSize = HashHelpers.ExpandPrime(this.count);
-            var newBuckets: number[] = new Array(newSize);
-            for (var i: number = 0; i < newBuckets.length; i++)
+            let newSize = HashHelpers.ExpandPrime(this.count);
+            let newBuckets: number[] = new Array(newSize);
+            for (let i: number = 0; i < newBuckets.length; i++)
                 newBuckets[i] = -1;
-            var newEntries = new Array(newSize);
-            for (var i: number = 0; i < newEntries.length; i++)
+            let newEntries = new Array(newSize);
+            for (let i: number = 0; i < newEntries.length; i++)
                 newEntries[i] = {};
             Arrays.Copy(this.entries, 0, newEntries, 0, this.count);
-            for (var i: number = 0; i < this.count; i++) {
+            for (let i: number = 0; i < this.count; i++) {
                 if (newEntries[i].hashCode >= 0) {
-                    var bucket: number = newEntries[i].hashCode % newSize;
+                    let bucket: number = newEntries[i].hashCode % newSize;
                     newEntries[i].next = newBuckets[bucket];
                     newBuckets[bucket] = i;
                 }
@@ -252,12 +252,12 @@ module DotnetJs.Collections {
             if (key == null) {
                 throw new ArgumentNullException('key');
             }
-            var comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
+            let comparer: IEqualityComparer<TKey> = this.keyComparer || DefaultDelegate.EqualityComparer;
             if (this.buckets != null) {
-                var hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
-                var bucket: number = hashCode % this.buckets.length;
-                var last: number = -1;
-                for (var i: number = this.buckets[bucket]; i >= 0; last = i, i = this.entries[i].next) {
+                let hashCode: number = key.GetHashCode() & 0x7FFFFFFF;
+                let bucket: number = hashCode % this.buckets.length;
+                let last: number = -1;
+                for (let i: number = this.buckets[bucket]; i >= 0; last = i, i = this.entries[i].next) {
                     if (this.entries[i].hashCode == hashCode && comparer(this.entries[i].key, key)) {
                         if (last < 0) {
                             this.buckets[bucket] = this.entries[i].next;
@@ -265,7 +265,7 @@ module DotnetJs.Collections {
                         else {
                             this.entries[last].next = this.entries[i].next;
                         }
-                        var rtn = this.entries[i].value;
+                        let rtn = this.entries[i].value;
                         this.entries[i].hashCode = -1;
                         this.entries[i].next = this.freeList;
                         this.entries[i].key = null;
@@ -283,7 +283,7 @@ module DotnetJs.Collections {
         public TryGetValue(key: TKey, out: OutParam<TValue>): boolean {
             if (out == null)
                 throw new ArgumentNullException('out parameter is null');
-            var i: number = this.FindEntry(key);
+            let i: number = this.FindEntry(key);
             if (i >= 0) {
                 out(this.entries[i].value);
                 return true;
@@ -344,6 +344,7 @@ module DotnetJs.Collections {
     }
     abstract class HashHelpers {
 
+        public static MaxPrimeArrayLength: number = 0x7FEFFFFD;
         public static primes: number[] = [3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
             1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
             17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
@@ -357,8 +358,8 @@ module DotnetJs.Collections {
         public static GetPrime(min: number): number {
             if (min < 0)
                 throw new ArgumentException('min < 0');
-            for (var i: number = 0; i < HashHelpers.primes.length; i++) {
-                var prime: number = HashHelpers.primes[i];
+            for (let i: number = 0; i < HashHelpers.primes.length; i++) {
+                let prime: number = HashHelpers.primes[i];
                 if (prime >= min)
                     return prime;
             }
@@ -366,14 +367,12 @@ module DotnetJs.Collections {
         }
 
         public static ExpandPrime(oldSize: number): number {
-            var newSize: number = 2 * oldSize;
+            let newSize: number = 2 * oldSize;
             if (newSize > HashHelpers.MaxPrimeArrayLength && HashHelpers.MaxPrimeArrayLength > oldSize) {
                 return HashHelpers.MaxPrimeArrayLength;
             }
             return HashHelpers.GetPrime(newSize);
         }
-
-        public static MaxPrimeArrayLength: number = 0x7FEFFFFD;
     }
 
 }

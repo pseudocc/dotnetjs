@@ -165,7 +165,7 @@ class StringEnumerator implements DotnetJs.Collections.IEnumerator<number> {
                 return <string>result.toString.apply(result, [f]);
             }
 
-            if (colon > comma && comma != -1)
+            if (colon < comma && comma != -1 && colon != -1)
                 throw new DotnetJs.ArgumentException('malformated');
             if (colon == -1 && comma == -1) {
                 index = parseInt(content);

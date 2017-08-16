@@ -10,14 +10,14 @@ interface Object {
 }
 
 (function () {
-    var id = 0x7FEFFFFD;
+    let id = 0x7FEFFFFD;
 
     function StringHash(obj: Object): number {
-        var value = obj.toString();
-        var m, n = 0x15051505;
-        var offset = 0;
-        var mask = 0xFFFFFFFF;
-        for (var i = value.length; i > 0; i -= 4) {
+        let value = obj.toString();
+        let m, n = 0x15051505;
+        let offset = 0;
+        let mask = 0xFFFFFFFF;
+        for (let i = value.length; i > 0; i -= 4) {
             m = (((m << 5) + m) + (m >> 0x1b)) ^ value.charCodeAt(0 + offset) & mask;
             if (i <= 2) {
                 break;
@@ -30,9 +30,9 @@ interface Object {
 
     Object.defineProperty(Object.prototype, 'ContainsKey', {
         value: function (_key: string): boolean {
-            if (this[key] != null)
+            if (this[_key] != null)
                 return true;
-            for (var key in this) {
+            for (let key in this) {
                 if (key == _key) 
                     return true;
             }
@@ -46,7 +46,7 @@ interface Object {
             if (!obj.IsValueType)
                 return obj === this;
 
-            var vt = <DotnetJs.ValueType>obj;
+            let vt = <DotnetJs.ValueType>obj;
             return vt.GetHashCode() === this.GetHashCode();
         },
         enumerable: false
@@ -57,8 +57,8 @@ interface Object {
             if (this.hashCode && !refresh)
                 return this.hashCode;
 
-            var value = this.valueOf();
-            var type = typeof value;
+            let value = this.valueOf();
+            let type = typeof value;
             switch (type) {
                 case 'number':
                     return value;
@@ -73,7 +73,7 @@ interface Object {
                     return StringHash(value);
             }
 
-            var newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
+            let newId = this.getTime == Date.prototype.getTime ? this.getTime() : id++;
             this.hashCode = newId;
             return newId;
         },
@@ -82,8 +82,8 @@ interface Object {
 
     Object.defineProperty(Object.prototype, 'IsValueType', {
         get: function () {
-            var value = this.valueOf();
-            var type = typeof value;
+            let value = this.valueOf();
+            let type = typeof value;
             return type == 'number'
                 || type == 'boolean'
                 || type == 'string'

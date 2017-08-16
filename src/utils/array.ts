@@ -43,7 +43,7 @@ module DotnetJs.Arrays {
             throw new ArgumentNullException('sourceArray');
         if (destinationArray == null)
             throw new ArgumentNullException('destinationArray');
-        for (var i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
         }
     }
@@ -54,8 +54,8 @@ module DotnetJs.Arrays {
         if (collection == null)
             throw new ArgumentNullException('collection');
         length = length || collection.length;
-        var startIndex = array.length;
-        for (var i = 0; i < length; i++) {
+        let startIndex = array.length;
+        for (let i = 0; i < length; i++) {
             let index = startIndex + i;
             array[index] = collection[i];
         }
@@ -64,10 +64,10 @@ module DotnetJs.Arrays {
     export function Clear(array: any[], freeIndex: number = 0, length?: number): void {
         if (array == null)
             throw new ArgumentNullException('array');
-        var restIndex: number = length ? freeIndex + length : array.length;
-        var rest = array.length - restIndex;
+        let restIndex: number = length ? freeIndex + length : array.length;
+        let rest = array.length - restIndex;
         if (rest > 0) {
-            for (var i = 0; i < rest; i++) {
+            for (let i = 0; i < rest; i++) {
                 array[freeIndex + i] = array[freeIndex + i];
             }
             array.length = freeIndex + rest;
@@ -80,10 +80,10 @@ module DotnetJs.Arrays {
         if (array == null)
             throw new ArgumentNullException('array');
         index = index || 0;
-        var end = count ? index + count : null;
-        var subArr = array.slice(index, end);
+        let end = count ? index + count : null;
+        let subArr = array.slice(index, end);
         subArr.sort(comparison);
-        for (var i = 0; i < subArr.length; i++) {
+        for (let i = 0; i < subArr.length; i++) {
             array[index + i] = subArr[i];
         }
     }
@@ -94,7 +94,7 @@ module DotnetJs.Arrays {
         startIndex = startIndex || 0;
         length = length || (array.length - startIndex);
         comparer = comparer || DefaultDelegate.EqualityComparer;
-        for (var i = startIndex; i < length; i++) {
+        for (let i = startIndex; i < length; i++) {
             if (comparer(array[i], item))
                 return i;
         }
@@ -107,7 +107,7 @@ module DotnetJs.Arrays {
         startIndex = startIndex || 0;
         length = length || (array.length - startIndex);
         comparer = comparer || DefaultDelegate.EqualityComparer;
-        for (var i = startIndex + length - 1; i > startIndex; i--) {
+        for (let i = startIndex + length - 1; i > startIndex; i--) {
             if (comparer(array[i], item))
                 return i;
         }

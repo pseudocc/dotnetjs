@@ -10,7 +10,7 @@ interface Console {
             console.log();
             return;
         }
-        var msg = String.Format.apply(null, arguments);
+        let msg = String.Format.apply(null, arguments);
         console.log(msg);
     }
 })();

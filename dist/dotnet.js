@@ -1,16 +1,22 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var DotnetJs;
 (function (DotnetJs) {
     var InvalidDataException = (function (_super) {
         __extends(InvalidDataException, _super);
         function InvalidDataException(type) {
-            _super.call(this, 'Unexpected data type: ' + type);
-            this.stack = (new Error()).stack;
-            this.name = 'InvalidDataException';
+            var _this = _super.call(this, 'Unexpected data type: ' + type) || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'InvalidDataException';
+            return _this;
         }
         return InvalidDataException;
     }(Error));
@@ -18,9 +24,10 @@ var DotnetJs;
     var FormatException = (function (_super) {
         __extends(FormatException, _super);
         function FormatException(msg) {
-            _super.call(this, 'Format specifier was invalid. ' + msg || '');
-            this.stack = (new Error()).stack;
-            this.name = 'InvalidDataException';
+            var _this = _super.call(this, 'Format specifier was invalid. ' + msg || '') || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'InvalidDataException';
+            return _this;
         }
         return FormatException;
     }(Error));
@@ -28,9 +35,10 @@ var DotnetJs;
     var NotImplementedExeption = (function (_super) {
         __extends(NotImplementedExeption, _super);
         function NotImplementedExeption(methodName) {
-            _super.call(this, (methodName || 'Method') + ' Not Implemented.');
-            this.stack = (new Error()).stack;
-            this.name = 'InvalidDataException';
+            var _this = _super.call(this, (methodName || 'Method') + ' Not Implemented.') || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'InvalidDataException';
+            return _this;
         }
         return NotImplementedExeption;
     }(Error));
@@ -38,9 +46,10 @@ var DotnetJs;
     var UnknownExeption = (function (_super) {
         __extends(UnknownExeption, _super);
         function UnknownExeption() {
-            _super.call(this, 'An unknown exeption occured. Please send the stack trace to me. Thank you.');
-            this.stack = (new Error()).stack;
-            this.name = 'UnknownExeption';
+            var _this = _super.call(this, 'An unknown exeption occured. Please send the stack trace to me. Thank you.') || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'UnknownExeption';
+            return _this;
         }
         return UnknownExeption;
     }(Error));
@@ -48,9 +57,10 @@ var DotnetJs;
     var ArgumentException = (function (_super) {
         __extends(ArgumentException, _super);
         function ArgumentException(msg) {
-            _super.call(this, 'An argument exception occured: ' + msg);
-            this.stack = (new Error()).stack;
-            this.name = 'ArgumentException';
+            var _this = _super.call(this, 'An argument exception occured: ' + msg) || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'ArgumentException';
+            return _this;
         }
         return ArgumentException;
     }(Error));
@@ -58,9 +68,10 @@ var DotnetJs;
     var ArgumentNullException = (function (_super) {
         __extends(ArgumentNullException, _super);
         function ArgumentNullException(msg) {
-            _super.call(this, 'Argument with parameter name ' + msg + ' is null or undefined.');
-            this.stack = (new Error()).stack;
-            this.name = 'ArgumentNullException';
+            var _this = _super.call(this, 'Argument with parameter name ' + msg + ' is null or undefined.') || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'ArgumentNullException';
+            return _this;
         }
         return ArgumentNullException;
     }(Error));
@@ -68,9 +79,10 @@ var DotnetJs;
     var ArgumentOutOfRangeException = (function (_super) {
         __extends(ArgumentOutOfRangeException, _super);
         function ArgumentOutOfRangeException(msg) {
-            _super.call(this, 'Argument given was out of range: ' + msg);
-            this.stack = (new Error()).stack;
-            this.name = 'ArgumentOutOfRangeException';
+            var _this = _super.call(this, 'Argument given was out of range: ' + msg) || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'ArgumentOutOfRangeException';
+            return _this;
         }
         return ArgumentOutOfRangeException;
     }(Error));
@@ -78,9 +90,10 @@ var DotnetJs;
     var InvalidOperationException = (function (_super) {
         __extends(InvalidOperationException, _super);
         function InvalidOperationException(msg) {
-            _super.call(this, 'Operation is invalid: ' + msg);
-            this.stack = (new Error()).stack;
-            this.name = 'InvalidOperationException';
+            var _this = _super.call(this, 'Operation is invalid: ' + msg) || this;
+            _this.stack = (new Error()).stack;
+            _this.name = 'InvalidOperationException';
+            return _this;
         }
         return InvalidOperationException;
     }(Error));
@@ -117,7 +130,7 @@ var DotnetJs;
     }
     Object.defineProperty(Object.prototype, 'ContainsKey', {
         value: function (_key) {
-            if (this[key] != null)
+            if (this[_key] != null)
                 return true;
             for (var key in this) {
                 if (key == _key)
@@ -916,7 +929,7 @@ var StringEnumerator = (function () {
                     return result.toString();
                 return result.toString.apply(result, [f]);
             };
-            if (colon > comma && comma != -1)
+            if (colon < comma && comma != -1 && colon != -1)
                 throw new DotnetJs.ArgumentException('malformated');
             if (colon == -1 && comma == -1) {
                 index = parseInt(content);
@@ -1145,13 +1158,15 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 7, 2, 72);
+        return new DotnetJs.Version(1, 7, 3, 74);
     }
+    var said = false;
     function Greetings() {
+        if (said)
+            return;
+        said = true;
         var version = GetVersion();
-        console.log('DotNetJs -', version, '- https://github.com/Master76/dotnetjs/ -');
-        console.log('DotnetJs is released under the MIT license by Master Yu.');
-        console.log('See the full license at https://github.com/Master76/dotnetjs/blob/master/LICENSE.');
+        console.log('DotNetJs -', version.toString(), '- https://github.com/Master76/dotnetjs/ - (MIT license)');
     }
     DotnetJs.Greetings = Greetings;
 })(DotnetJs || (DotnetJs = {}));
@@ -1162,9 +1177,10 @@ var DotnetJs;
         var KeyNotFoundException = (function (_super) {
             __extends(KeyNotFoundException, _super);
             function KeyNotFoundException(key) {
-                _super.call(this, 'The given key was not present in the dictionary, key: ' + key.toString());
-                this.stack = (new Error()).stack;
-                this.name = 'KeyNotFoundException';
+                var _this = _super.call(this, 'The given key was not present in the dictionary, key: ' + key.toString()) || this;
+                _this.stack = (new Error()).stack;
+                _this.name = 'KeyNotFoundException';
+                return _this;
             }
             return KeyNotFoundException;
         }(Error));
@@ -1627,6 +1643,7 @@ var DotnetJs;
                 }
                 return HashHelpers.GetPrime(newSize);
             };
+            HashHelpers.MaxPrimeArrayLength = 0x7FEFFFFD;
             HashHelpers.primes = [3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
                 1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
                 17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
@@ -1636,7 +1653,6 @@ var DotnetJs;
                 77028803, 92434613, 110921543, 133105859, 159727031, 191672443, 230006941, 276008387, 331210079,
                 397452101, 476942527, 572331049, 686797261, 824156741, 988988137, 1186785773, 1424142949, 1708971541,
                 2050765853, HashHelpers.MaxPrimeArrayLength];
-            HashHelpers.MaxPrimeArrayLength = 0x7FEFFFFD;
             return HashHelpers;
         }());
     })(Collections = DotnetJs.Collections || (DotnetJs.Collections = {}));
