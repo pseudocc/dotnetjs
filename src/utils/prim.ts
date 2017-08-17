@@ -38,7 +38,7 @@ module DotnetJs {
     export type IComparer<T> = (a: T, b: T) => number;
 
     function GetVersion(): Version {
-        return new Version(1, 7, 3, 74);
+        return new Version(1, 7, 4, 75);
     }
 
     let said = false;

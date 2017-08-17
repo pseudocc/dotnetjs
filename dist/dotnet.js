@@ -1059,11 +1059,11 @@ var StringEnumerator = (function () {
         }
         if (format.StartsWith('G', true)) {
             var func = void 0;
-            if (value < 1e-6 || value > 1e+14)
-                func = Exponential;
             if (value == Math.floor(value))
                 func = Decimal;
-            func = FixedPoint;
+            else if (value < 1e-6 || value > 1e+14)
+                func = Exponential;
+            else func = FixedPoint;
             return func(sign, value, fd, char.IsLower(format, 0));
         }
         if (format.StartsWith('N', true)) {
@@ -1158,7 +1158,7 @@ var DotnetJs;
     }());
     DotnetJs.DefaultDelegate = DefaultDelegate;
     function GetVersion() {
-        return new DotnetJs.Version(1, 7, 3, 74);
+        return new DotnetJs.Version(1, 7, 4, 75);
     }
     var said = false;
     function Greetings() {

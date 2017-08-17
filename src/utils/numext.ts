@@ -37,11 +37,11 @@ interface NumberConstructor {
 
         if (format.StartsWith('G', true)) {
             let func: (sign: string, value: number, digits?: number, lowerCase?: boolean) => string;
-            if (value < 1e-6 || value > 1e+14)
-                func = Exponential;
             if (value == Math.floor(value))
                 func = Decimal;
-            func = FixedPoint;
+            else if (value < 1e-6 || value > 1e+14)
+                func = Exponential;
+            else func = FixedPoint;
             return func(sign, value, fd, char.IsLower(format, 0));
         }
 
