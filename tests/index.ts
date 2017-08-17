@@ -4,9 +4,11 @@ import stringTest from './utils/string';
 import listTest from './collections/list';
 import linqTest from './collections/linq';
 import hashTest from './utils/hashcode';
+import numberTest from './utils/number'
 
 var testCases: ((Function) => number)[] = [
-    charTest, stringTest, listTest, linqTest, hashTest
+    charTest, stringTest, listTest, 
+    linqTest, hashTest, numberTest
 ];
 var passed = 0;
 for (var i = 0; i < testCases.length; i++) {
