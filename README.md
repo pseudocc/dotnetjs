@@ -1,30 +1,35 @@
 # DotnetJs
+
 .Net Framework support in javascript
 
 ## Get DotnetJs
 
 1. Nodejs
 
-    firstly, run ```npm install dotnetjs --save``` 
+    Firstly, run
 
-    If you are using typescript: 
+    ```npm
+    npm install dotnetjs --save
+    ```
 
-    ```typescript 
+    If you are using TypeScript:
+
+    ```typescript
     import * as DotnetJs from 'dotnetjs';
     ```
 
-    else just like the others: 
+    else just like the others:
 
-    ```javascript 
+    ```javascript
     var DotnetJs = require('dotnetjs');
     ```
 
 2. Browser
 
-    run ```npm install dotnetjs --save``` 
-    
+    Run ```npm install dotnetjs --save```
+
     or download the files in the dist directory.
-    
+
     or run ```bower install dotnetjs```
 
     ```html
@@ -35,25 +40,25 @@
     <script src="your.js"></script>
     ```
 
-    in your .ts file: 
-    
+    in your .ts file:
+
     ```typescript
     /// <reference path="dotnet.d.ts" />
     ```
-    
+
 ## Work with DotnetJs
 
 DotnetJs uses similiar interface as it is in .Net Framework.
 
 ### Linq
 
-If you are about to use complicated Linq Expressions, first make a instance of LinqIntermediate by using LinqStart:
+If you are about to use complicated Linq Expressions, first make an instance of LinqIntermediate by using LinqStart:
 
 ```typescript
 var expression = DotnetJs.Linq.LinqStart(enumerable);
 ```
-    
-the enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
+
+The enumerable can be any type that implements IEnumerable, in addition, I implemented it for the Array. Then you can do like the following:
 
 ```typescript
 expression.Where(...).Select(...).ToArray();
@@ -65,7 +70,7 @@ Or use:
 DotnetJs.Linq.Where(enumerable, ...).Select(...).ToArray();
 ```
 
-remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your linq is, the time complexity is always O(n).
+Remember to use ```ToArray``` or ```ToList``` or ```ToDictionary``` to end the expression(if the result is still IEnumerable). No matter how long your LINQ is, the time complexity is always O(n).
 
 ### String Format
 
@@ -77,11 +82,12 @@ The match case: ```{index[,alignment][:format]}```, with 2 optional parameters (
 
 2. alignment
 
-    Alignment will do PadLeft or PadRight with spaces, if it is positive then do PadLeft, else do PadRight.
+    Alignment will do PadLeft or PadRight with spaces. If it is positive then do PadLeft, else do PadRight.
 
 3. format
 
-    With the magic char ':', you can control the format of your toString method. For number, there are specifiers ['D', 'E', 'F', 'G', 'N', 'P', 'X'] implemented, [usage portal](https://msdn.microsoft.com/en-us/library/dwhawy9k(v=vs.110).aspx). Now, let's see the following example:
+    With the magic char ':', you can control the format of your toString method. For numbers, the following specifiers ['D', 'E', 'F', 'G', 'N', 'P', 'X'] are implemented, [usage portal](https://msdn.microsoft.com/en-us/library/dwhawy9k(v=vs.110).aspx).
+    Now, let's see the following example:
 
     ```typescript
     var number = 1.0437E21;
@@ -109,17 +115,17 @@ The match case: ```{index[,alignment][:format]}```, with 2 optional parameters (
 
 ### Indexer for the collections
 
-As there isn't have a way to implement indexer in typescript. You have to call the element of List or IDictionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.
+As there isn't a way to implement indexer in typescript you have to call the element of List or IDictionay, by using ```GetValue(index || key)``` and ```SetValue(index || key, value)```, but not ```collection[index || key]```.
 
 ### GetHashCode
 
 Both object, string, boolean or number are supported for the GetHashCode Method, actually for the object, it is more likely to be called as a 'unique id'.
 
-To get a new hashcode for an object, call the method with parameter 'ture'. But please becareful, this may due to unexpected errors (e.g.: when you are using ```Dictionary```).
+To get a new hashcode for an object, call the method with parameter 'ture'. But please be careful, this may cause unexpected errors (e.g.: when you are using ```Dictionary```).
 
 ### Equals
 
-If you inherit from typescript abstract class ValueType, remember to override Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other.
+If you inherit from TypeScript abstract class ValueType, remember to override the Equals method, else it will compare the result of GetHashCode() to decide whether it equals to the other.
 
 ### ContainsKey
 
@@ -132,15 +138,14 @@ console.log(obj.ContainsKey('name'));
 
 ### TODO
 
-More extensions. If you have any idea, please feel free to contact me.
+More extensions. If you have any ideas, please feel free to contact me.
 
 ## Test
 
-Change directory to tests, then run ```tsc``` to compile the typescript files, then run ```npm link ../``` secondly, to set up the local dependence, finally run ```node index.js``` to start the test.
+First change directory to tests, then run ```tsc``` to compile the typescript files, then run ```npm link ../``` secondly, to set up the local dependencies, finally run ```node index.js``` to start the test.
 
 ## Contributors
 
 [Master76](https://github.com/Master76) Author
 
 [AsherWang](https://github.com/AsherWang) RegExp suport
-
