@@ -138,7 +138,7 @@ console.log(obj.ContainsKey('name'));
 
 ### TODO
 
-More extensions. If you have any ideas, please feel free to contact me.
+More extensions. If you have any ideas, please feel free to contact my.
 
 ## Test
 
@@ -146,6 +146,7 @@ First change directory to tests, then run ```tsc``` to compile the typescript fi
 
 ## Contributors
 
-[Master76](https://github.com/Master76) Author
+[Main76 (legacy account)](https://github.com/main76),
+[pseudocc](https://github.com/pseudocc)  Author
 
 [AsherWang](https://github.com/AsherWang) RegExp suport
